@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convocatoria MVP Laboral RD | Proyecto Karpathy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); }
+        .gradient-text {
+            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        /* Research overlay markdown styles */
+        #research-content h1 { font-size: 1.75rem; font-weight: 800; color: #0f172a; margin: 2rem 0 1rem; line-height: 1.3; }
+        #research-content h2 { font-size: 1.35rem; font-weight: 700; color: #1e293b; margin: 1.75rem 0 0.75rem; }
+        #research-content h3 { font-size: 1.1rem; font-weight: 600; color: #334155; margin: 1.5rem 0 0.5rem; }
+        #research-content p { color: #475569; line-height: 1.8; margin-bottom: 1rem; }
+        #research-content strong { color: #1e293b; }
+        #research-content ul, #research-content ol { color: #475569; margin: 0.75rem 0 1rem 1.5rem; line-height: 1.8; }
+        #research-content li { margin-bottom: 0.4rem; }
+        #research-content table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 0.875rem; }
+        #research-content th { background: #f1f5f9; color: #1e293b; font-weight: 600; text-align: left; padding: 0.75rem 1rem; border: 1px solid #e2e8f0; }
+        #research-content td { padding: 0.75rem 1rem; border: 1px solid #e2e8f0; color: #475569; }
+        #research-content tr:nth-child(even) { background: #f8fafc; }
+        #research-content code { background: #f1f5f9; padding: 0.15rem 0.4rem; border-radius: 0.25rem; font-size: 0.85em; color: #4f46e5; }
+        #research-content a { color: #2563eb; text-decoration: underline; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 selection:bg-blue-100 selection:text-blue-700">
+
+    <!-- Navegación -->
+    <nav class="sticky top-0 z-50 border-b border-slate-200 glass">
+        <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+            <div class="flex items-center gap-2 font-bold text-blue-700">
+                <i data-lucide="bar-chart-3" class="h-6 w-6"></i>
+                <span class="text-xl tracking-tight">RD Job Visualizer</span>
+            </div>
+            <div class="hidden space-x-8 md:flex">
+                <a href="#vision" class="text-sm font-medium hover:text-blue-600 transition-colors">Visión</a>
+                <a href="#roadmap" class="text-sm font-medium hover:text-blue-600 transition-colors">Roadmap</a>
+                <a href="#tech" class="text-sm font-medium hover:text-blue-600 transition-colors">Tecnología</a>
+                <a href="#investigacion" class="text-sm font-medium hover:text-blue-600 transition-colors">Investigación</a>
+            </div>
+            <button onclick="openWhatsApp()" class="rounded-full bg-blue-600 px-6 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all active:scale-95 flex items-center gap-2">
+                <i data-lucide="message-circle" class="h-4 w-4"></i>
+                Unirme Ahora
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden px-6 pt-16 pb-24 md:pt-24 md:pb-32">
+        <div class="mx-auto max-w-7xl text-center">
+            <div class="inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10 mb-8">
+                <i data-lucide="zap" class="h-4 w-4"></i>
+                <span>Hackathon Sprint: Edición MVP</span>
+            </div>
+            <h1 class="text-5xl font-extrabold tracking-tight text-slate-900 sm:text-7xl">
+                Visualicemos el Futuro de <br>
+                <span class="gradient-text italic">RD Trabaja</span>
+            </h1>
+            <p class="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-600">
+                Basándonos en la arquitectura de <strong>Andrej Karpathy</strong>, estamos construyendo el visualizador de empleos definitivo para la República Dominicana. Necesitamos tu talento para llegar a la meta este viernes.
+            </p>
+
+            <!-- Countdown Timer -->
+            <div class="mt-12 flex justify-center gap-4 md:gap-8" id="countdown">
+                <div class="flex flex-col items-center">
+                    <div id="days" class="flex h-16 w-16 items-center justify-center rounded-xl bg-white text-2xl font-bold shadow-md border border-slate-100 md:h-24 md:w-24 md:text-4xl text-blue-600">00</div>
+                    <span class="mt-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Días</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div id="hours" class="flex h-16 w-16 items-center justify-center rounded-xl bg-white text-2xl font-bold shadow-md border border-slate-100 md:h-24 md:w-24 md:text-4xl text-blue-600">00</div>
+                    <span class="mt-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Horas</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div id="minutes" class="flex h-16 w-16 items-center justify-center rounded-xl bg-white text-2xl font-bold shadow-md border border-slate-100 md:h-24 md:w-24 md:text-4xl text-blue-600">00</div>
+                    <span class="mt-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Minutos</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div id="seconds" class="flex h-16 w-16 items-center justify-center rounded-xl bg-white text-2xl font-bold shadow-md border border-slate-100 md:h-24 md:w-24 md:text-4xl text-blue-600">00</div>
+                    <span class="mt-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Segundos</span>
+                </div>
+            </div>
+
+            <div class="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                <button onclick="openWhatsApp()" class="group flex items-center gap-3 rounded-2xl bg-slate-900 px-10 py-5 text-xl font-bold text-white shadow-2xl hover:bg-slate-800 transition-all hover:scale-105 active:scale-95">
+                    <i data-lucide="message-circle" class="h-6 w-6"></i>
+                    Participar en Sesiones
+                    <i data-lucide="arrow-right" class="h-5 w-5 transition-transform group-hover:translate-x-1"></i>
+                </button>
+                <div class="text-left px-4">
+                    <p class="text-sm font-medium text-slate-500">Próxima sesión:</p>
+                    <p class="text-slate-900 font-bold">Mañana 9:00 AM AST</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Background Decor -->
+        <div class="absolute top-0 -z-10 h-full w-full opacity-20">
+            <div class="absolute top-1/2 left-1/4 h-96 w-96 -translate-y-1/2 rounded-full bg-blue-400 blur-[120px] animate-pulse"></div>
+            <div class="absolute top-1/4 right-1/4 h-96 w-96 rounded-full bg-indigo-400 blur-[120px] animate-pulse" style="animation-delay: 2s;"></div>
+        </div>
+    </section>
+
+    <!-- Vision Section -->
+    <section id="vision" class="bg-white py-24 px-6">
+        <div class="mx-auto max-w-7xl">
+            <div class="grid gap-16 md:grid-cols-2 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">La Misión: El Mapa de Exposición a la IA en RD</h2>
+                    <p class="mt-6 text-lg text-slate-600 leading-relaxed">
+                        Queremos responder: ¿Cómo afectará la IA a un abogado en Santo Domingo frente a un agrónomo en La Vega? 
+                        Usaremos los datos de la <strong>ONE</strong>, <strong>Cámara TIC</strong> y el portal <strong>RD Trabaja</strong> para crear un Treemap interactivo que puntúe cada profesión dominicana.
+                    </p>
+                    <ul class="mt-8 space-y-4">
+                        <li class="flex items-start gap-3 text-slate-700">
+                            <i data-lucide="check-circle-2" class="mt-1 h-5 w-5 text-green-500 flex-shrink-0"></i>
+                            <span>Extracción dinámica con Playwright de portales locales</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-slate-700">
+                            <i data-lucide="check-circle-2" class="mt-1 h-5 w-5 text-green-500 flex-shrink-0"></i>
+                            <span>Scoring de IA usando Claude 3.5 Sonnet</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-slate-700">
+                            <i data-lucide="check-circle-2" class="mt-1 h-5 w-5 text-green-500 flex-shrink-0"></i>
+                            <span>Métricas locales (Sector Informal y Pymes)</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-slate-700">
+                            <i data-lucide="check-circle-2" class="mt-1 h-5 w-5 text-green-500 flex-shrink-0"></i>
+                            <span>Visualización D3.js estilo Karpathy</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="relative rounded-3xl bg-slate-100 p-8 shadow-inner overflow-hidden border border-slate-200 animate-float">
+                    <div class="aspect-video rounded-xl bg-slate-900 p-6 flex flex-col shadow-2xl">
+                        <div class="h-2 w-1/4 bg-slate-700 rounded mb-6"></div>
+                        <div class="flex-1 grid grid-cols-6 grid-rows-4 gap-3">
+                            <div class="col-span-4 row-span-3 bg-blue-500/40 rounded border border-blue-400/30 flex items-center justify-center text-[10px] text-white font-bold p-2 text-center uppercase">Servicios Administrativos (8.9 Score)</div>
+                            <div class="col-span-2 row-span-2 bg-indigo-500/30 rounded border border-indigo-400/30"></div>
+                            <div class="col-span-2 bg-slate-800 rounded"></div>
+                            <div class="col-span-6 bg-emerald-500/40 rounded border border-emerald-400/30 flex items-center justify-center text-[10px] text-white font-bold uppercase">Turismo & Hostelería (2.4 Score)</div>
+                        </div>
+                    </div>
+                    <div class="mt-6 text-center text-xs font-mono text-slate-500 uppercase tracking-[0.2em]">
+                        Vista Previa: Treemap Interactivo
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Roadmap Section -->
+    <section id="roadmap" class="bg-slate-50 py-24 px-6">
+        <div class="mx-auto max-w-4xl">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-slate-900">Sprint de 72 Horas</h2>
+                <p class="mt-4 text-slate-600 text-lg">Cronograma intensivo para el lanzamiento del Viernes 20</p>
+            </div>
+
+            <div class="space-y-8">
+                <!-- Miércoles -->
+                <div class="group flex gap-6 rounded-2xl bg-white p-8 shadow-sm border border-slate-100 transition-all hover:border-blue-200 hover:shadow-xl">
+                    <div class="flex h-14 w-14 items-center justify-center rounded-full bg-blue-100 text-blue-600 group-hover:scale-110 transition-transform">
+                        <i data-lucide="database" class="h-7 w-7"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm font-bold uppercase text-blue-600 tracking-wider">Miércoles 18</span>
+                            <span class="h-1 w-1 rounded-full bg-slate-300"></span>
+                            <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold text-slate-600 uppercase">Fase 1</span>
+                        </div>
+                        <h3 class="mt-1 text-2xl font-bold text-slate-900">Ingesta y Scraping</h3>
+                        <p class="mt-2 text-slate-600 leading-relaxed text-lg">Activación de scrapers Playwright para el portal RD Trabaja y limpieza de microdatos de la ONE y Banco Central.</p>
+                    </div>
+                </div>
+
+                <!-- Jueves -->
+                <div class="group flex gap-6 rounded-2xl bg-white p-8 shadow-sm border border-slate-100 transition-all hover:border-blue-200 hover:shadow-xl">
+                    <div class="flex h-14 w-14 items-center justify-center rounded-full bg-blue-100 text-blue-600 group-hover:scale-110 transition-transform">
+                        <i data-lucide="zap" class="h-7 w-7"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm font-bold uppercase text-blue-600 tracking-wider">Jueves 19</span>
+                            <span class="h-1 w-1 rounded-full bg-slate-300"></span>
+                            <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold text-slate-600 uppercase">Fase 2</span>
+                        </div>
+                        <h3 class="mt-1 text-2xl font-bold text-slate-900">IA Scoring & Análisis</h3>
+                        <p class="mt-2 text-slate-600 leading-relaxed text-lg">Clasificación masiva de puestos usando Claude Code y arquitectura de agentes para determinar exposición a la IA.</p>
+                    </div>
+                </div>
+
+                <!-- Viernes -->
+                <div class="group flex gap-6 rounded-2xl bg-white p-8 shadow-sm border border-slate-100 transition-all hover:border-blue-200 hover:shadow-xl">
+                    <div class="flex h-14 w-14 items-center justify-center rounded-full bg-blue-100 text-blue-600 group-hover:scale-110 transition-transform">
+                        <i data-lucide="globe" class="h-7 w-7"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm font-bold uppercase text-blue-600 tracking-wider">Viernes 20</span>
+                            <span class="h-1 w-1 rounded-full bg-slate-300"></span>
+                            <span class="rounded-full bg-green-100 px-2.5 py-1 text-[10px] font-bold text-green-700 uppercase">Lanzamiento</span>
+                        </div>
+                        <h3 class="mt-1 text-2xl font-bold text-slate-900">Presentación MVP</h3>
+                        <p class="mt-2 text-slate-600 leading-relaxed text-lg">Pulido de la interfaz interactiva y publicación de resultados para la comunidad tecnológica de RD.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section id="tech" class="py-24 px-6 bg-white">
+        <div class="mx-auto max-w-7xl text-center">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4">Stack Tecnológico</h2>
+            <p class="mb-16 text-slate-500">Herramientas que nos permitirán construir en tiempo récord</p>
+            <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="p-8 rounded-3xl border border-slate-100 bg-slate-50 hover:bg-white hover:shadow-xl transition-all group">
+                    <div class="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-900 text-white transition-transform group-hover:rotate-6">
+                        <i data-lucide="code-2" class="h-7 w-7"></i>
+                    </div>
+                    <h4 class="font-bold text-lg">Claude Code</h4>
+                    <p class="mt-3 text-sm text-slate-500 leading-relaxed text-pretty">Desarrollo asistido por IA para iterar sobre los scrapers y visualización en minutos.</p>
+                </div>
+                <div class="p-8 rounded-3xl border border-slate-100 bg-slate-50 hover:bg-white hover:shadow-xl transition-all group">
+                    <div class="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 text-white transition-transform group-hover:rotate-6">
+                        <i data-lucide="shield-check" class="h-7 w-7"></i>
+                    </div>
+                    <h4 class="font-bold text-lg">Playwright</h4>
+                    <p class="mt-3 text-sm text-slate-500 leading-relaxed text-pretty">Automatización de navegador para extraer datos de portales dinámicos gubernamentales.</p>
+                </div>
+                <div class="p-8 rounded-3xl border border-slate-100 bg-slate-50 hover:bg-white hover:shadow-xl transition-all group">
+                    <div class="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-600 text-white transition-transform group-hover:rotate-6">
+                        <i data-lucide="cpu" class="h-7 w-7"></i>
+                    </div>
+                    <h4 class="font-bold text-lg">Model Context Protocol</h4>
+                    <p class="mt-3 text-sm text-slate-500 leading-relaxed text-pretty">Conectando nuestra lógica de análisis directamente con herramientas locales de datos.</p>
+                </div>
+                <div class="p-8 rounded-3xl border border-slate-100 bg-slate-50 hover:bg-white hover:shadow-xl transition-all group">
+                    <div class="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-600 text-white transition-transform group-hover:rotate-6">
+                        <i data-lucide="layout" class="h-7 w-7"></i>
+                    </div>
+                    <h4 class="font-bold text-lg">React + Tailwind</h4>
+                    <p class="mt-3 text-sm text-slate-500 leading-relaxed text-pretty">Arquitectura frontend moderna para un dashboard rápido, fluido y móvil-primero.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Investigación Section -->
+    <section id="investigacion" class="bg-slate-50 py-24 px-6">
+        <div class="mx-auto max-w-4xl text-center">
+            <div class="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-4 py-1.5 text-sm font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10 mb-8">
+                <i data-lucide="file-text" class="h-4 w-4"></i>
+                <span>Documento de Investigación</span>
+            </div>
+            <h2 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Análisis Técnico del Mercado Laboral RD</h2>
+            <p class="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-600">
+                Investigación profunda sobre las fuentes de datos de empleo dominicanas, obstáculos institucionales y la arquitectura propuesta para replicar el modelo de Karpathy en el contexto local.
+            </p>
+            <div class="mt-8 flex flex-wrap justify-center gap-4 text-sm text-slate-500">
+                <span class="flex items-center gap-1.5"><i data-lucide="database" class="h-4 w-4"></i> Fuentes de datos ONE, MAP, TSS</span>
+                <span class="flex items-center gap-1.5"><i data-lucide="bot" class="h-4 w-4"></i> Pipeline de IA scoring</span>
+                <span class="flex items-center gap-1.5"><i data-lucide="layout" class="h-4 w-4"></i> Arquitectura del MVP</span>
+            </div>
+            <button onclick="openResearchOverlay()" class="mt-10 inline-flex items-center gap-3 rounded-2xl bg-indigo-600 px-8 py-4 text-lg font-bold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all hover:scale-105 active:scale-95">
+                <i data-lucide="book-open" class="h-5 w-5"></i>
+                Ver Investigación Completa
+            </button>
+        </div>
+    </section>
+
+    <!-- Research Overlay -->
+    <div id="research-overlay" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeResearchOverlay()"></div>
+        <div class="relative z-10 mx-auto flex h-full max-w-4xl flex-col p-4 sm:p-8">
+            <div class="flex items-center justify-between rounded-t-2xl bg-white px-6 py-4 border-b border-slate-200">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <i data-lucide="file-text" class="h-5 w-5 text-indigo-600"></i>
+                    Investigación: Mercado Laboral RD
+                </h3>
+                <button onclick="closeResearchOverlay()" class="flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors">
+                    <i data-lucide="x" class="h-5 w-5"></i>
+                </button>
+            </div>
+            <div id="research-content" class="flex-1 overflow-y-auto rounded-b-2xl bg-white px-6 py-8 sm:px-10"></div>
+        </div>
+    </div>
+
+    <!-- Final CTA -->
+    <section class="bg-slate-900 py-24 px-6 text-white text-center relative overflow-hidden">
+        <div class="relative z-10 mx-auto max-w-3xl">
+            <h2 class="text-4xl font-extrabold tracking-tight sm:text-5xl">¿Te sumas al equipo?</h2>
+            <p class="mt-6 text-xl text-slate-300">
+                Estamos a solo 3 días de crear la herramienta más relevante para entender la empleabilidad en RD. Confirma tu participación vía WhatsApp.
+            </p>
+            <div class="mt-12 flex flex-col items-center gap-6">
+                <button onclick="openWhatsApp()" class="group flex items-center gap-4 rounded-full bg-white px-12 py-6 text-2xl font-extrabold text-slate-900 shadow-2xl hover:bg-slate-100 transition-all hover:scale-105 active:scale-95">
+                    <i data-lucide="message-circle" class="h-8 w-8 text-green-600"></i>
+                    Confirmar mi Asistencia
+                </button>
+                <div class="flex items-center gap-3 text-slate-400">
+                    <i data-lucide="alert-circle" class="h-5 w-5"></i>
+                    <p class="text-sm font-medium">Coordinación inmediata vía grupo de trabajo.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Blobs decorativos fondo CTA -->
+        <div class="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-blue-600/20 blur-[100px]"></div>
+        <div class="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-indigo-600/20 blur-[100px]"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white py-12 px-6 border-t border-slate-200">
+        <div class="mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-2 font-bold text-slate-400">
+                <i data-lucide="bar-chart-3" class="h-5 w-5"></i>
+                <span>RD Job Market MVP 2026</span>
+            </div>
+            <p class="text-sm text-slate-500">
+                Inspirado en <a href="https://karpathy.ai/jobs/" class="font-bold text-blue-600 underline">karpathy.ai</a> | Basado en datos abiertos de RD.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Inicializar Iconos Lucide
+        lucide.createIcons();
+
+        // Configuración de WhatsApp
+        function openWhatsApp() {
+            const phoneNumber = "12245155867";
+            const message = "¡Hola! Me gustaría unirme a las sesiones de trabajo para el MVP de RD Job Visualizer. Estoy disponible para colaborar antes de este viernes 20.";
+            const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+
+        // Contador regresivo
+        function updateCountdown() {
+            const targetDate = new Date('2026-03-20T23:59:59').getTime();
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                document.getElementById('countdown').innerHTML = "<p class='text-2xl font-bold text-blue-600'>¡EL SPRINT HA COMENZADO!</p>";
+                return;
+            }
+
+            const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = d.toString().padStart(2, '0');
+            document.getElementById('hours').innerText = h.toString().padStart(2, '0');
+            document.getElementById('minutes').innerText = m.toString().padStart(2, '0');
+            document.getElementById('seconds').innerText = s.toString().padStart(2, '0');
+        }
+
+        // Actualizar cada segundo
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // Research overlay
+        let researchRendered = false;
+        function openResearchOverlay() {
+            if (!researchRendered) {
+                const md = document.getElementById('research-md').textContent;
+                document.getElementById('research-content').innerHTML = marked.parse(md);
+                researchRendered = true;
+            }
+            document.getElementById('research-overlay').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons();
+        }
+        function closeResearchOverlay() {
+            document.getElementById('research-overlay').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeResearchOverlay();
+        });
+    </script>
+
+    <script id="research-md" type="text/markdown">
+**Análisis Técnico de Fuentes de Datos de Empleo en la República Dominicana y Arquitectura de Datos para un MVP de Visualización basado en el Modelo de Karpathy**
+
+El ecosistema de datos laborales en la República Dominicana se encuentra en una fase de transición crítica, impulsada por la Política Nacional de Datos Abiertos y la digitalización de los servicios gubernamentales. Al analizar la iniciativa de Andrej Karpathy, el "US Job Market Visualizer", se observa un paradigma replicable que utiliza la inteligencia artificial para interpretar la complejidad de las descripciones ocupacionales y transformarlas en métricas accionables. Este informe detalla una investigación profunda sobre las fuentes de datos dominicanas, los mecanismos de acceso técnico, los obstáculos institucionales y la propuesta de arquitectura para un Producto Mínimo Viable (MVP) que pueda ser desarrollado de manera acelerada utilizando Claude Code antes de la fecha límite establecida.
+
+## El Referente Técnico: El Sistema de Karpathy y su Pipeline de Datos
+
+El repositorio karpathy/jobs no es simplemente una herramienta de visualización; es un pipeline de ingeniería de datos de extremo a extremo que demuestra cómo tratar información gubernamental semiestructurada. Su arquitectura se desglosa en capas de adquisición, normalización, análisis cualitativo y representación visual.
+
+### Estructura de la Ingesta y el Scraping de Alta Resistencia
+
+La adquisición de datos en el proyecto de Karpathy se realiza mediante scrape.py, un script que emplea Playwright para interactuar con el Occupational Outlook Handbook de la Oficina de Estadísticas Laborales de EE. UU. (BLS). El análisis del código revela que el uso de Playwright en modo "no-headless" es una respuesta directa a los sistemas de detección de bots que emplean los portales oficiales. Esta es una lección fundamental para el contexto dominicano, donde portales como "RD Trabaja" presentan dependencias dinámicas de JavaScript que bloquean los extractores de datos tradicionales.
+
+| **Componente del Pipeline** | **Herramienta Utilizada** | **Función Técnica** |
+|-----------------------------|---------------------------|---------------------------------------------------------------------|
+| **Extracción** | Playwright (Chromium) | Navegación dinámica y descarga de HTML en modo no-headless. |
+| **Limpieza** | BeautifulSoup | Conversión de HTML ruidoso (~40MB) a Markdown estructurado. |
+| **Análisis** | OpenRouter (Gemini Flash) | Puntuación de "Exposición a la IA" mediante prompts especializados. |
+| **Persistencia** | Archivos JSON y CSV | Almacenamiento de metadatos ocupacionales y estadísticas base. |
+| **Visualización** | HTML/JS (Treemap) | Renderizado estático basado en el volumen de empleo y capas de color. |
+
+### La Lógica de Puntuación de IA y Enriquecimiento Cualitativo
+
+El núcleo analítico reside en score.py, que utiliza modelos de lenguaje (LLM) para asignar una puntuación de 0 a 10 a cada ocupación. La lógica subyacente no busca predecir el reemplazo del trabajador, sino el grado en que la naturaleza de las tareas será "reformada" por herramientas digitales. El sistema clasifica las tareas según su producto final: si el producto es fundamentalmente digital (informes, código, análisis), la exposición es intrínsecamente alta.
+
+Esta distinción es vital para la República Dominicana, donde una gran parte de la fuerza laboral se encuentra en sectores de servicios y turismo. Estos sectores, según la rúbrica de Karpathy, poseen un "amortiguador" natural contra la IA debido a la necesidad de presencia física y habilidades manuales en entornos impredecibles.
+
+## Ecosistema de Datos Laborales en la República Dominicana: Instituciones y Acceso
+
+La investigación identifica tres grandes pilares de datos en el país: el repositorio central de datos abiertos, los portales transaccionales del Ministerio de Trabajo y la infraestructura de las cámaras de comercio y tecnología.
+
+### El Portal Nacional de Datos Abiertos (datos.gob.do)
+
+Bajo la rectoría de la Dirección General de Ética e Integridad Gubernamental (DIGEIG) y el apoyo técnico de la OGTIC, este portal centraliza los conjuntos de datos de 210 instituciones certificadas bajo la norma NORTIC A3.
+
+| **Institución Fuente** | **Tipos de Datos Disponibles** | **Formatos de Acceso** |
+|------------------------------------------------|------------------------------------------------------------------|------------------------|
+| **Ministerio de Trabajo** | Datos sobre registro de empresas y estadísticas de empleo. | CSV, JSON, XLSX. |
+| **Oficina Nacional de Estadística (ONE)** | Demografía empresarial formal, proyecciones de población y ENFT. | CSV, ODS, XLSX. |
+| **Ministerio de Administración Pública (MAP)** | Vacantes de carrera administrativa y nómina pública. | JSON, CSV, XML. |
+| **Tesorería de la Seguridad Social (TSS)** | Empleadores cotizantes y trabajadores activos por sector. | ODS, CSV. |
+
+El acceso a través de datos.gob.do es generalmente abierto y sin paywalls, cumpliendo con la Ley 200-04 de Libre Acceso a la Información Pública. Sin embargo, la actualización de los datos es trimestral en muchos casos, lo que representa un obstáculo para un visualizador que requiera datos en tiempo real.
+
+### El Ministerio de Trabajo y el Sistema RD Trabaja
+
+El portal "RD Trabaja" (antiguo Empléate Ya) es la fuente más granular para vacantes activas del sector privado. Con más de 13,000 empresas y 690,000 candidatos, es el termómetro directo del mercado laboral.
+
+El análisis técnico de este portal revela una arquitectura de Aplicación de Página Única (SPA). La dependencia de JavaScript para renderizar las vacantes implica que un MVP debe integrar herramientas de automatización de navegador en su capa de ingesta. Aunque existe una referencia a una API de intercambio (webapi.mt.gob.do), su acceso parece estar restringido a integraciones institucionales, obligando a los desarrolladores independientes a recurrir a técnicas de scraping ético bajo las normativas de la OGTIC.
+
+### Organizaciones Gremiales y la Cámara TIC RD
+
+La Cámara Dominicana de las Tecnologías de la Información y Comunicación (Cámara TIC) representa un punto de acceso estratégico para datos sobre empresas tecnológicas. Aunque su sitio web no ofrece un API de empleos, su red de 102 empresas asociadas y su participación en la Agenda Digital 2030 los posiciona como proveedores de perfiles de alta demanda tecnológica.
+
+La investigación sobre otras "Cámaras" arroja resultados diversos:
+
+- **Cámara de Comercio y Producción de Santo Domingo (CCPSD):** Gestiona el Registro Mercantil y posee directorios de empresas formales, incluyendo un directorio especializado de "Empresas Mujer". El acceso a datos detallados a menudo requiere membresía o trámites administrativos, aunque la consulta de transacciones es pública.
+
+- **Fedocámaras:** Centraliza la información de las cámaras provinciales, permitiendo mapear la distribución geográfica de la actividad comercial.
+
+- **Adofintech:** Agrupa a 95 entidades del sector financiero tecnológico, proveyendo una lista curada de empresas donde la exposición a la IA es máxima.
+
+## Obstáculos Técnicos, Paywalls y Barreras de Datos
+
+A pesar del marco legal favorable, la implementación de un sistema automatizado enfrenta barreras técnicas y operativas significativas en el contexto dominicano.
+
+### Desafíos de Extracción y Formato
+
+Muchos de los datos más valiosos sobre el mercado laboral rural y las pymes se encuentran atrapados en informes PDF o documentos de "memoria institucional". Por ejemplo, los estudios sectoriales de minería y construcción de la ONE o el Ministerio de Educación requieren una capa de procesamiento de lenguaje natural (NLP) avanzada para extraer tablas y perfiles de competencias.
+
+| **Obstáculo Detectado** | **Descripción del Problema** | **Impacto en el MVP** |
+|--------------------------|-------------------------------------------------------------------------|--------------------------------------------------------------------|
+| **Renderizado SPA** | RD Trabaja requiere JavaScript activo para mostrar vacantes. | Inhabilita el uso de librerías simples como Requests. |
+| **Bot Detection** | Los sitios gubernamentales bloquean el acceso masivo automatizado. | Obliga al uso de proxies rotativos y modos no-headless. |
+| **Fragmentación** | Los datos de nómina, vacantes y demografía están en portales distintos. | Aumenta la complejidad de la lógica de agregación. |
+| **Paywalls de LinkedIn** | LinkedIn DR restringe la exportación masiva de datos laborales. | Limita la profundidad de los insights sobre salarios competitivos. |
+
+### Barreras Éticas y Legales en el Scraping
+
+El scraping de portales como Aldaba o Buscojobs debe realizarse respetando el archivo robots.txt y los términos de servicio para evitar riesgos legales. Aldaba, en particular, ofrece un feed RSS que constituye un método de acceso "amigable" y legal para capturar vacantes recientes sin sobrecargar sus servidores.
+
+## Arquitectura de Datos Propuesta para el MVP mediante Claude Code
+
+Para cumplir con el plazo de entrega del viernes, se propone una arquitectura ágil que apalanque las capacidades de generación de código y orquestación de Claude Code.
+
+### El Proceso de Desarrollo con Claude Code y MCP
+
+El uso de Claude Code, integrado con Model Context Protocol (MCP), permite una velocidad de desarrollo sin precedentes al conectar el terminal con herramientas como GitHub, Figma y bases de datos en la nube.
+
+### Cronograma de Implementación (Sprint de 5 Días)
+
+1. **Día 1: Definición y Scaffolding.** Utilizar Claude para generar el Documento de Requisitos del Producto (PRD) y configurar el entorno de desarrollo con uv.
+
+2. **Día 2: Ingesta de Datos Abiertos.** Automatizar la descarga de datasets de datos.gob.do (ONE y MAP) para establecer la base demográfica.
+
+3. **Día 3: Scraping Dinámico y RSS.** Implementar los extractores para "RD Trabaja" (usando Playwright) y el parser de RSS para "Aldaba".
+
+4. **Día 4: Enriquecimiento con Claude API.** Enviar las descripciones de puestos a Claude para la puntuación de exposición a la IA, adaptando la rúbrica de Karpathy al español y al contexto local.
+
+5. **Día 5: Frontend de Visualización y Despliegue.** Generar el treemap interactivo en React/D3.js y desplegar el MVP.
+
+### Componentes de la Arquitectura del Sistema
+
+La arquitectura propuesta es modular y desacoplada, siguiendo las mejores prácticas de ingeniería de software para proyectos impulsados por IA.
+
+**Capa de Adquisición (Ingestión)**
+
+Se utilizarán dos vías: una pasiva para archivos estáticos de la ONE y una activa mediante Playwright para sitios dinámicos. La integración con MCP permitirá a Claude Code monitorear el estado de los scripts de ingesta y corregir fallos en los selectores CSS de forma automática.
+
+**Capa de Procesamiento y Análisis**
+
+Los datos recolectados se normalizarán a un formato Markdown antes de ser procesados por el motor de scoring. A diferencia del modelo original, se incluirá una métrica de "Brecha Lingüística", dado que el dominio del inglés es un factor determinante en la empleabilidad tecnológica dominicana.
+
+| **Capa de Arquitectura** | **Tecnología** | **Justificación Técnica** |
+|--------------------------|------------------------|--------------------------------------------------------------------|
+| **Backend de Control** | Claude Code CLI | Orquestación rápida y manejo de contexto de todo el repositorio. |
+| **Runtime de Python** | uv | Gestión de dependencias ultra-rápida y entornos aislados. |
+| **Agente de Scraping** | Playwright | Capacidad de navegar SPAs y evadir bloqueos básicos. |
+| **Motor de Análisis** | Claude 3.5 Sonnet | Superioridad en razonamiento cualitativo y generación de racional. |
+| **Base de Datos MVP** | Archivos JSON / SQLite | Simplicidad para un despliegue antes del viernes. |
+| **Interfaz de Usuario** | React + V0.dev | Generación acelerada de UI basada en el prototipo de Karpathy. |
+
+## Análisis Profundo de las Fuentes de Datos del Gobierno Dominicano
+
+La robustez del MVP dependerá de la calidad de la integración con los datos oficiales. La República Dominicana posee un marco institucional sólido para la producción de estas estadísticas.
+
+### La Oficina Nacional de Estadística (ONE) y la Demografía Laboral
+
+La ONE es el cimiento de cualquier análisis de mercado. Sus datos permiten ponderar el área de los mosaicos en el treemap. La Encuesta Nacional de Fuerza de Trabajo (ENFT), realizada desde 1986, provee la serie histórica necesaria para entender los ciclos de empleo.
+
+Un insight crítico derivado de los microdatos de la ONE es la prevalencia de la informalidad (58%), lo que sugiere que los portales de empleo solo capturan una fracción del mercado total. El MVP debe aclarar en sus notas que la visualización se refiere principalmente al mercado formal, que es donde la IA tendrá un impacto directo inicial.
+
+### El Ministerio de Administración Pública y el Portal Concursa
+
+El portal Concursa es la ventana a la burocracia estatal. Sus anuncios de vacantes son extremadamente detallados y ofrecen un excelente material para el análisis de IA, ya que incluyen descripciones de cargos, responsabilidades y competencias específicas. Estos documentos, a menudo en formato PDF, pueden ser procesados eficientemente por Claude para extraer las tareas que son susceptibles de automatización administrativa.
+
+### El Rol de las Cámaras en el Ecosistema Tecnológico
+
+Las cámaras no son solo fuentes de datos, sino validadores de las tendencias que el visualizador intentará mapear.
+
+**Cámara TIC: El Catalizador del Sector Digital**
+
+La Cámara TIC ha sido vocal sobre el impacto de la automatización y la robótica en la fuerza laboral dominicana. Su involucramiento en el V Plan de Acción de Gobierno Abierto subraya su compromiso con la transparencia y la apertura de datos. Para el MVP, la Cámara TIC puede proveer el "Directorio de Socios", permitiendo crear una capa de visualización específica para las empresas que lideran la transformación digital en el país.
+
+**Cámaras de Comercio y el Registro Mercantil**
+
+La Cámara de Comercio de Santo Domingo es el epicentro de la información corporativa. Su base de datos del Registro Mercantil permite identificar el tamaño de las empresas por capital social y sector, lo cual es una variable de entrada crucial para el visualizador. Aunque el acceso masivo está limitado, los extractos públicos y los directorios temáticos (como el de empresas de mujeres) ofrecen puntos de datos valiosos para el enriquecimiento del mapa.
+
+## Factores Críticos para el Éxito del MVP antes del Viernes
+
+El desarrollo de este sistema bajo presión de tiempo requiere una simplificación estratégica sin sacrificar la integridad técnica.
+
+### Estrategia de Ingesta Acelerada
+
+En lugar de intentar scrapear todos los portales simultáneamente, el MVP debe centrarse en:
+
+1. **Datos Abiertos del MAP:** Por su alta estructuración y disponibilidad en JSON/CSV.
+
+2. **Feed RSS de Aldaba:** Para obtener una muestra representativa de vacantes del sector privado de forma inmediata.
+
+3. **Datasets Históricos de la ONE:** Para establecer el peso visual del treemap basándose en la última Encuesta de Fuerza de Trabajo.
+
+### Implementación de la Capa de IA con Claude Code
+
+Claude Code facilita la creación de la lógica de "Model-as-a-Judge". Se puede programar a Claude para que lea los archivos Markdown generados por BeautifulSoup y devuelva un objeto JSON con la puntuación de exposición y el racional técnico. Esta técnica reduce el tiempo de desarrollo de la lógica de negocio de días a horas.
+
+### Visualización Adaptada al Contexto Dominicano
+
+El treemap no debe limitarse a las categorías de la BLS de EE. UU. Se debe adaptar a la Clasificación Nacional de Ocupaciones (CNO) de la República Dominicana. El MVP presentará capas de:
+
+- **Sector Económico:** Turismo, Agroindustria, Servicios, TIC.
+
+- **Ubicación Geográfica:** Concentración en el Gran Santo Domingo vs. Provincias.
+
+- **Riesgo de IA:** Basado en la digitalización de la tarea.
+
+### Consideraciones sobre la Calidad y Veracidad de los Datos
+
+Es fundamental comunicar al usuario final que las puntuaciones de exposición a la IA son estimaciones de modelos de lenguaje y no predicciones económicas definitivas. La brecha entre la capacidad técnica de la IA y su adopción real en las empresas dominicanas puede ser amplia, debido a factores de infraestructura y costos de cómputo.
+
+Un insight de segundo orden es que, mientras los desarrolladores de software tienen una alta exposición teórica (9/10), el mercado dominicano muestra una demanda creciente por estos perfiles, lo que sugiere que la IA está expandiendo las posibilidades del rol en lugar de eliminarlo.
+
+## Conclusiones y Recomendaciones para la Ejecución del MVP
+
+La construcción de un visualizador del mercado laboral dominicano inspirado en Karpathy es una meta ambiciosa pero lograble para este viernes mediante el uso de Claude Code. La clave reside en la integración inteligente de fuentes gubernamentales de datos abiertos con técnicas de captura de vacantes en tiempo real.
+
+### Pasos Inmediatos para el Equipo de Desarrollo
+
+1. **Activación de Claude Code:** Iniciar el scaffolding del proyecto React/Next.js y conectar los MCP de GitHub y base de datos.
+
+2. **Priorización de Fuentes:** Centrarse en datos.gob.do para la estructura y el feed RSS de Aldaba para la frescura de los datos.
+
+3. **Configuración de Playwright:** Implementar el scraper para RD Trabaja utilizando el modo no-headless para asegurar la persistencia de la conexión.
+
+4. **Calibración del Rubric de IA:** Ajustar el prompt de Claude para considerar las particularidades del mercado laboral dominicano, como la informalidad y la brecha digital.
+
+Al finalizar la semana, el MVP proporcionará una herramienta visual poderosa para que tanto buscadores de empleo como analistas de políticas públicas comprendan cómo la revolución de la inteligencia artificial está reconfigurando el tejido productivo de la República Dominicana.
+    </script>
+</body>
+</html>
