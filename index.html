@@ -53,7 +53,7 @@
                 <a href="#tech" class="text-sm font-medium hover:text-blue-600 transition-colors">Tecnología</a>
                 <a href="#investigacion" class="text-sm font-medium hover:text-blue-600 transition-colors">Investigación</a>
             </div>
-            <button onclick="openWhatsApp()" class="rounded-full bg-blue-600 px-6 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all active:scale-95 flex items-center gap-2">
+            <button onclick="openSignupForm()" class="rounded-full bg-blue-600 px-6 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all active:scale-95 flex items-center gap-2">
                 <i data-lucide="message-circle" class="h-4 w-4"></i>
                 Unirme Ahora
             </button>
@@ -65,14 +65,14 @@
         <div class="mx-auto max-w-7xl text-center">
             <div class="inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10 mb-8">
                 <i data-lucide="zap" class="h-4 w-4"></i>
-                <span>Hackathon Sprint: Edición MVP</span>
+                <span>Challenge Semanal: Edición MVP</span>
             </div>
             <h1 class="text-5xl font-extrabold tracking-tight text-slate-900 sm:text-7xl">
                 Visualicemos el Futuro de <br>
                 <span class="gradient-text italic">RD Trabaja</span>
             </h1>
             <p class="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-600">
-                Basándonos en la arquitectura de <strong>Andrej Karpathy</strong>, estamos construyendo el visualizador de empleos definitivo para la República Dominicana. Necesitamos tu talento para llegar a la meta este viernes.
+                Basándonos en la arquitectura de <strong>Andrej Karpathy</strong>, estamos construyendo el visualizador de empleos definitivo para la República Dominicana. Necesitamos tu talento para llegar a la meta el viernes 27 de marzo.
             </p>
 
             <!-- Countdown Timer -->
@@ -96,14 +96,14 @@
             </div>
 
             <div class="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <button onclick="openWhatsApp()" class="group flex items-center gap-3 rounded-2xl bg-slate-900 px-10 py-5 text-xl font-bold text-white shadow-2xl hover:bg-slate-800 transition-all hover:scale-105 active:scale-95">
+                <button onclick="openSignupForm()" class="group flex items-center gap-3 rounded-2xl bg-slate-900 px-10 py-5 text-xl font-bold text-white shadow-2xl hover:bg-slate-800 transition-all hover:scale-105 active:scale-95">
                     <i data-lucide="message-circle" class="h-6 w-6"></i>
-                    Participar en Sesiones
+                    Participar en el Challenge
                     <i data-lucide="arrow-right" class="h-5 w-5 transition-transform group-hover:translate-x-1"></i>
                 </button>
                 <div class="text-left px-4">
-                    <p class="text-sm font-medium text-slate-500">Próxima sesión:</p>
-                    <p class="text-slate-900 font-bold">Mañana 9:00 AM AST</p>
+                    <p class="text-sm font-medium text-slate-500">Entrega final:</p>
+                    <p class="text-slate-900 font-bold">Viernes 27 de Marzo</p>
                 </div>
             </div>
         </div>
@@ -166,56 +166,72 @@
     <section id="roadmap" class="bg-slate-50 py-24 px-6">
         <div class="mx-auto max-w-4xl">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-slate-900">Sprint de 72 Horas</h2>
-                <p class="mt-4 text-slate-600 text-lg">Cronograma intensivo para el lanzamiento del Viernes 20</p>
+                <h2 class="text-4xl font-bold text-slate-900">Challenge de 1 Semana</h2>
+                <p class="mt-4 text-slate-600 text-lg">Presentación en el desayuno &rarr; una semana para construir &rarr; entrega el Viernes 27</p>
             </div>
 
             <div class="space-y-8">
-                <!-- Miércoles -->
+                <!-- Desayuno / Kickoff -->
+                <div class="group flex gap-6 rounded-2xl bg-white p-8 shadow-sm border border-slate-100 transition-all hover:border-blue-200 hover:shadow-xl">
+                    <div class="flex h-14 w-14 items-center justify-center rounded-full bg-amber-100 text-amber-600 group-hover:scale-110 transition-transform">
+                        <i data-lucide="coffee" class="h-7 w-7"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm font-bold uppercase text-amber-600 tracking-wider">Desayuno Kickoff</span>
+                            <span class="h-1 w-1 rounded-full bg-slate-300"></span>
+                            <span class="rounded-full bg-amber-50 px-2.5 py-1 text-[10px] font-bold text-amber-700 uppercase">Lanzamiento</span>
+                        </div>
+                        <h3 class="mt-1 text-2xl font-bold text-slate-900">Presentación de la Propuesta</h3>
+                        <p class="mt-2 text-slate-600 leading-relaxed text-lg">Se presenta el challenge al equipo durante el desayuno. Se comparten las reglas, objetivos y recursos disponibles.</p>
+                    </div>
+                </div>
+
+                <!-- Lun-Mié: Ingesta -->
                 <div class="group flex gap-6 rounded-2xl bg-white p-8 shadow-sm border border-slate-100 transition-all hover:border-blue-200 hover:shadow-xl">
                     <div class="flex h-14 w-14 items-center justify-center rounded-full bg-blue-100 text-blue-600 group-hover:scale-110 transition-transform">
                         <i data-lucide="database" class="h-7 w-7"></i>
                     </div>
                     <div>
                         <div class="flex items-center gap-3">
-                            <span class="text-sm font-bold uppercase text-blue-600 tracking-wider">Miércoles 18</span>
+                            <span class="text-sm font-bold uppercase text-blue-600 tracking-wider">Lun 23 &ndash; Mié 25</span>
                             <span class="h-1 w-1 rounded-full bg-slate-300"></span>
                             <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold text-slate-600 uppercase">Fase 1</span>
                         </div>
-                        <h3 class="mt-1 text-2xl font-bold text-slate-900">Ingesta y Scraping</h3>
-                        <p class="mt-2 text-slate-600 leading-relaxed text-lg">Activación de scrapers Playwright para el portal RD Trabaja y limpieza de microdatos de la ONE y Banco Central.</p>
+                        <h3 class="mt-1 text-2xl font-bold text-slate-900">Ingesta, Scraping & IA Scoring</h3>
+                        <p class="mt-2 text-slate-600 leading-relaxed text-lg">Activación de scrapers Playwright para RD Trabaja, limpieza de microdatos de la ONE y clasificación de puestos con Claude Code.</p>
                     </div>
                 </div>
 
-                <!-- Jueves -->
+                <!-- Jue-Vie: Visualización -->
                 <div class="group flex gap-6 rounded-2xl bg-white p-8 shadow-sm border border-slate-100 transition-all hover:border-blue-200 hover:shadow-xl">
                     <div class="flex h-14 w-14 items-center justify-center rounded-full bg-blue-100 text-blue-600 group-hover:scale-110 transition-transform">
-                        <i data-lucide="zap" class="h-7 w-7"></i>
+                        <i data-lucide="layout" class="h-7 w-7"></i>
                     </div>
                     <div>
                         <div class="flex items-center gap-3">
-                            <span class="text-sm font-bold uppercase text-blue-600 tracking-wider">Jueves 19</span>
+                            <span class="text-sm font-bold uppercase text-blue-600 tracking-wider">Jue 26 &ndash; Vie 27</span>
                             <span class="h-1 w-1 rounded-full bg-slate-300"></span>
                             <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold text-slate-600 uppercase">Fase 2</span>
                         </div>
-                        <h3 class="mt-1 text-2xl font-bold text-slate-900">IA Scoring & Análisis</h3>
-                        <p class="mt-2 text-slate-600 leading-relaxed text-lg">Clasificación masiva de puestos usando Claude Code y arquitectura de agentes para determinar exposición a la IA.</p>
+                        <h3 class="mt-1 text-2xl font-bold text-slate-900">Visualización & Presentación MVP</h3>
+                        <p class="mt-2 text-slate-600 leading-relaxed text-lg">Construcción del treemap interactivo D3.js, pulido de la interfaz y publicación de resultados para la comunidad.</p>
                     </div>
                 </div>
 
-                <!-- Viernes -->
+                <!-- Viernes entrega -->
                 <div class="group flex gap-6 rounded-2xl bg-white p-8 shadow-sm border border-slate-100 transition-all hover:border-blue-200 hover:shadow-xl">
-                    <div class="flex h-14 w-14 items-center justify-center rounded-full bg-blue-100 text-blue-600 group-hover:scale-110 transition-transform">
+                    <div class="flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-green-600 group-hover:scale-110 transition-transform">
                         <i data-lucide="globe" class="h-7 w-7"></i>
                     </div>
                     <div>
                         <div class="flex items-center gap-3">
-                            <span class="text-sm font-bold uppercase text-blue-600 tracking-wider">Viernes 20</span>
+                            <span class="text-sm font-bold uppercase text-green-600 tracking-wider">Viernes 27</span>
                             <span class="h-1 w-1 rounded-full bg-slate-300"></span>
-                            <span class="rounded-full bg-green-100 px-2.5 py-1 text-[10px] font-bold text-green-700 uppercase">Lanzamiento</span>
+                            <span class="rounded-full bg-green-100 px-2.5 py-1 text-[10px] font-bold text-green-700 uppercase">Entrega Final</span>
                         </div>
-                        <h3 class="mt-1 text-2xl font-bold text-slate-900">Presentación MVP</h3>
-                        <p class="mt-2 text-slate-600 leading-relaxed text-lg">Pulido de la interfaz interactiva y publicación de resultados para la comunidad tecnológica de RD.</p>
+                        <h3 class="mt-1 text-2xl font-bold text-slate-900">Demo Day</h3>
+                        <p class="mt-2 text-slate-600 leading-relaxed text-lg">Presentación del MVP terminado. Entrega de resultados y demostración en vivo del visualizador.</p>
                     </div>
                 </div>
             </div>
@@ -303,14 +319,14 @@
     <!-- Final CTA -->
     <section class="bg-slate-900 py-24 px-6 text-white text-center relative overflow-hidden">
         <div class="relative z-10 mx-auto max-w-3xl">
-            <h2 class="text-4xl font-extrabold tracking-tight sm:text-5xl">¿Te sumas al equipo?</h2>
+            <h2 class="text-4xl font-extrabold tracking-tight sm:text-5xl">¿Te sumas al challenge?</h2>
             <p class="mt-6 text-xl text-slate-300">
-                Estamos a solo 3 días de crear la herramienta más relevante para entender la empleabilidad en RD. Confirma tu participación vía WhatsApp.
+                Tienes una semana para construir la herramienta más relevante para entender la empleabilidad en RD. Inscríbete y coordina vía WhatsApp.
             </p>
             <div class="mt-12 flex flex-col items-center gap-6">
-                <button onclick="openWhatsApp()" class="group flex items-center gap-4 rounded-full bg-white px-12 py-6 text-2xl font-extrabold text-slate-900 shadow-2xl hover:bg-slate-100 transition-all hover:scale-105 active:scale-95">
+                <button onclick="openSignupForm()" class="group flex items-center gap-4 rounded-full bg-white px-12 py-6 text-2xl font-extrabold text-slate-900 shadow-2xl hover:bg-slate-100 transition-all hover:scale-105 active:scale-95">
                     <i data-lucide="message-circle" class="h-8 w-8 text-green-600"></i>
-                    Confirmar mi Asistencia
+                    Inscribirme al Challenge
                 </button>
                 <div class="flex items-center gap-3 text-slate-400">
                     <i data-lucide="alert-circle" class="h-5 w-5"></i>
@@ -323,6 +339,41 @@
         <div class="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-blue-600/20 blur-[100px]"></div>
         <div class="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-indigo-600/20 blur-[100px]"></div>
     </section>
+
+    <!-- Signup Form Overlay -->
+    <div id="signup-overlay" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeSignupForm()"></div>
+        <div class="relative z-10 mx-auto flex h-full items-center justify-center p-4">
+            <div class="w-full max-w-lg rounded-2xl bg-white shadow-2xl">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+                    <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <i data-lucide="user-plus" class="h-5 w-5 text-blue-600"></i>
+                        Inscripción al Challenge
+                    </h3>
+                    <button onclick="closeSignupForm()" class="flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors">
+                        <i data-lucide="x" class="h-5 w-5"></i>
+                    </button>
+                </div>
+                <form id="signup-form" onsubmit="handleSignupSubmit(event)" class="p-6 space-y-5">
+                    <div>
+                        <label for="signup-name" class="block text-sm font-semibold text-slate-700 mb-1.5">Nombre completo</label>
+                        <input type="text" id="signup-name" required placeholder="Ej: María Pérez Rodríguez"
+                            class="w-full rounded-xl border border-slate-200 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all">
+                    </div>
+                    <div>
+                        <label for="signup-impact" class="block text-sm font-semibold text-slate-700 mb-1.5">¿Cómo crees que puedes impactar positivamente en este challenge y qué traes a la mesa?</label>
+                        <textarea id="signup-impact" required rows="4" placeholder="Ej: Tengo experiencia en scraping con Python y puedo ayudar con la ingesta de datos de portales gubernamentales..."
+                            class="w-full rounded-xl border border-slate-200 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all resize-none"></textarea>
+                    </div>
+                    <button type="submit" class="w-full flex items-center justify-center gap-3 rounded-xl bg-green-600 px-6 py-4 text-lg font-bold text-white shadow-lg shadow-green-200 hover:bg-green-700 transition-all active:scale-95">
+                        <i data-lucide="send" class="h-5 w-5"></i>
+                        Continuar a WhatsApp
+                    </button>
+                    <p class="text-xs text-slate-400 text-center">Al continuar, se abrirá WhatsApp con tu información para coordinar con el equipo.</p>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="bg-white py-12 px-6 border-t border-slate-200">
@@ -341,17 +392,31 @@
         // Inicializar Iconos Lucide
         lucide.createIcons();
 
-        // Configuración de WhatsApp
-        function openWhatsApp() {
+        // Signup form
+        function openSignupForm() {
+            document.getElementById('signup-overlay').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons();
+            document.getElementById('signup-name').focus();
+        }
+        function closeSignupForm() {
+            document.getElementById('signup-overlay').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        function handleSignupSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value.trim();
+            const impact = document.getElementById('signup-impact').value.trim();
             const phoneNumber = "12245155867";
-            const message = "¡Hola! Me gustaría unirme a las sesiones de trabajo para el MVP de RD Job Visualizer. Estoy disponible para colaborar antes de este viernes 20.";
+            const message = `¡Hola! Soy *${name}* y quiero inscribirme en el Challenge RD Job Visualizer (entrega: viernes 27 de marzo).\n\n*¿Qué traigo a la mesa?*\n${impact}`;
             const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
             window.open(url, '_blank');
+            closeSignupForm();
         }
 
         // Contador regresivo
         function updateCountdown() {
-            const targetDate = new Date('2026-03-20T23:59:59').getTime();
+            const targetDate = new Date('2026-03-27T23:59:59').getTime();
             const now = new Date().getTime();
             const distance = targetDate - now;
 
@@ -392,7 +457,10 @@
             document.body.style.overflow = '';
         }
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeResearchOverlay();
+            if (e.key === 'Escape') {
+                closeResearchOverlay();
+                closeSignupForm();
+            }
         });
     </script>
 
