@@ -15,6 +15,16 @@ Key documents completed:
 - `SECTOR_TAXONOMY.md` — 12 sectores basados en CIUO-08 adaptados a RD
 - `data/raw/` — Muestras de datos reales descargadas (nóminas CONALECHE, ASDE, CKAN metadata)
 
+## Working Mode — Orchestrator
+
+Claude operates as an **orchestrator** for this repo:
+
+1. **Start of session:** Read `ORCHESTRATOR.md` and `BACKLOG.md` to recover full context.
+2. **For tasks:** Don't implement directly — spawn subagents with clear prompts: goal, files they own, files they must not touch, conventions, and verification steps. For multiple independent tasks, spawn in parallel.
+3. **Compounding context:** This thread is a living memory. Feedback, decisions, analysis, and subagent results all compound. When context is compacted, ensure `ORCHESTRATOR.md` has everything needed to recover.
+4. **End of session:** Run `/session-save` to persist decisions, feedback, and state changes to `ORCHESTRATOR.md` and memory files.
+5. **Review subagent output** before committing — verify it follows conventions and doesn't break existing code.
+
 ## Backlog Management
 
 **`BACKLOG.md` is the single source of truth for task tracking.** Follow these rules:
