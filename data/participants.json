@@ -70,22 +70,23 @@
   {
     "id": "victor-corniel",
     "name": "Victor Corniel",
-    "headline": null,
+    "headline": "Dirección de Proyecto, BI, UX/UI",
     "current_role": null,
     "current_company": null,
     "location": null,
-    "bio": "Desarrollo, conectar puntos y gestión del proyecto.",
+    "bio": "Desarrollo, conectar puntos y gestión del proyecto. Experiencia en dirección de proyecto, BI y UX/UI.",
     "challenge_role": null,
-    "status": "interested",
-    "skills": ["desarrollo", "gestión de proyecto", "integración"],
+    "status": "confirmed",
+    "availability": "6 horas/día",
+    "skills": ["dirección de proyecto", "BI", "UX/UI", "desarrollo", "integración"],
     "socials": {
-      "linkedin": null,
+      "linkedin": "https://www.linkedin.com/in/victorcorniel",
       "github": null,
       "twitter": null,
       "website": null,
-      "email": null
+      "email": "victorcorniels@gmail.com"
     },
-    "photo_url": null,
+    "photo_url": "assets/team/victor-corniel.jpeg",
     "joined_at": "2026-03-24",
     "updated_at": "2026-03-24"
   },
