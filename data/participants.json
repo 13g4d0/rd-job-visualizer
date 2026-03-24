@@ -87,5 +87,28 @@
     "photo_url": null,
     "joined_at": "2026-03-24",
     "updated_at": "2026-03-24"
+  },
+  {
+    "id": "abel-lopez",
+    "name": "Abel López",
+    "headline": "Política pública, datos y estrategia de innovación",
+    "current_role": null,
+    "current_company": "Envision Innovation Labs",
+    "location": "República Dominicana",
+    "bio": "Coordinó la Estrategia Nacional de IA de RD (ENIA). Trabajó en MICM impactando 12,000+ MiPyMEs. Conoce de primera mano cómo los datos del mercado laboral dominicano se usan en decisiones de política pública y formación técnica.",
+    "challenge_role": null,
+    "status": "confirmed",
+    "availability": "3 horas/día (~12h total)",
+    "skills": ["Políticas Públicas", "Estrategia de IA", "Gestión de Proyecto", "UX/UI (Figma/Adobe XD)", "Contenido & Comunicación", "Claude Code"],
+    "socials": {
+      "linkedin": "https://www.linkedin.com/in/jabelg",
+      "github": "jabelg",
+      "twitter": null,
+      "website": "https://envisioninnovationlabs.com/",
+      "email": "abel.lopez@envisioninnovationlabs.com"
+    },
+    "photo_url": "assets/team/abel-lopez.jpeg",
+    "joined_at": "2026-03-24",
+    "updated_at": "2026-03-24"
   }
 ]
