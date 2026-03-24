@@ -586,27 +586,135 @@
             });
         }
 
-        function loadJSON(dataset) {
-            fetch(dataset.file)
+        // Cache for resolving concept IDs to names
+        let conceptosCache = null;
+        function loadConceptos() {
+            if (conceptosCache) return Promise.resolve(conceptosCache);
+            return fetch('data/raw/rdtrabaja/conceptos.json')
                 .then(r => r.json())
                 .then(data => {
+                    conceptosCache = {};
+                    const cats = data.conceptos || data;
+                    Object.keys(cats).forEach(key => {
+                        if (Array.isArray(cats[key])) {
+                            cats[key].forEach(item => {
+                                conceptosCache[key + ':' + item.codigo] = item.descripcion;
+                            });
+                        }
+                    });
+                    return conceptosCache;
+                })
+                .catch(() => ({}));
+        }
+
+        function flattenObject(obj, prefix) {
+            const flat = {};
+            Object.keys(obj).forEach(k => {
+                const v = obj[k];
+                if (v === null || v === undefined) flat[k] = '';
+                else if (typeof v === 'object' && !Array.isArray(v)) {
+                    const sub = flattenObject(v, k);
+                    Object.assign(flat, sub);
+                } else if (Array.isArray(v)) flat[k] = '[' + v.length + ' items]';
+                else flat[k] = String(v);
+            });
+            return flat;
+        }
+
+        function loadJSON(dataset) {
+            const filePromise = fetch(dataset.file).then(r => r.json());
+            const conceptosPromise = dataset.category === 'rdtrabaja' ? loadConceptos() : Promise.resolve({});
+
+            Promise.all([filePromise, conceptosPromise])
+                .then(([data, conceptos]) => {
                     document.getElementById('preview-loading').classList.add('hidden');
 
-                    // Handle CKAN API response structure
-                    let items = data;
-                    if (data.result && data.result.results) {
+                    let items, totalCount;
+
+                    // RD Trabaja puestos: unwrap data[].puesto and flatten
+                    if (dataset.id === 'rdtrabaja-puestos' && data.data) {
+                        items = data.data.map(d => {
+                            const flat = flattenObject(d.puesto || d, '');
+                            // Resolve IDs to names
+                            if (flat.actividadEconomica && conceptos['actividadEconomica:' + flat.actividadEconomica])
+                                flat.actividadEconomica = conceptos['actividadEconomica:' + flat.actividadEconomica] + ' (' + flat.actividadEconomica + ')';
+                            if (flat.rangoSalarial && conceptos['rangoSalarial:' + flat.rangoSalarial])
+                                flat.rangoSalarial = conceptos['rangoSalarial:' + flat.rangoSalarial] + ' (' + flat.rangoSalarial + ')';
+                            if (flat.disponibilidadHorario && conceptos['disponibilidadHorario:' + flat.disponibilidadHorario])
+                                flat.disponibilidadHorario = conceptos['disponibilidadHorario:' + flat.disponibilidadHorario];
+                            if (flat.nivelAcademico && conceptos['nivelAcademico:' + flat.nivelAcademico])
+                                flat.nivelAcademico = conceptos['nivelAcademico:' + flat.nivelAcademico];
+                            return flat;
+                        });
+                        totalCount = items.length;
+                    }
+                    // RD Trabaja conceptos: show category list with item counts
+                    else if (dataset.id === 'rdtrabaja-conceptos') {
+                        const cats = data.conceptos || data;
+                        items = Object.keys(cats).filter(k => Array.isArray(cats[k])).map(k => ({
+                            categoría: k,
+                            cantidad: cats[k].length,
+                            ejemplo: cats[k][0] ? cats[k][0].descripcion || '' : ''
+                        }));
+                        totalCount = items.length;
+                    }
+                    // RD Trabaja metadata: show as key-value
+                    else if (dataset.id === 'rdtrabaja-metadata') {
+                        items = Object.keys(data).map(k => ({
+                            métrica: k.replace(/^count/, '').replace(/([A-Z])/g, ' $1').trim(),
+                            valor: typeof data[k] === 'number' ? data[k].toLocaleString('es-DO') : String(data[k])
+                        }));
+                        totalCount = items.length;
+                    }
+                    // RD Trabaja regiones: it's a nested structure
+                    else if (dataset.id === 'rdtrabaja-regiones') {
+                        let flat = [];
+                        (Array.isArray(data) ? data : [data]).forEach(region => {
+                            if (region.provincias) {
+                                region.provincias.forEach(prov => {
+                                    flat.push({ región: region.nombre || '', provincia: prov.nombre || '', municipios: prov.municipios ? prov.municipios.length : 0 });
+                                });
+                            } else {
+                                flat.push(flattenObject(region, ''));
+                            }
+                        });
+                        items = flat;
+                        totalCount = items.length;
+                    }
+                    // RD Trabaja categorías: resolve IDs
+                    else if (dataset.id === 'rdtrabaja-categorias' && Array.isArray(data)) {
+                        items = data.map(d => ({
+                            sector: conceptos['actividadEconomica:' + d.actividadEconomica] || 'ID: ' + d.actividadEconomica,
+                            código: d.actividadEconomica,
+                            vacantes: d.cantidad
+                        }));
+                        totalCount = items.length;
+                    }
+                    // CKAN API response
+                    else if (data.result && data.result.results) {
                         items = data.result.results;
-                    } else if (Array.isArray(data)) {
+                        totalCount = items.length;
+                    }
+                    // Plain array
+                    else if (Array.isArray(data)) {
                         items = data;
+                        totalCount = items.length;
+                    }
+                    else {
+                        // Generic object — show as key-value
+                        items = Object.keys(data).map(k => ({
+                            campo: k,
+                            valor: typeof data[k] === 'object' ? JSON.stringify(data[k]).slice(0, 100) + '...' : String(data[k])
+                        }));
+                        totalCount = items.length;
                     }
 
-                    if (!Array.isArray(items) || items.length === 0) {
-                        showPreviewError('El archivo JSON no contiene datos tabulares');
+                    if (!items || items.length === 0) {
+                        showPreviewError('El archivo JSON no contiene datos visualizables');
                         return;
                     }
 
                     const preview = items.slice(0, 100);
-                    // Flatten top-level keys only
                     const headers = Object.keys(preview[0]).filter(k => {
                         const v = preview[0][k];
                         return typeof v !== 'object' || v === null;
@@ -620,7 +728,7 @@
                         return row;
                     });
 
-                    renderTable(headers, rows, items.length);
+                    renderTable(headers, rows, totalCount);
                 })
                 .catch(err => {
                     document.getElementById('preview-loading').classList.add('hidden');
