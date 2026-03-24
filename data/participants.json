@@ -43,5 +43,27 @@
     "photo_url": "assets/team/jonathan-ovalley.png",
     "joined_at": "2026-03-20",
     "updated_at": "2026-03-22"
+  },
+  {
+    "id": "carlos-miranda-levy",
+    "name": "Carlos Miranda Levy",
+    "headline": null,
+    "current_role": null,
+    "current_company": null,
+    "location": null,
+    "bio": null,
+    "challenge_role": null,
+    "status": "interested",
+    "skills": [],
+    "socials": {
+      "linkedin": null,
+      "github": null,
+      "twitter": null,
+      "website": null,
+      "email": null
+    },
+    "photo_url": null,
+    "joined_at": "2026-03-24",
+    "updated_at": "2026-03-24"
   }
 ]
