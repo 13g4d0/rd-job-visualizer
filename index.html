@@ -751,10 +751,8 @@
                         <div class="flex items-start gap-4">
                             ${photoHtml}
                             <div class="flex-1 min-w-0">
-                                <div class="flex items-center gap-2">
-                                    <h4 class="font-bold text-lg text-slate-900 truncate">${p.name}</h4>
-                                    <span class="flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${statusColors[p.status] || statusColors.pending}">${statusLabels[p.status] || p.status}</span>
-                                </div>
+                                <h4 class="font-bold text-lg text-slate-900">${p.name}</h4>
+                                <span class="inline-block mt-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${statusColors[p.status] || statusColors.pending}">${statusLabels[p.status] || p.status}</span>
                                 ${p.challenge_role ? `<p class="mt-0.5 text-sm font-semibold text-blue-600">${p.challenge_role}</p>` : ''}
                                 ${p.current_role && p.current_company ? `<p class="mt-0.5 text-xs text-slate-400">${p.current_role} @ ${p.current_company}</p>` : ''}
                             </div>
