@@ -42,7 +42,7 @@
 
 - [x] **2.1** — Fetch RD Trabaja API → `scripts/scrapers/fetch-rdtrabaja.js` + 5 JSON files en `data/raw/rdtrabaja/` (256 vacantes, conceptos, regiones, metadata, categorías). Script ejecutable con `node`.
 - [ ] **2.2** — Parser de datasets ONE (ENFT, demografía empresarial)
-- [ ] **2.3** — Script de normalización: raw → cleaned → normalized JSON
+- [x] **2.3** — Script de normalización → `scripts/processors/normalize.js` (262,154 registros de 13 fuentes). Output: `data/processed/normalized.json` (197MB, gitignored) + `data/processed/summary.json`. Ejecutar: `node scripts/processors/normalize.js`
 - [ ] **2.4** — Validación cruzada: sectores de fuentes vs taxonomía
 - [ ] **2.5** — Prototipo del treemap con datos dummy (D3.js)
 - [x] **2.6** — Paleta de colores por sector → `src/sector-colors.json` (12 sectores con hex, CIIU, icon, shortName) + `src/color-palette.html` preview con contraste WCAG.
