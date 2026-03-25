@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-03-25T03:27:07.996Z",
-  "total_records": 262154,
+  "generated_at": "2026-03-25T04:43:08.737Z",
+  "total_records": 262410,
   "date_range": {
     "min_year": 2000,
     "max_year": 2026
@@ -8,18 +8,26 @@
   "by_source": {
     "ckan": 261296,
     "tss": 816,
-    "cnzfe": 42
+    "cnzfe": 42,
+    "rdtrabaja": 256
   },
   "by_sector": {
-    "agricultura_y_agroindustria": 794,
-    "administracion_publica_y_defensa": 171927,
-    "construccion": 78828,
-    "educacion": 3910,
-    "otros_servicios": 6653,
-    "manufactura_y_zonas_francas": 42
+    "agricultura_y_agroindustria": 800,
+    "administracion_publica_y_defensa": 250755,
+    "educacion": 3916,
+    "otros_servicios": 6786,
+    "manufactura_y_zonas_francas": 68,
+    "servicios_financieros": 4,
+    "comercio": 37,
+    "transporte_y_logistica": 2,
+    "salud": 8,
+    "turismo_y_hosteleria": 24,
+    "tecnologia_y_telecomunicaciones": 2,
+    "construccion": 8
   },
   "by_record_type": {
     "position": 255833,
-    "aggregate": 6321
+    "aggregate": 6321,
+    "vacancy": 256
   }
 }

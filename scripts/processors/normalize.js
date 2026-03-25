@@ -33,7 +33,7 @@ const INSTITUTION_SECTOR = {
   'CONALECHE': 'agricultura_y_agroindustria',
   'PROPEEP': 'administracion_publica_y_defensa',
   'MAPRE': 'administracion_publica_y_defensa',
-  'MIVHED': 'construccion',
+  'MIVHED': 'administracion_publica_y_defensa',
   'INESDYC': 'educacion',
   'CORAABO': 'otros_servicios',
   'ASDE': 'administracion_publica_y_defensa',
@@ -765,6 +765,8 @@ function processRDTrabaja() {
         for (const c of raw) conceptos[c.id || c.codigo] = c.nombre || c.descripcion || '';
       } else if (raw.actividadEconomica) {
         for (const c of raw.actividadEconomica) conceptos[c.id || c.codigo] = c.nombre || c.descripcion || '';
+      } else if (raw.conceptos && raw.conceptos.actividadEconomica) {
+        for (const c of raw.conceptos.actividadEconomica) conceptos[c.id || c.codigo] = c.nombre || c.descripcion || '';
       }
     } catch (e) {
       console.warn(`  ⚠ Could not parse conceptos.json: ${e.message}`);
@@ -791,7 +793,9 @@ function processRDTrabaja() {
   const items = Array.isArray(puestos) ? puestos : (puestos.data || puestos.items || puestos.results || []);
   const results = [];
 
-  for (const p of items) {
+  for (const raw of items) {
+    // Unwrap nested "puesto" object if present (RD Trabaja API wraps each record)
+    const p = raw.puesto || raw;
     const id = p.id || p.idPuesto || p.codigo;
     const titulo = p.titulo || p.nombre || p.nombrePuesto || '';
     if (!titulo) continue;
