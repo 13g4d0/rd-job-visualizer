@@ -47,6 +47,18 @@
         }
         .bottom-sheet.open { transform: translateY(0); }
 
+        /* Mobile-specific tweaks */
+        @media (max-width: 767px) {
+            /* Hide tooltip on touch devices — bottom sheet handles detail */
+            .treemap-tooltip { display: none !important; }
+
+            /* Compact stats bar on mobile */
+            #stats-bar .stat-item {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+
         /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
@@ -87,31 +99,35 @@
             <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">Mapa del Empleo en RD</h1>
             <p class="text-slate-400 text-sm mt-2 max-w-2xl">Distribucion del empleo formal por sector economico. Visualizacion interactiva basada en datos de fuentes publicas dominicanas.</p>
             <!-- Stats bar -->
-            <div class="flex flex-wrap gap-x-6 gap-y-2 mt-5">
-                <div class="flex items-center gap-2 text-sm">
-                    <i data-lucide="users" class="w-4 h-4 text-blue-400"></i>
-                    <span class="text-slate-300">Total registros:</span>
+            <div id="stats-bar" class="flex flex-wrap gap-x-5 gap-y-2 mt-4">
+                <div class="stat-item flex items-center gap-1.5 text-xs md:text-sm">
+                    <i data-lucide="users" class="w-3.5 h-3.5 md:w-4 md:h-4 text-blue-400 shrink-0"></i>
+                    <span class="text-slate-400">Registros:</span>
                     <span id="stat-total" class="font-bold text-white">—</span>
                 </div>
-                <div class="flex items-center gap-2 text-sm">
-                    <i data-lucide="layers" class="w-4 h-4 text-amber-400"></i>
-                    <span class="text-slate-300">Sectores:</span>
+                <div class="stat-item flex items-center gap-1.5 text-xs md:text-sm">
+                    <i data-lucide="layers" class="w-3.5 h-3.5 md:w-4 md:h-4 text-amber-400 shrink-0"></i>
+                    <span class="text-slate-400">Sectores:</span>
                     <span id="stat-sectors" class="font-bold text-white">12</span>
                 </div>
-                <div class="flex items-center gap-2 text-sm">
-                    <i data-lucide="calendar" class="w-4 h-4 text-emerald-400"></i>
-                    <span class="text-slate-300">Periodo:</span>
+                <div class="stat-item flex items-center gap-1.5 text-xs md:text-sm">
+                    <i data-lucide="calendar" class="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-400 shrink-0"></i>
+                    <span class="text-slate-400">Periodo:</span>
                     <span id="stat-period" class="font-bold text-white">—</span>
                 </div>
-                <div class="flex items-center gap-2 text-sm">
-                    <i data-lucide="trending-up" class="w-4 h-4 text-cyan-400"></i>
-                    <span class="text-slate-300">Salario prom.:</span>
+                <div class="stat-item flex items-center gap-1.5 text-xs md:text-sm">
+                    <i data-lucide="trending-up" class="w-3.5 h-3.5 md:w-4 md:h-4 text-cyan-400 shrink-0"></i>
+                    <span class="text-slate-400">Sal. prom.:</span>
                     <span id="stat-salary" class="font-bold text-white">—</span>
                 </div>
-                <div class="flex items-center gap-2 text-sm">
-                    <i data-lucide="database" class="w-4 h-4 text-purple-400"></i>
-                    <span id="stat-sources" class="text-slate-300 text-xs">Fuentes: —</span>
+                <div class="stat-item flex items-center gap-1.5 text-xs md:text-sm">
+                    <i data-lucide="database" class="w-3.5 h-3.5 md:w-4 md:h-4 text-purple-400 shrink-0"></i>
+                    <span id="stat-sources" class="text-slate-400">Fuentes: —</span>
                 </div>
+                <a href="./methodology.html" class="flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors ml-auto">
+                    <i data-lucide="book-open" class="w-4 h-4 text-slate-400"></i>
+                    <span>Metodología</span>
+                </a>
             </div>
         </div>
     </header>
@@ -127,9 +143,26 @@
             </div>
         </div>
 
+        <!-- Breadcrumb bar (shown when drilled into a sector) -->
+        <div id="breadcrumb-bar" class="hidden mb-3 bg-white border border-slate-200 rounded-xl px-4 py-2.5 items-center gap-3 shadow-sm">
+            <button id="breadcrumb-back" onclick="backToSectors()" class="flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors shrink-0">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                Volver
+            </button>
+            <span class="text-slate-300 select-none">|</span>
+            <div class="flex items-center gap-2 min-w-0">
+                <div id="breadcrumb-icon-wrap" class="w-6 h-6 rounded-md flex items-center justify-center shrink-0">
+                    <i id="breadcrumb-icon" data-lucide="landmark" class="w-3.5 h-3.5 text-white"></i>
+                </div>
+                <span id="breadcrumb-sector-name" class="text-sm font-semibold text-slate-700 truncate"></span>
+                <span class="text-slate-400 text-sm shrink-0">— Top Ocupaciones</span>
+            </div>
+            <span id="breadcrumb-count" class="ml-auto text-xs text-slate-400 shrink-0"></span>
+        </div>
+
         <!-- Treemap container -->
         <div id="treemap-container" class="w-full bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-            <div id="treemap" class="w-full" style="min-height: 400px;"></div>
+            <div id="treemap" class="w-full"></div>
         </div>
 
         <!-- Detail Panel (below treemap, click to show) -->
@@ -170,7 +203,13 @@
     <footer class="border-t border-slate-200 bg-white mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-slate-400">
             <p id="footer-sources">Datos: MAP, TSS, ENCFT, DGII, CNZFE &mdash; Periodo 2000&ndash;2026</p>
-            <a href="https://jobs.sanba.dev" class="text-blue-600 hover:text-blue-700 font-medium transition-colors">jobs.sanba.dev</a>
+            <div class="flex items-center gap-4">
+                <a href="./methodology.html" class="flex items-center gap-1.5 text-slate-500 hover:text-blue-600 transition-colors font-medium">
+                    <i data-lucide="book-open" class="w-4 h-4"></i>
+                    Metodología
+                </a>
+                <a href="https://jobs.sanba.dev" class="text-blue-600 hover:text-blue-700 font-medium transition-colors">jobs.sanba.dev</a>
+            </div>
         </div>
     </footer>
 
@@ -196,6 +235,9 @@
         </div>
         <div id="tooltip-sources" class="mt-2 hidden">
             <div class="flex flex-wrap gap-1" id="tooltip-sources-list"></div>
+        </div>
+        <div id="tooltip-drillhint" class="mt-2 hidden text-[10px] text-slate-500 flex items-center gap-1">
+            <span>Clic para ver ocupaciones</span>
         </div>
         <div class="mt-2">
             <div class="bg-slate-700 rounded-full h-1.5 w-full">
@@ -247,6 +289,10 @@
     let metricsData = null;
     let totalEmpleos = 0;
 
+    // ---- DRILL-DOWN STATE ----
+    let currentView = 'sectors'; // 'sectors' | 'titles'
+    let drilledSector = null;    // sector data object when drilled in
+
     // ---- SOURCE DISPLAY NAMES ----
     const SOURCE_LABELS = {
         'ckan': { label: 'datos.gob.do', bg: 'bg-blue-50', text: 'text-blue-700' },
@@ -286,6 +332,36 @@
             const info = SOURCE_LABELS[s] || { label: s, bg: 'bg-slate-50', text: 'text-slate-700' };
             return `<span class="inline-block ${info.bg} ${info.text} text-[10px] font-medium px-2 py-0.5 rounded-full">${info.label}</span>`;
         }).join('');
+    }
+
+    // ---- COLOR VARIANTS ----
+    // Parse a hex color into {r, g, b}
+    function hexToRgb(hex) {
+        const h = hex.replace('#', '');
+        const bigint = parseInt(h.length === 3
+            ? h.split('').map(c => c + c).join('')
+            : h, 16);
+        return { r: (bigint >> 16) & 255, g: (bigint >> 8) & 255, b: bigint & 255 };
+    }
+
+    // Blend a color toward white by `amount` (0 = original, 1 = white)
+    function lightenColor(hex, amount) {
+        const { r, g, b } = hexToRgb(hex);
+        const lr = Math.round(r + (255 - r) * amount);
+        const lg = Math.round(g + (255 - g) * amount);
+        const lb = Math.round(b + (255 - b) * amount);
+        return `rgb(${lr},${lg},${lb})`;
+    }
+
+    // Generate `count` color variants: darkest first (index 0 = most saturated)
+    function colorVariants(baseColor, count) {
+        const variants = [];
+        for (let i = 0; i < count; i++) {
+            // First item is full color; last item is lightened by up to 55%
+            const lightness = (i / Math.max(count - 1, 1)) * 0.55;
+            variants.push(lightenColor(baseColor, lightness));
+        }
+        return variants;
     }
 
     // ---- LOAD DATA ----
@@ -370,20 +446,38 @@
     function buildLegend() {
         const legendEl = document.getElementById('legend');
         legendEl.innerHTML = '';
-        sectorData.children.forEach(d => {
-            const item = document.createElement('div');
-            item.className = 'flex items-center gap-1.5 text-sm text-slate-600 cursor-pointer hover:text-slate-900 transition-colors';
-            const borderStyle = d.estimated ? 'border: 1px dashed rgba(0,0,0,0.3);' : '';
-            item.innerHTML = `<span class="w-3 h-3 rounded-full shrink-0" style="background:${d.color}; ${borderStyle} opacity:${d.estimated ? 0.7 : 1}"></span><span class="text-xs">${d.shortName}</span>`;
-            item.addEventListener('click', () => {
-                if (isMobile()) {
-                    openMobileSheet(d);
-                } else {
-                    showDetail(d);
-                }
+
+        if (currentView === 'titles' && drilledSector) {
+            // Show title legend for drilled-in sector
+            const titles = (drilledSector.metrics.top_titles || []).slice(0, 10);
+            const variants = colorVariants(drilledSector.color, titles.length);
+            const labelEl = document.querySelector('#legend').previousElementSibling;
+            if (labelEl) labelEl.textContent = 'Ocupaciones en ' + drilledSector.shortName;
+            titles.forEach((t, i) => {
+                const item = document.createElement('div');
+                item.className = 'flex items-center gap-1.5 text-xs text-slate-600';
+                item.innerHTML = `<span class="w-3 h-3 rounded-full shrink-0" style="background:${variants[i]}"></span><span>${capitalizeTitle(t.title)}</span>`;
+                legendEl.appendChild(item);
             });
-            legendEl.appendChild(item);
-        });
+        } else {
+            // Show sector legend
+            const labelEl = document.querySelector('#legend').previousElementSibling;
+            if (labelEl) labelEl.textContent = 'Sectores';
+            sectorData.children.forEach(d => {
+                const item = document.createElement('div');
+                item.className = 'flex items-center gap-1.5 text-sm text-slate-600 cursor-pointer hover:text-slate-900 transition-colors';
+                const borderStyle = d.estimated ? 'border: 1px dashed rgba(0,0,0,0.3);' : '';
+                item.innerHTML = `<span class="w-3 h-3 rounded-full shrink-0" style="background:${d.color}; ${borderStyle} opacity:${d.estimated ? 0.7 : 1}"></span><span class="text-xs">${d.shortName}</span>`;
+                item.addEventListener('click', () => {
+                    if (isMobile()) {
+                        openMobileSheet(d);
+                    } else {
+                        showDetail(d);
+                    }
+                });
+                legendEl.appendChild(item);
+            });
+        }
     }
 
     // ---- RESPONSIVE CHECK ----
@@ -394,18 +488,42 @@
     // ---- D3 TREEMAP ----
     let svg, treemapLayout, root;
 
+    // Build a hierarchy for the drilled-in titles view
+    function buildTitlesData(sector) {
+        const titles = (sector.metrics.top_titles || []).slice(0, 10);
+        const variants = colorVariants(sector.color, titles.length);
+        const children = titles.map((t, i) => ({
+            name: capitalizeTitle(t.title),
+            shortName: capitalizeTitle(t.title),
+            value: t.count,
+            color: variants[i],
+            sectorKey: sector.sectorKey,
+            parentSector: sector,
+            isTitleNode: true
+        }));
+        return { name: sector.name + ' — Ocupaciones', children };
+    }
+
     function buildTreemap() {
         if (!sectorData) return;
+
+        // Choose dataset based on current view
+        const displayData = (currentView === 'titles' && drilledSector)
+            ? buildTitlesData(drilledSector)
+            : sectorData;
 
         const container = document.getElementById('treemap');
         container.innerHTML = '';
 
         const width = container.clientWidth;
-        const height = Math.max(400, Math.min(550, width * 0.45));
+        const mobile = width < 768;
+        const height = mobile
+            ? Math.max(480, Math.min(650, Math.round(width * 0.75)))
+            : Math.max(400, Math.min(550, Math.round(width * 0.45)));
         container.style.height = height + 'px';
 
         // Create hierarchy
-        root = d3.hierarchy(sectorData)
+        root = d3.hierarchy(displayData)
             .sum(d => d.value)
             .sort((a, b) => b.value - a.value);
 
@@ -496,60 +614,89 @@
         grad.append('stop').attr('offset', '0%').attr('stop-color', 'rgba(255,255,255,0.08)');
         grad.append('stop').attr('offset', '100%').attr('stop-color', 'rgba(0,0,0,0.15)');
 
-        // Labels — only show if cell is large enough
+        // Labels — context-aware for sectors vs titles view
+        const topSectorRank = new Map(leaves.map((leaf, i) => [leaf, i]));
         cell.each(function(d) {
             const w = d.x1 - d.x0;
             const h = d.y1 - d.y0;
             const g = d3.select(this);
 
-            // Short name label
-            if (w > 60 && h > 35) {
-                g.append('text')
-                    .attr('x', d.x0 + 10)
-                    .attr('y', d.y0 + (h > 60 ? 24 : h / 2 - 2))
-                    .attr('fill', 'white')
-                    .attr('font-size', w > 140 ? '14px' : w > 90 ? '12px' : '10px')
-                    .attr('font-weight', '700')
-                    .attr('font-family', 'Plus Jakarta Sans, sans-serif')
-                    .style('pointer-events', 'none')
-                    .text(d.data.shortName);
-            }
-
-            // Value label
-            if (w > 60 && h > 55) {
-                g.append('text')
-                    .attr('x', d.x0 + 10)
-                    .attr('y', d.y0 + (h > 60 ? 42 : h / 2 + 14))
-                    .attr('fill', 'rgba(255,255,255,0.75)')
-                    .attr('font-size', w > 140 ? '12px' : '10px')
-                    .attr('font-weight', '500')
-                    .attr('font-family', 'Plus Jakarta Sans, sans-serif')
-                    .style('pointer-events', 'none')
-                    .text(fmtCompact(d.data.value) + ' empleos');
-            }
-
-            // Salary label for large cells
-            if (w > 130 && h > 75) {
-                g.append('text')
-                    .attr('x', d.x0 + 10)
-                    .attr('y', d.y0 + 58)
-                    .attr('fill', 'rgba(255,255,255,0.55)')
-                    .attr('font-size', '10px')
-                    .attr('font-weight', '500')
-                    .attr('font-family', 'Plus Jakarta Sans, sans-serif')
-                    .style('pointer-events', 'none')
-                    .text(fmtSalary(d.data.salaryAvg) + ' prom.');
+            if (currentView === 'titles') {
+                // Title view: show truncated occupation name + count
+                if (w > 60 && h > 35) {
+                    const fullText = d.data.name;
+                    const maxChars = Math.floor(w / 7);
+                    const displayText = fullText.length > maxChars ? fullText.slice(0, maxChars - 1) + '\u2026' : fullText;
+                    g.append('text')
+                        .attr('x', d.x0 + 10)
+                        .attr('y', d.y0 + (h > 60 ? 24 : h / 2 - 2))
+                        .attr('fill', 'white')
+                        .attr('font-size', w > 140 ? '12px' : w > 90 ? '11px' : '10px')
+                        .attr('font-weight', '700')
+                        .attr('font-family', 'Plus Jakarta Sans, sans-serif')
+                        .style('pointer-events', 'none')
+                        .text(displayText);
+                }
+                if (w > 60 && h > 55) {
+                    g.append('text')
+                        .attr('x', d.x0 + 10)
+                        .attr('y', d.y0 + (h > 60 ? 40 : h / 2 + 14))
+                        .attr('fill', 'rgba(255,255,255,0.75)')
+                        .attr('font-size', w > 140 ? '11px' : '10px')
+                        .attr('font-weight', '500')
+                        .attr('font-family', 'Plus Jakarta Sans, sans-serif')
+                        .style('pointer-events', 'none')
+                        .text(fmtCompact(d.data.value) + ' empleos');
+                }
+            } else {
+                // Sector view: always show top 4; others need w > 60
+                const rank = topSectorRank.get(d);
+                const showLabel = (rank < 4) ? (w > 30 && h > 28) : (w > 60 && h > 35);
+                if (showLabel) {
+                    g.append('text')
+                        .attr('x', d.x0 + 10)
+                        .attr('y', d.y0 + (h > 60 ? 24 : h / 2 - 2))
+                        .attr('fill', 'white')
+                        .attr('font-size', w > 140 ? '14px' : w > 90 ? '12px' : '10px')
+                        .attr('font-weight', '700')
+                        .attr('font-family', 'Plus Jakarta Sans, sans-serif')
+                        .style('pointer-events', 'none')
+                        .text(d.data.shortName);
+                }
+                const showValueLabel = (rank < 4) ? (w > 30 && h > 48) : (w > 60 && h > 55);
+                if (showValueLabel) {
+                    g.append('text')
+                        .attr('x', d.x0 + 10)
+                        .attr('y', d.y0 + (h > 60 ? 42 : h / 2 + 14))
+                        .attr('fill', 'rgba(255,255,255,0.75)')
+                        .attr('font-size', w > 140 ? '12px' : '10px')
+                        .attr('font-weight', '500')
+                        .attr('font-family', 'Plus Jakarta Sans, sans-serif')
+                        .style('pointer-events', 'none')
+                        .text(fmtCompact(d.data.value) + ' empleos');
+                }
+                if (w > 130 && h > 75) {
+                    g.append('text')
+                        .attr('x', d.x0 + 10)
+                        .attr('y', d.y0 + 58)
+                        .attr('fill', 'rgba(255,255,255,0.55)')
+                        .attr('font-size', '10px')
+                        .attr('font-weight', '500')
+                        .attr('font-family', 'Plus Jakarta Sans, sans-serif')
+                        .style('pointer-events', 'none')
+                        .text(fmtSalary(d.data.salaryAvg) + ' prom.');
+                }
             }
         });
 
-        // Interaction: hover
+        // Interaction: hover (skip tooltip on mobile — bottom sheet handles detail)
         cell.on('mouseenter', function(event, d) {
             d3.select(this).select('.treemap-rect')
                 .style('filter', 'brightness(1.12)');
-            showTooltip(event, d.data);
+            if (!isMobile()) showTooltip(event, d.data);
         })
         .on('mousemove', function(event) {
-            moveTooltip(event);
+            if (!isMobile()) moveTooltip(event);
         })
         .on('mouseleave', function() {
             d3.select(this).select('.treemap-rect')
@@ -558,17 +705,174 @@
         })
         .on('click', function(event, d) {
             if (isMobile()) {
-                openMobileSheet(d.data);
+                // Mobile: open bottom sheet (no drill-down on small screens)
+                if (currentView === 'sectors') {
+                    openMobileSheet(d.data);
+                } else {
+                    openMobileSheetTitle(d.data);
+                }
             } else {
-                showDetail(d.data);
+                // Desktop: drill into sector or show title detail
+                if (currentView === 'sectors') {
+                    drillIntoSector(d.data);
+                } else {
+                    showDetailTitle(d.data);
+                }
             }
         });
+    }
+
+    // ---- DRILL-DOWN FUNCTIONS ----
+    function drillIntoSector(sectorNodeData) {
+        if (!sectorNodeData || !sectorNodeData.metrics) return;
+        const titles = sectorNodeData.metrics.top_titles || [];
+        if (titles.length === 0) return;
+
+        currentView = 'titles';
+        drilledSector = sectorNodeData;
+
+        // Show & populate breadcrumb bar
+        const bar = document.getElementById('breadcrumb-bar');
+        bar.classList.remove('hidden');
+        bar.style.display = 'flex';
+        document.getElementById('breadcrumb-sector-name').textContent = sectorNodeData.name;
+        document.getElementById('breadcrumb-count').textContent = titles.length + ' ocupaciones';
+
+        const iconWrap = document.getElementById('breadcrumb-icon-wrap');
+        iconWrap.style.background = sectorNodeData.color;
+        const iconEl = document.getElementById('breadcrumb-icon');
+        iconEl.setAttribute('data-lucide', sectorNodeData.icon || 'landmark');
+
+        // Update stats bar to show sector-level info
+        updateStatsDrilled(sectorNodeData);
+
+        // Close any open detail and rebuild
+        closeDetail();
+        buildTreemap();
+        buildLegend();
+        lucide.createIcons();
+    }
+
+    function backToSectors() {
+        currentView = 'sectors';
+        drilledSector = null;
+
+        // Hide breadcrumb
+        const breadcrumbBar = document.getElementById('breadcrumb-bar');
+        breadcrumbBar.classList.add('hidden');
+        breadcrumbBar.style.display = '';
+
+        // Restore global stats
+        populateStats();
+
+        // Close any open detail and rebuild
+        closeDetail();
+        buildTreemap();
+        buildLegend();
+        lucide.createIcons();
+    }
+
+    // Update stats bar with drilled sector data
+    function updateStatsDrilled(sector) {
+        const m = sector.metrics;
+        document.getElementById('stat-total').textContent = fmt(sector.value);
+        document.getElementById('stat-sectors').textContent = (m.top_titles || []).length + ' cargos';
+        if (m.period) {
+            document.getElementById('stat-period').textContent = m.period.min_year + '\u2013' + m.period.max_year;
+        }
+        document.getElementById('stat-salary').textContent = fmtSalary(sector.salaryAvg);
+        const srcNames = (m.sources || []).map(s => (SOURCE_LABELS[s] || { label: s }).label);
+        document.getElementById('stat-sources').textContent = 'Fuentes: ' + srcNames.join(', ');
+    }
+
+    // Show detail panel for a title node (uses parent sector data + title name as badge)
+    function showDetailTitle(titleNodeData) {
+        const sector = titleNodeData.parentSector;
+        if (!sector) return;
+        showDetail(sector);
+        document.getElementById('detail-badge').textContent = 'Ocupacion: ' + titleNodeData.name;
+    }
+
+    // Mobile bottom sheet for a title node
+    function openMobileSheetTitle(titleNodeData) {
+        const sector = titleNodeData.parentSector;
+        if (!sector) return;
+        const sectorTotal = sector.value;
+        const pct = ((titleNodeData.value / sectorTotal) * 100).toFixed(1);
+        const globalPct = pctOf(titleNodeData.value);
+
+        document.getElementById('mobile-sheet-content').innerHTML = `
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:${titleNodeData.color}">
+                    <i data-lucide="briefcase" class="w-5 h-5 text-white"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-900">${titleNodeData.name}</h3>
+                    <p class="text-xs text-slate-500">${pct}% del sector ${sector.shortName}</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <div class="bg-slate-50 rounded-xl p-3">
+                    <p class="text-[10px] text-slate-400 font-medium uppercase">Empleos</p>
+                    <p class="text-lg font-bold text-slate-900">${fmt(titleNodeData.value)}</p>
+                </div>
+                <div class="bg-slate-50 rounded-xl p-3">
+                    <p class="text-[10px] text-slate-400 font-medium uppercase">% Global</p>
+                    <p class="text-lg font-bold text-slate-900">${globalPct}%</p>
+                </div>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-3 mb-4">
+                <p class="text-[10px] text-slate-400 font-medium uppercase mb-2">Participacion en el sector</p>
+                <div class="flex items-center gap-3">
+                    <div class="flex-1 bg-slate-200 rounded-full h-2">
+                        <div class="h-2 rounded-full" style="width:${pct}%; background:${sector.color}"></div>
+                    </div>
+                    <span class="text-sm font-bold text-slate-700">${pct}%</span>
+                </div>
+            </div>
+            <div class="pt-3 border-t border-slate-100 text-xs text-slate-400">
+                Sector: <span class="font-semibold text-slate-600">${sector.name}</span>
+            </div>
+        `;
+
+        document.getElementById('mobile-sheet-overlay').classList.remove('hidden');
+        requestAnimationFrame(() => {
+            document.getElementById('mobile-sheet').classList.add('open');
+        });
+        lucide.createIcons();
     }
 
     // ---- TOOLTIP ----
     const tooltipEl = document.getElementById('tooltip');
 
     function showTooltip(event, data) {
+        // Title nodes have no metrics — show a simplified tooltip
+        if (data.isTitleNode) {
+            const sector = data.parentSector;
+            const sectorPct = sector ? ((data.value / sector.value) * 100).toFixed(1) : '0';
+            const globalPct = pctOf(data.value);
+
+            document.getElementById('tooltip-name').textContent = data.name;
+            document.getElementById('tooltip-empleos').textContent = fmt(data.value);
+            document.getElementById('tooltip-salario').textContent = 'N/D';
+            document.getElementById('tooltip-pct').textContent = sectorPct + '% del sector';
+            document.getElementById('tooltip-bar').style.width = globalPct + '%';
+            document.getElementById('tooltip-bar').style.background = data.color;
+
+            const badge = document.getElementById('tooltip-badge');
+            badge.textContent = sector ? sector.shortName : 'Ocupacion';
+            badge.className = 'text-[10px] px-2 py-0.5 rounded-full whitespace-nowrap bg-slate-700 text-slate-300';
+
+            document.getElementById('tooltip-pareto').classList.add('hidden');
+            document.getElementById('tooltip-titles').classList.add('hidden');
+            document.getElementById('tooltip-sources').classList.add('hidden');
+            document.getElementById('tooltip-drillhint').classList.add('hidden');
+
+            tooltipEl.classList.add('visible');
+            moveTooltip(event);
+            return;
+        }
+
         const m = data.metrics;
 
         document.getElementById('tooltip-name').textContent = data.name;
@@ -622,6 +926,14 @@
             sourcesSection.classList.remove('hidden');
         } else {
             sourcesSection.classList.add('hidden');
+        }
+
+        // Show drill-down hint on desktop sector view
+        const drillHint = document.getElementById('tooltip-drillhint');
+        if (!isMobile() && currentView === 'sectors') {
+            drillHint.classList.remove('hidden');
+        } else {
+            drillHint.classList.add('hidden');
         }
 
         tooltipEl.classList.add('visible');
