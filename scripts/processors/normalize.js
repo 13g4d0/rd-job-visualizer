@@ -374,6 +374,7 @@ function processCORAABO(filePath) {
   const headers = parseCSVLine(lines[headerIdx], delimiter);
 
   const colFecha = headers.findIndex(h => h.toLowerCase().includes('fecha'));
+  const colNombre = headers.findIndex(h => h.toLowerCase().includes('nombre'));
   const colCargo = headers.findIndex(h => h.toLowerCase().includes('cargo'));
   const colGenero = headers.findIndex(h => h.toLowerCase().includes('genero'));
   const colBruto = headers.findIndex(h => h.toLowerCase().includes('ingreso bruto'));
@@ -381,7 +382,9 @@ function processCORAABO(filePath) {
 
   for (let i = headerIdx + 1; i < lines.length; i++) {
     const vals = parseCSVLine(lines[i], delimiter);
+    const nombre = vals[colNombre] || '';
     const cargo = vals[colCargo] || '';
+    if (nombre.toLowerCase().includes('subtotal')) continue;
     if (!cargo || cargo.toLowerCase().includes('corporacion')) continue;
 
     const fecha = vals[colFecha] || '';

@@ -1,24 +1,24 @@
 {
-  "generated_at": "2026-03-26T04:39:03.593Z",
+  "generated_at": "2026-03-27T15:21:04.571Z",
   "global": {
-    "total_records": 262410,
-    "total_empleos": 431972702,
+    "total_records": 264008,
+    "total_empleos": 433264067,
     "record_types": {
-      "position": 255833,
-      "aggregate": 6321,
+      "position": 255790,
+      "aggregate": 7962,
       "vacancy": 256
     },
-    "records_with_salary": 261326,
-    "salary_avg": 45565.08,
+    "records_with_salary": 261367,
+    "salary_avg": 45493.84,
     "salary_median": 35000,
     "salary_min": 1,
-    "salary_max": 1758882,
+    "salary_max": 450000,
     "salary_pareto": {
-      "bottom_80_count": 209060,
-      "bottom_80_avg": 32019.54,
-      "top_20_count": 52266,
-      "top_20_avg": 99746.17,
-      "ratio": 3.12
+      "bottom_80_count": 209093,
+      "bottom_80_avg": 32001.29,
+      "top_20_count": 52274,
+      "top_20_avg": 99463.25,
+      "ratio": 3.11
     },
     "top_titles": [
       {
@@ -69,7 +69,7 @@
       },
       {
         "institution": "Ministerio de la Vivienda (MIVHED)",
-        "count": 78828
+        "count": 79307
       },
       {
         "institution": "Ministerio Administrativo de la Presidencia (MAPRE)",
@@ -87,7 +87,7 @@
     "gender_distribution": {
       "male": 1660,
       "female": 600,
-      "unknown": 260150,
+      "unknown": 261748,
       "male_pct": 0.63,
       "female_pct": 0.23,
       "unknown_pct": 99.14
@@ -95,6 +95,9 @@
     "sources": [
       "ckan",
       "cnzfe",
+      "mispas",
+      "mitur",
+      "mivhed",
       "rdtrabaja",
       "tss"
     ],
@@ -372,24 +375,24 @@
       }
     },
     "otros_servicios": {
-      "total_records": 6786,
-      "total_empleos": 303069388,
+      "total_records": 6743,
+      "total_empleos": 303069345,
       "record_types": {
-        "position": 1518,
+        "position": 1475,
         "aggregate": 5135,
         "vacancy": 133
       },
-      "records_with_salary": 6372,
-      "salary_avg": 12303.74,
-      "salary_median": 7488,
+      "records_with_salary": 6329,
+      "salary_avg": 9710.26,
+      "salary_median": 7430,
       "salary_min": 1,
-      "salary_max": 1758882,
+      "salary_max": 165000,
       "salary_pareto": {
-        "bottom_80_count": 5097,
-        "bottom_80_avg": 6586.61,
-        "top_20_count": 1275,
-        "top_20_avg": 35158.81,
-        "ratio": 5.34
+        "bottom_80_count": 5063,
+        "bottom_80_avg": 6537.4,
+        "top_20_count": 1266,
+        "top_20_avg": 22399.21,
+        "ratio": 3.43
       },
       "top_titles": [
         {
@@ -436,7 +439,7 @@
       "top_institutions": [
         {
           "institution": "Corp. Acueducto y Alcantarillado Boca Chica (CORAABO)",
-          "count": 1518
+          "count": 1475
         },
         {
           "institution": "DGII",
@@ -446,10 +449,10 @@
       "gender_distribution": {
         "male": 1191,
         "female": 275,
-        "unknown": 5320,
-        "male_pct": 17.55,
-        "female_pct": 4.05,
-        "unknown_pct": 78.4
+        "unknown": 5277,
+        "male_pct": 17.66,
+        "female_pct": 4.08,
+        "unknown_pct": 78.26
       },
       "sources": [
         "ckan",
@@ -462,24 +465,24 @@
       }
     },
     "manufactura_y_zonas_francas": {
-      "total_records": 68,
-      "total_empleos": 1334026,
+      "total_records": 131,
+      "total_empleos": 2113452,
       "record_types": {
         "position": 0,
-        "aggregate": 42,
+        "aggregate": 105,
         "vacancy": 26
       },
-      "records_with_salary": 42,
-      "salary_avg": 2198.26,
-      "salary_median": 2101.5,
+      "records_with_salary": 105,
+      "salary_avg": 2246.43,
+      "salary_median": 2151,
       "salary_min": 875,
-      "salary_max": 4216,
+      "salary_max": 4403,
       "salary_pareto": {
-        "bottom_80_count": 33,
-        "bottom_80_avg": 1835.94,
-        "top_20_count": 9,
-        "top_20_avg": 3526.78,
-        "ratio": 1.92
+        "bottom_80_count": 84,
+        "bottom_80_avg": 1913.43,
+        "top_20_count": 21,
+        "top_20_avg": 3578.43,
+        "ratio": 1.87
       },
       "top_titles": [
         {
@@ -488,6 +491,18 @@
         },
         {
           "title": "empleo zona franca - electronicos",
+          "count": 21
+        },
+        {
+          "title": "empleo zona franca - calzados",
+          "count": 21
+        },
+        {
+          "title": "empleo zona franca - tabaco",
+          "count": 21
+        },
+        {
+          "title": "empleo zona franca - joyeria",
           "count": 21
         },
         {
@@ -509,25 +524,13 @@
         {
           "title": "planificador de mantenimiento (santiago rodriguez)",
           "count": 1
-        },
-        {
-          "title": "ingeniero industrial (santiago rodriguez)",
-          "count": 1
-        },
-        {
-          "title": "supervisor de mantenimiento automotriz (santiago rodriguez)",
-          "count": 1
-        },
-        {
-          "title": "electricista industrial (santiago rodriguez)",
-          "count": 1
         }
       ],
       "top_institutions": [],
       "gender_distribution": {
         "male": 0,
         "female": 0,
-        "unknown": 68,
+        "unknown": 131,
         "male_pct": 0,
         "female_pct": 0,
         "unknown_pct": 100
@@ -538,6 +541,250 @@
       ],
       "period": {
         "min_year": 2003,
+        "max_year": 2026
+      }
+    },
+    "salud": {
+      "total_records": 932,
+      "total_empleos": 503102,
+      "record_types": {
+        "position": 0,
+        "aggregate": 924,
+        "vacancy": 8
+      },
+      "records_with_salary": 21,
+      "salary_avg": 2335,
+      "salary_median": 2158,
+      "salary_min": 962,
+      "salary_max": 4602,
+      "salary_pareto": {
+        "bottom_80_count": 16,
+        "bottom_80_avg": 1873.31,
+        "top_20_count": 5,
+        "top_20_avg": 3812.4,
+        "ratio": 2.04
+      },
+      "top_titles": [
+        {
+          "title": "profesional de salud - doctor en medicina",
+          "count": 27
+        },
+        {
+          "title": "profesional de salud - doctor en estomatologia",
+          "count": 26
+        },
+        {
+          "title": "profesional de salud - licenciado en bioanalisis",
+          "count": 26
+        },
+        {
+          "title": "profesional de salud - licenciado en psicologia mencion psicologia clinica",
+          "count": 26
+        },
+        {
+          "title": "profesional de salud - licenciado en enfermeria",
+          "count": 26
+        },
+        {
+          "title": "profesional de salud - doctor en medicina veterinaria",
+          "count": 26
+        },
+        {
+          "title": "profesional de salud - doctor en odontologia",
+          "count": 26
+        },
+        {
+          "title": "profesional de salud - licenciado en psicologia mencion clinica",
+          "count": 26
+        },
+        {
+          "title": "profesional de salud - licenciado en psicologia",
+          "count": 26
+        },
+        {
+          "title": "profesional de salud - licenciado en farmacia",
+          "count": 26
+        }
+      ],
+      "top_institutions": [
+        {
+          "institution": "Ministerio de Salud Pública (MISPAS)",
+          "count": 903
+        }
+      ],
+      "gender_distribution": {
+        "male": 0,
+        "female": 0,
+        "unknown": 932,
+        "male_pct": 0,
+        "female_pct": 0,
+        "unknown_pct": 100
+      },
+      "sources": [
+        "cnzfe",
+        "mispas",
+        "rdtrabaja"
+      ],
+      "period": {
+        "min_year": 2000,
+        "max_year": 2026
+      }
+    },
+    "turismo_y_hosteleria": {
+      "total_records": 199,
+      "total_empleos": 4144,
+      "record_types": {
+        "position": 0,
+        "aggregate": 175,
+        "vacancy": 24
+      },
+      "records_with_salary": 0,
+      "salary_avg": null,
+      "salary_median": null,
+      "salary_min": null,
+      "salary_max": null,
+      "salary_pareto": null,
+      "top_titles": [
+        {
+          "title": "licencias turismo - agencia de viajes",
+          "count": 32
+        },
+        {
+          "title": "licencias turismo - gift shop",
+          "count": 32
+        },
+        {
+          "title": "licencias turismo - hoteles",
+          "count": 32
+        },
+        {
+          "title": "licencias turismo - bares y restaurantes",
+          "count": 32
+        },
+        {
+          "title": "licencias turismo - turismo aventura",
+          "count": 18
+        },
+        {
+          "title": "licencias turismo - transporte turistico",
+          "count": 14
+        },
+        {
+          "title": "licencias turismo - sala de masajes",
+          "count": 14
+        },
+        {
+          "title": "licencias turismo - spa",
+          "count": 1
+        },
+        {
+          "title": "cocinero (higuey)",
+          "count": 1
+        },
+        {
+          "title": "pasilleros (higuey)",
+          "count": 1
+        }
+      ],
+      "top_institutions": [
+        {
+          "institution": "Ministerio de Turismo (MITUR)",
+          "count": 175
+        }
+      ],
+      "gender_distribution": {
+        "male": 0,
+        "female": 0,
+        "unknown": 199,
+        "male_pct": 0,
+        "female_pct": 0,
+        "unknown_pct": 100
+      },
+      "sources": [
+        "mitur",
+        "rdtrabaja"
+      ],
+      "period": {
+        "min_year": 2018,
+        "max_year": 2026
+      }
+    },
+    "construccion": {
+      "total_records": 487,
+      "total_empleos": 4776,
+      "record_types": {
+        "position": 0,
+        "aggregate": 479,
+        "vacancy": 8
+      },
+      "records_with_salary": 0,
+      "salary_avg": null,
+      "salary_median": null,
+      "salary_min": null,
+      "salary_max": null,
+      "salary_pareto": null,
+      "top_titles": [
+        {
+          "title": "licencia construccion - apartamentos",
+          "count": 96
+        },
+        {
+          "title": "licencia construccion - comercial y oficinas",
+          "count": 64
+        },
+        {
+          "title": "licencia construccion - estación de combustible",
+          "count": 63
+        },
+        {
+          "title": "licencia construccion - viviendas",
+          "count": 59
+        },
+        {
+          "title": "licencia construccion - combinados",
+          "count": 46
+        },
+        {
+          "title": "licencia construccion - estructuras especiales",
+          "count": 32
+        },
+        {
+          "title": "licencia construccion - hospedaje",
+          "count": 28
+        },
+        {
+          "title": "licencia construccion - centros de salud",
+          "count": 25
+        },
+        {
+          "title": "licencia construccion - almacenes",
+          "count": 18
+        },
+        {
+          "title": "licencia construccion - colegios y centros educativos",
+          "count": 12
+        }
+      ],
+      "top_institutions": [
+        {
+          "institution": "Ministerio de la Vivienda (MIVHED)",
+          "count": 479
+        }
+      ],
+      "gender_distribution": {
+        "male": 0,
+        "female": 0,
+        "unknown": 487,
+        "male_pct": 0,
+        "female_pct": 0,
+        "unknown_pct": 100
+      },
+      "sources": [
+        "mivhed",
+        "rdtrabaja"
+      ],
+      "period": {
+        "min_year": 2022,
         "max_year": 2026
       }
     },
@@ -704,144 +951,6 @@
         "max_year": 2026
       }
     },
-    "salud": {
-      "total_records": 8,
-      "total_empleos": 8,
-      "record_types": {
-        "position": 0,
-        "aggregate": 0,
-        "vacancy": 8
-      },
-      "records_with_salary": 0,
-      "salary_avg": null,
-      "salary_median": null,
-      "salary_min": null,
-      "salary_max": null,
-      "salary_pareto": null,
-      "top_titles": [
-        {
-          "title": "encargada de limpieza (higuey)",
-          "count": 1
-        },
-        {
-          "title": "servicio al cliente (higuey)",
-          "count": 1
-        },
-        {
-          "title": "asistente dental (higuey)",
-          "count": 1
-        },
-        {
-          "title": "medicos generales (higuey)",
-          "count": 1
-        },
-        {
-          "title": "odontologo general (higuey)",
-          "count": 1
-        },
-        {
-          "title": "medico de ambulancias (higuey)",
-          "count": 1
-        },
-        {
-          "title": "paramedico (higuey)",
-          "count": 1
-        },
-        {
-          "title": "auditor interno contable",
-          "count": 1
-        }
-      ],
-      "top_institutions": [],
-      "gender_distribution": {
-        "male": 0,
-        "female": 0,
-        "unknown": 8,
-        "male_pct": 0,
-        "female_pct": 0,
-        "unknown_pct": 100
-      },
-      "sources": [
-        "rdtrabaja"
-      ],
-      "period": {
-        "min_year": 2026,
-        "max_year": 2026
-      }
-    },
-    "turismo_y_hosteleria": {
-      "total_records": 24,
-      "total_empleos": 24,
-      "record_types": {
-        "position": 0,
-        "aggregate": 0,
-        "vacancy": 24
-      },
-      "records_with_salary": 0,
-      "salary_avg": null,
-      "salary_median": null,
-      "salary_min": null,
-      "salary_max": null,
-      "salary_pareto": null,
-      "top_titles": [
-        {
-          "title": "cocinero (higuey)",
-          "count": 1
-        },
-        {
-          "title": "pasilleros (higuey)",
-          "count": 1
-        },
-        {
-          "title": "supervisor de pisos (higuey)",
-          "count": 1
-        },
-        {
-          "title": "capitan de room service (higuey)",
-          "count": 1
-        },
-        {
-          "title": "animador/a (higuey)",
-          "count": 1
-        },
-        {
-          "title": "stewards (higuey)",
-          "count": 1
-        },
-        {
-          "title": "supervisor de stewards (higuey)",
-          "count": 1
-        },
-        {
-          "title": "ayudantes de cocina (higuey)",
-          "count": 1
-        },
-        {
-          "title": "cocinero a (higuey)",
-          "count": 1
-        },
-        {
-          "title": "tecnicos de matenimiento (higuey)",
-          "count": 1
-        }
-      ],
-      "top_institutions": [],
-      "gender_distribution": {
-        "male": 0,
-        "female": 0,
-        "unknown": 24,
-        "male_pct": 0,
-        "female_pct": 0,
-        "unknown_pct": 100
-      },
-      "sources": [
-        "rdtrabaja"
-      ],
-      "period": {
-        "min_year": 2026,
-        "max_year": 2026
-      }
-    },
     "tecnologia_y_telecomunicaciones": {
       "total_records": 2,
       "total_empleos": 2,
@@ -871,71 +980,6 @@
         "male": 0,
         "female": 0,
         "unknown": 2,
-        "male_pct": 0,
-        "female_pct": 0,
-        "unknown_pct": 100
-      },
-      "sources": [
-        "rdtrabaja"
-      ],
-      "period": {
-        "min_year": 2026,
-        "max_year": 2026
-      }
-    },
-    "construccion": {
-      "total_records": 8,
-      "total_empleos": 8,
-      "record_types": {
-        "position": 0,
-        "aggregate": 0,
-        "vacancy": 8
-      },
-      "records_with_salary": 0,
-      "salary_avg": null,
-      "salary_median": null,
-      "salary_min": null,
-      "salary_max": null,
-      "salary_pareto": null,
-      "top_titles": [
-        {
-          "title": "encargado de control de documentos (manzanillo / montecristi)",
-          "count": 1
-        },
-        {
-          "title": "especialista de adquisiciones (manzanillo / montecristi)",
-          "count": 1
-        },
-        {
-          "title": "encargado de programación de obra (manzanillo / montecristi)",
-          "count": 1
-        },
-        {
-          "title": "andamiero (manzanillo / montecristi)",
-          "count": 1
-        },
-        {
-          "title": "obrero (manzanillo / montecristi)",
-          "count": 1
-        },
-        {
-          "title": "carpintero (manzanillo / montecristi)",
-          "count": 1
-        },
-        {
-          "title": "capataz de albañilería (manzanillo / montecristi)",
-          "count": 1
-        },
-        {
-          "title": "capataz general (manzanillo / montecristi)",
-          "count": 1
-        }
-      ],
-      "top_institutions": [],
-      "gender_distribution": {
-        "male": 0,
-        "female": 0,
-        "unknown": 8,
         "male_pct": 0,
         "female_pct": 0,
         "unknown_pct": 100
