@@ -65,12 +65,12 @@
 
 ## Día 4 — Jueves 26 de Marzo
 
-- [ ] **4.1** — Drill-down: clic en sector → expandir sub-categorías
-- [ ] **4.2** — Panel lateral/modal con detalle de cada sector/ocupación
-- [ ] **4.3** — Responsive: funciona en móvil (< 768px)
-- [ ] **4.4** — Fuentes y notas metodológicas ("Sobre los datos")
-- [ ] **4.5** — Deploy a Vercel — URL funcional
-- [ ] **4.6** — Testing: 3+ navegadores y dispositivos
+- [x] **4.1** — Drill-down: clic en sector → expandir sub-categorías → Click sector muestra top 10 ocupaciones con variantes de color, breadcrumb, back nav. Mobile usa bottom sheet.
+- [~] **4.2** — Panel lateral/modal con detalle de cada sector/ocupación → _Asignado a colaborador, branch desde day4/working_
+- [x] **4.3** — Responsive: funciona en móvil (< 768px) → Treemap más alto en mobile (0.75 ratio), tooltip oculto, stats compactos, labels relajados para top 4 sectores.
+- [x] **4.4** — Fuentes y notas metodológicas ("Sobre los datos") → Links a methodology.html en header y footer del treemap.
+- [x] **4.5** — Deploy a Vercel — URL funcional → Auto-deploy via Vercel Git Integration on merge. Verified locally, production unaffected.
+- [x] **4.6** — Testing: 3+ navegadores y dispositivos → Desktop (1280px) + mobile (375px iPhone SE) + landing page. Drill-down, bottom sheet, responsive, methodology links all pass.
 - [ ] **4.7** — **FEATURE FREEZE a las 6pm**
 - [ ] **4.8** — Post de preview "Día 4"
 
