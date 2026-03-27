@@ -215,6 +215,15 @@
             </div>
         </div>
 
+        <!-- ---- SECTOR EXPLANATIONS ---- -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-8">
+            <div class="px-5 py-4 border-b border-slate-100">
+                <h2 class="text-lg font-bold text-slate-900">An&aacute;lisis por Sector</h2>
+                <p class="text-sm text-slate-500 mt-0.5">Explicaci&oacute;n de Vulnerabilidad, Susceptibilidad a la IA y Adaptabilidad para cada sector econ&oacute;mico</p>
+            </div>
+            <div id="sector-explanations" class="divide-y divide-slate-100"></div>
+        </div>
+
         <!-- ---- METHODOLOGY ---- -->
         <section id="metodologia" class="bg-white rounded-2xl border border-slate-200 shadow-sm mb-8">
             <button id="methodology-toggle" class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-slate-50 transition-colors rounded-2xl">
@@ -840,6 +849,117 @@
         });
     }
 
+    // ---- SECTOR EXPLANATIONS ----
+    const SECTOR_EXPLANATIONS = {
+        administracion_publica_y_defensa: {
+            v: "Vulnerabilidad moderada. Los empleados p\u00fablicos gozan de estabilidad laboral y beneficios formales, pero muchos cargos operativos (conserjes, choferes, coordinadores barriales) tienen salarios cercanos al m\u00ednimo, limitando su capacidad de ahorro. La informalidad es m\u00ednima (5%), lo cual reduce la exposici\u00f3n econ\u00f3mica.",
+            s: "Susceptibilidad media-alta. Las funciones administrativas (digitaci\u00f3n, secretar\u00edas, tr\u00e1mites) son altamente automatizables. Sin embargo, roles de coordinaci\u00f3n comunitaria y presencia f\u00edsica (seguridad, mantenimiento) tienen menor exposici\u00f3n. La adopci\u00f3n de IA en el sector p\u00fablico dominicano tender\u00e1 a ser m\u00e1s lenta que en el privado.",
+            a: "Adaptabilidad moderada. La estructura burocr\u00e1tica dificulta la reconversi\u00f3n r\u00e1pida, pero el volumen de empleados y los programas de capacitaci\u00f3n estatal (INAP, MAP) ofrecen canales de actualizaci\u00f3n. Los trabajadores con funciones cognitivas tienen mayor transferibilidad de habilidades."
+        },
+        agricultura_y_agroindustria: {
+            v: "Vulnerabilidad muy alta. El sector agr\u00edcola dominicano tiene la tasa de informalidad m\u00e1s alta (80%), salarios muy por debajo de la canasta b\u00e1sica, y acceso limitado a protecci\u00f3n social. Los trabajadores rurales enfrentan estacionalidad y falta de diversificaci\u00f3n de ingresos.",
+            s: "Susceptibilidad baja. Las tareas agr\u00edcolas manuales (siembra, cosecha, ganader\u00eda) son dif\u00edciles de automatizar con IA en el corto plazo. La agricultura de precisi\u00f3n y drones podr\u00edan impactar a mediano plazo, pero la estructura minifundista dominicana retarda la adopci\u00f3n tecnol\u00f3gica.",
+            a: "Adaptabilidad baja. Niveles educativos bajos, limitada exposici\u00f3n a tecnolog\u00eda digital, y movilidad geogr\u00e1fica restringida dificultan la transici\u00f3n a otras ocupaciones. Programas como los del IDIAF y el Ministerio de Agricultura son cr\u00edticos para la reconversi\u00f3n."
+        },
+        comercio: {
+            v: "Vulnerabilidad alta. El comercio dominicano es mayoritariamente informal (60%), con colmados, vendedores ambulantes y peque\u00f1os comerciantes que operan sin protecci\u00f3n social. Los salarios tienden a ser bajos y variables, especialmente fuera de las grandes cadenas.",
+            s: "Susceptibilidad moderada. El comercio electr\u00f3nico y sistemas de autoservicio amenazan roles como cajeros y dependientes, pero el comercio informal dominicano (colmados, mercados) depende de relaciones personales dif\u00edcilmente sustituibles por IA.",
+            a: "Adaptabilidad moderada. Las habilidades de atenci\u00f3n al cliente y negociaci\u00f3n son transferibles. Los comerciantes informales muestran alta resiliencia y capacidad de adaptaci\u00f3n a condiciones cambiantes, aunque carecen de formaci\u00f3n t\u00e9cnica formal."
+        },
+        construccion: {
+            v: "Vulnerabilidad muy alta. La construcci\u00f3n tiene la informalidad m\u00e1s alta del pa\u00eds (85.4%), con jornaleros, alba\u00f1iles y obreros sin contratos formales ni seguridad social. Los salarios son bajos y el empleo es altamente estacional e inestable.",
+            s: "Susceptibilidad baja. Los oficios de construcci\u00f3n (alba\u00f1iler\u00eda, plomer\u00eda, electricidad) requieren destreza f\u00edsica y adaptaci\u00f3n a condiciones variables que la IA no puede replicar a corto plazo. La prefabricaci\u00f3n y el BIM impactar\u00e1n m\u00e1s a la ingenier\u00eda y dise\u00f1o que al trabajo manual.",
+            a: "Adaptabilidad baja. La especializaci\u00f3n en oficios manuales limita la transferibilidad. Sin embargo, la demanda constante de construcci\u00f3n en RD y programas como los de INFOTEP ofrecen rutas de formalizaci\u00f3n y actualizaci\u00f3n t\u00e9cnica."
+        },
+        manufactura_y_zonas_francas: {
+            v: "Vulnerabilidad moderada. Las zonas francas ofrecen empleo formal con beneficios b\u00e1sicos, pero los salarios son relativamente bajos. La informalidad es m\u00ednima (5% en ZF) comparada con otros sectores, proporcionando cierta estabilidad.",
+            s: "Susceptibilidad moderada. Las l\u00edneas de ensamblaje y operaciones repetitivas son automatizables, pero RD compite por mano de obra de bajo costo, lo que retarda la inversi\u00f3n en automatizaci\u00f3n. Los sectores de dispositivos m\u00e9dicos y electr\u00f3nica son m\u00e1s vulnerables que textil y tabaco.",
+            a: "Adaptabilidad moderada. Los trabajadores de ZF desarrollan disciplina industrial y h\u00e1bitos laborales formales, pero las habilidades espec\u00edficas de ensamblaje tienen transferibilidad limitada. INFOTEP y los programas de las propias zonas francas son veh\u00edculos de reconversi\u00f3n."
+        },
+        tecnologia_y_telecomunicaciones: {
+            v: "Vulnerabilidad baja. El sector TIC ofrece los salarios m\u00e1s altos, empleo formal, y baja informalidad (15%). Los profesionales tecnol\u00f3gicos tienen alta capacidad de ahorro y acceso a beneficios. Es el sector con menor fragilidad econ\u00f3mica estructural.",
+            s: "Susceptibilidad alta. Parad\u00f3jicamente, los profesionales de TIC son altamente susceptibles: la programaci\u00f3n, an\u00e1lisis de datos y soporte t\u00e9cnico son funciones que la IA generativa ya est\u00e1 transformando. Los desarrolladores que no se adapten a herramientas de IA ser\u00e1n los m\u00e1s impactados.",
+            a: "Adaptabilidad alta. Educaci\u00f3n superior, habilidades cognitivas transferibles, cultura de aprendizaje continuo, y familiaridad con tecnolog\u00eda hacen de este sector el m\u00e1s adaptable. La clave es la transici\u00f3n de \u201cescribir c\u00f3digo\u201d a \u201corquestar sistemas de IA\u201d."
+        },
+        salud: {
+            v: "Vulnerabilidad moderada. El sector salud tiene informalidad de 30%, con disparidades entre m\u00e9dicos especialistas (altos ingresos) y personal de apoyo (enfermeras, t\u00e9cnicos) con salarios m\u00e1s modestos. La demanda constante de servicios de salud proporciona estabilidad laboral.",
+            s: "Susceptibilidad media. La IA impactar\u00e1 el diagn\u00f3stico (radiolog\u00eda, patolog\u00eda) y funciones administrativas, pero la atenci\u00f3n directa al paciente, cirug\u00eda y enfermer\u00eda requieren contacto humano irremplazable. Los farmac\u00e9uticos enfrentan mayor exposici\u00f3n que los cirujanos.",
+            a: "Adaptabilidad alta. Educaci\u00f3n prolongada, habilidades cl\u00ednicas transferibles y la naturaleza regulada de la profesi\u00f3n facilitan la adaptaci\u00f3n. La IA se convertir\u00e1 en herramienta complementaria m\u00e1s que sustitutiva en la mayor\u00eda de las especialidades m\u00e9dicas."
+        },
+        educacion: {
+            v: "Vulnerabilidad moderada. Los educadores tienen empleo relativamente estable (especialmente en el sector p\u00fablico), pero salarios modestos. La informalidad es baja (20%), con protecci\u00f3n social a trav\u00e9s del MINERD y las universidades.",
+            s: "Susceptibilidad moderada. La IA transformar\u00e1 la entrega de contenidos y evaluaci\u00f3n, pero el rol del maestro como mentor, motivador y gu\u00eda socioemocional es dif\u00edcilmente automatizable. T\u00e9cnicos docentes y funciones administrativas educativas son m\u00e1s vulnerables.",
+            a: "Adaptabilidad moderada-alta. Los educadores tienen habilidades de comunicaci\u00f3n y formaci\u00f3n altamente transferibles. La integraci\u00f3n de herramientas de IA en la ense\u00f1anza es una oportunidad natural de evoluci\u00f3n profesional, no una amenaza existencial."
+        },
+        servicios_financieros: {
+            v: "Vulnerabilidad baja. El sector financiero ofrece los salarios m\u00e1s altos del mercado dominicano, con empleo altamente formal (90%) y acceso completo a protecci\u00f3n social. La capacidad de ahorro es la m\u00e1s alta de todos los sectores.",
+            s: "Susceptibilidad alta. An\u00e1lisis financiero, evaluaci\u00f3n de cr\u00e9dito, contabilidad, y operaciones bancarias rutinarias son altamente automatizables. Los chatbots y robo-advisors ya est\u00e1n transformando la banca dominicana. Analistas financieros y contadores enfrentan la mayor exposici\u00f3n.",
+            a: "Adaptabilidad alta. Alto nivel educativo, habilidades anal\u00edticas transferibles y cultura corporativa de capacitaci\u00f3n facilitan la transici\u00f3n. El reto es pasar de ejecutar an\u00e1lisis a supervisar y validar an\u00e1lisis generados por IA."
+        },
+        transporte_y_logistica: {
+            v: "Vulnerabilidad alta. El transporte dominicano tiene alta informalidad (70%), con choferes de concho, motoconchistas y transportistas independientes sin protecci\u00f3n social. Los salarios son bajos y los costos operativos (combustible, mantenimiento) erosionan los ingresos.",
+            s: "Susceptibilidad moderada-baja. Los veh\u00edculos aut\u00f3nomos impactar\u00e1n a largo plazo, pero la infraestructura vial dominicana y el marco regulatorio retardar\u00e1n significativamente la adopci\u00f3n. La log\u00edstica y optimizaci\u00f3n de rutas s\u00ed ser\u00e1n transformadas por IA m\u00e1s r\u00e1pidamente.",
+            a: "Adaptabilidad baja. La especializaci\u00f3n en conducci\u00f3n tiene transferibilidad limitada. La transici\u00f3n requerir\u00e1 programas masivos de reconversi\u00f3n, especialmente para los aproximadamente 200,000 motoconchistas del pa\u00eds."
+        },
+        turismo_y_hosteleria: {
+            v: "Vulnerabilidad alta. A pesar de ser el principal generador de divisas de RD, el sector tur\u00edstico tiene alta informalidad (55%), empleo estacional, y salarios bajos para personal operativo. La dependencia de propinas y la estacionalidad aumentan la fragilidad.",
+            s: "Susceptibilidad moderada-baja. La hospitalidad, atenci\u00f3n personalizada y experiencias culturales son dif\u00edcilmente automatizables. Check-in automatizado y chatbots de reservas impactar\u00e1n funciones administrativas, pero meseros, cocineros y personal de animaci\u00f3n mantienen baja exposici\u00f3n.",
+            a: "Adaptabilidad moderada. Las habilidades interpersonales, idiomas y orientaci\u00f3n al servicio son transferibles a otros sectores de servicios. El turismo dominicano est\u00e1 evolucionando hacia experiencias premium que valoran m\u00e1s el toque humano."
+        },
+        otros_servicios: {
+            v: "Vulnerabilidad alta. Esta categor\u00eda residual agrupa servicios diversos con alta informalidad (54%), incluyendo trabajo dom\u00e9stico, reparaciones, servicios personales y actividades comunitarias. Los salarios son generalmente bajos y la protecci\u00f3n social limitada.",
+            s: "Susceptibilidad variable. Desde servicios altamente automatizables (procesamiento de datos) hasta pr\u00e1cticamente inmunes a la IA (peluquer\u00eda, plomer\u00eda). El promedio sectorial enmascara una gran dispersi\u00f3n interna.",
+            a: "Adaptabilidad variable. Depende fuertemente de la ocupaci\u00f3n espec\u00edfica. Los servicios manuales especializados (electricistas, mec\u00e1nicos) tienen demanda estable, mientras que los servicios gen\u00e9ricos enfrentan mayor presi\u00f3n competitiva."
+        }
+    };
+
+    function renderSectorExplanations(computed) {
+        const container = document.getElementById('sector-explanations');
+        container.innerHTML = computed.sectors.map(sec => {
+            const exp = SECTOR_EXPLANATIONS[sec.key];
+            if (!exp) return '';
+            return `
+            <div class="sector-explanation">
+                <button onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.chevron-icon').classList.toggle('rotate-180')" class="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style="background:${sec.color}20">
+                            <i data-lucide="${sec.icon}" class="w-4 h-4" style="color:${sec.color}"></i>
+                        </div>
+                        <span class="font-semibold text-slate-800">${sec.name}</span>
+                        <span class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold text-white" style="background:${sec.zoneColorDisplay}">${sec.zoneNameDisplay}</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 chevron-icon transition-transform"></i>
+                </button>
+                <div class="hidden px-5 pb-5">
+                    <div class="grid gap-4 sm:grid-cols-3 ml-11">
+                        <div class="bg-red-50/60 rounded-xl p-4 border border-red-100">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="inline-block w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                                <h4 class="font-bold text-sm text-red-800">Vulnerabilidad <span class="font-normal text-red-600">(${sec.vDisplay})</span></h4>
+                            </div>
+                            <p class="text-sm text-slate-600 leading-relaxed">${exp.v}</p>
+                        </div>
+                        <div class="bg-purple-50/60 rounded-xl p-4 border border-purple-100">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="inline-block w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                                <h4 class="font-bold text-sm text-purple-800">Susceptibilidad <span class="font-normal text-purple-600">(${sec.sDisplay})</span></h4>
+                            </div>
+                            <p class="text-sm text-slate-600 leading-relaxed">${exp.s}</p>
+                        </div>
+                        <div class="bg-green-50/60 rounded-xl p-4 border border-green-100">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="inline-block w-2.5 h-2.5 rounded-full bg-green-500"></span>
+                                <h4 class="font-bold text-sm text-green-800">Adaptabilidad <span class="font-normal text-green-600">(${sec.aDisplay})</span></h4>
+                            </div>
+                            <p class="text-sm text-slate-600 leading-relaxed">${exp.a}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+        lucide.createIcons();
+    }
+
     // ---- RENDER ALL ----
     function renderAll(animate = true) {
         const computed = recomputeForPeriod(allData);
@@ -854,6 +974,7 @@
         }
 
         buildSectorTable(computed);
+        renderSectorExplanations(computed);
     }
 
     // ---- TEMPORAL BUTTONS ----
