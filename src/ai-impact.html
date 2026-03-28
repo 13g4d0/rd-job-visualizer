@@ -1553,6 +1553,13 @@
         const chevron = document.getElementById('dashboard-chevron');
         content.classList.toggle('hidden');
         chevron.style.transform = content.classList.contains('hidden') ? '' : 'rotate(180deg)';
+        // Re-render gauges and scatter when opening (SVGs don't render in hidden containers)
+        if (!content.classList.contains('hidden') && allData) {
+            const computed = recomputeForPeriod(allData);
+            updateGauges(computed.global);
+            buildScatter(computed, true);
+            buildScatterFilter(computed);
+        }
     });
 
     document.getElementById('methodology-toggle').addEventListener('click', () => {
