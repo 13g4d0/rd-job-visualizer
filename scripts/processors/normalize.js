@@ -1141,6 +1141,114 @@ function processRDTrabaja() {
   return results;
 }
 
+// ── MAP Nómina Pública (493K+ records, Dec 2025) ──────────────────────────
+
+const MAP_INSTITUTION_SECTOR = {
+  'ministerio de educación': 'educacion',
+  'servicio nacional de salud': 'salud',
+  'instituto nacional de atención integral a la primera infancia': 'educacion',
+  'ministerio de salud pública y asistencia social': 'salud',
+  'dirección de servicios de atención a emergencias extra-hospitalarias': 'salud',
+  'programa de medicamentos esenciales/central de apoyo logístico': 'salud',
+  'ministerio de agricultura': 'agricultura_y_agroindustria',
+  'ministerio de obras públicas y comunicaciones': 'construccion',
+  'ministerio de medio ambiente y recursos naturales': 'agricultura_y_agroindustria',
+  'ministerio de deportes y recreación': 'otros_servicios',
+  'ministerio de industria, comercio y mipymes': 'comercio',
+  'ministerio de turismo': 'turismo_y_hosteleria',
+  'ministerio de trabajo': 'administracion_publica_y_defensa',
+  'ministerio de relaciones exteriores': 'administracion_publica_y_defensa',
+  'oficina para el reordenamiento del transporte': 'transporte_y_logistica',
+  'autoridad portuaria dominicana': 'transporte_y_logistica',
+  'instituto de aviación civil': 'transporte_y_logistica',
+  'comedores económicos del estado': 'otros_servicios',
+  'cuerpo de bomberos de la república dominicana': 'administracion_publica_y_defensa',
+  'contraloría general de la república': 'administracion_publica_y_defensa',
+  'procuraduría general de la república': 'administracion_publica_y_defensa',
+  'ministerio de interior y policía': 'administracion_publica_y_defensa',
+  'programa supérate': 'administracion_publica_y_defensa',
+  'oficina nacional de estadística': 'administracion_publica_y_defensa',
+  'ministerio de hacienda': 'servicios_financieros',
+  'superintendencia de bancos': 'servicios_financieros',
+  'banco central de la república dominicana': 'servicios_financieros',
+  'superintendencia de valores': 'servicios_financieros',
+  'oficina de tecnologías de la información y comunicación': 'tecnologia_y_telecomunicaciones',
+  'instituto dominicano de las telecomunicaciones': 'tecnologia_y_telecomunicaciones',
+};
+
+function mapInstitutionToSector(institution) {
+  if (!institution) return 'administracion_publica_y_defensa';
+  const inst = institution.toLowerCase().trim();
+  // Exact match first
+  if (MAP_INSTITUTION_SECTOR[inst]) return MAP_INSTITUTION_SECTOR[inst];
+  // Keyword matching
+  if (inst.includes('salud') || inst.includes('hospital') || inst.includes('sanitari')) return 'salud';
+  if (inst.includes('educación') || inst.includes('educacion') || inst.includes('universidad') || inst.includes('escuela')) return 'educacion';
+  if (inst.includes('agrícola') || inst.includes('agricola') || inst.includes('agricultura') || inst.includes('agropecuari') || inst.includes('ganadería') || inst.includes('forestal')) return 'agricultura_y_agroindustria';
+  if (inst.includes('turismo') || inst.includes('hotelería')) return 'turismo_y_hosteleria';
+  if (inst.includes('transporte') || inst.includes('portuari') || inst.includes('aviación') || inst.includes('tránsito')) return 'transporte_y_logistica';
+  if (inst.includes('obras públicas') || inst.includes('construcción') || inst.includes('vivienda')) return 'construccion';
+  if (inst.includes('industria') || inst.includes('comercio') || inst.includes('mipymes')) return 'comercio';
+  if (inst.includes('telecomunicacion') || inst.includes('tecnología') || inst.includes('informática')) return 'tecnologia_y_telecomunicaciones';
+  if (inst.includes('banco') || inst.includes('financier') || inst.includes('hacienda') || inst.includes('superintendencia')) return 'servicios_financieros';
+  return 'administracion_publica_y_defensa';
+}
+
+function processMAP(filePath) {
+  const rows = readCSV(filePath);
+  if (rows.length === 0) return [];
+  const results = [];
+
+  for (let i = 0; i < rows.length; i++) {
+    const r = rows[i];
+    const cargo = r['Cargo'] || '';
+    if (!cargo) continue;
+
+    // Skip subtotal/total rows
+    const cargoLower = cargo.toLowerCase();
+    if (cargoLower.includes('subtotal') || cargoLower.includes('total')) continue;
+
+    const institution = r['Institución'] || r['Institucion'] || '';
+    const salary = parseSalary(r['Suelto_Bruto'] || r['Sueldo_Bruto']);
+    const gender = normalizeGender(r['Género'] || r['Genero']);
+    const month = parseMonth(r['Mes']);
+    const year = parseYear(r['Año'] || r['Ano']);
+
+    if (!year) continue;
+
+    const sector = mapInstitutionToSector(institution);
+
+    results.push({
+      id: `map_${i}`,
+      source: 'map',
+      source_record_id: null,
+      sector,
+      job_title: normalizeTitle(cargo),
+      institution: institution,
+      salary_gross: salary,
+      salary_net: null,
+      salary_min: null,
+      salary_max: null,
+      employee_count: 1,
+      location_province: null,
+      location_city: null,
+      employment_type: 'publico',
+      gender: gender,
+      period_year: year,
+      period_month: month,
+      period_quarter: null,
+      raw_department: null,
+      raw_title: cargo,
+      raw_institution: institution,
+      extracted_at: EXTRACTED_AT,
+      metadata: {
+        estatus: r['Estatus'] || null,
+      },
+    });
+  }
+  return results;
+}
+
 // ── Main ───────────────────────────────────────────────────────────────────
 function main() {
   console.log('═══════════════════════════════════════════════════════');
@@ -1157,7 +1265,7 @@ function main() {
       console.log(`  → ${label}: 0 records (skipped or empty)\n`);
       return;
     }
-    allRecords.push(...records);
+    for (let ri = 0; ri < records.length; ri++) allRecords.push(records[ri]);
     console.log(`  → ${label}: ${records.length.toLocaleString()} records\n`);
 
     for (const r of records) {
@@ -1198,6 +1306,13 @@ function main() {
   const coraaboPath = path.join(RAW_DIR, 'nomina-coraabo-2021-2025.csv');
   if (fs.existsSync(coraaboPath)) {
     addRecords('nomina-coraabo-2021-2025.csv', processCORAABO(coraaboPath));
+  }
+
+  // ── 1b. MAP Nómina Pública ────────────────────────────────────────────
+  console.log('Processing MAP nómina pública...');
+  const mapPath = path.join(RAW_DIR, 'nomina-map-2025-12.csv');
+  if (fs.existsSync(mapPath)) {
+    addRecords('nomina-map-2025-12.csv', processMAP(mapPath));
   }
 
   // ── 2. TSS ────────────────────────────────────────────────────────────
@@ -1314,8 +1429,17 @@ function main() {
 
   // Write normalized.json
   const normalizedPath = path.join(OUT_DIR, 'normalized.json');
-  fs.writeFileSync(normalizedPath, JSON.stringify(allRecords, null, 2), 'utf-8');
-  console.log(`\n✓ Written: ${normalizedPath} (${(fs.statSync(normalizedPath).size / 1024 / 1024).toFixed(1)} MB)`);
+  // Stream JSON to avoid V8 string length limit with 750K+ records
+  const ws = fs.createWriteStream(normalizedPath, 'utf-8');
+  ws.write('[\n');
+  for (let i = 0; i < allRecords.length; i++) {
+    ws.write((i > 0 ? ',\n' : '') + JSON.stringify(allRecords[i]));
+  }
+  ws.write('\n]');
+  ws.end();
+  ws.on('finish', () => {
+    console.log(`\n✓ Written: ${normalizedPath} (${(fs.statSync(normalizedPath).size / 1024 / 1024).toFixed(1)} MB)`);
+  });
 
   // Write summary.json
   const summary = {
