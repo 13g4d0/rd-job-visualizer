@@ -190,27 +190,48 @@
             <h2 class="text-lg font-bold text-slate-900 mb-1">Indicadores Nacionales</h2>
             <p class="text-sm text-slate-500 mb-4">Promedio nacional ponderado por cantidad de trabajadores en cada ocupaci&oacute;n (escala 0-100)</p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <!-- V-Score Gauge -->
-                <div class="bg-slate-50 rounded-xl p-5 flex flex-col items-center">
-                    <svg id="gauge-v" width="140" height="80" viewBox="0 0 140 80"></svg>
-                    <p id="gauge-v-value" class="text-3xl font-extrabold mt-2 text-slate-900">--</p>
-                    <p class="text-sm font-semibold text-slate-700 mt-1">Vulnerabilidad</p>
+                <!-- V-Score Ring -->
+                <div class="bg-white rounded-xl p-5 flex flex-col items-center border border-slate-100">
+                    <div class="relative w-28 h-28">
+                        <svg class="w-28 h-28 -rotate-90" viewBox="0 0 120 120">
+                            <circle cx="60" cy="60" r="52" fill="none" stroke="#e2e8f0" stroke-width="10"/>
+                            <circle id="ring-v" cx="60" cy="60" r="52" fill="none" stroke="#DC2626" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.73" stroke-dashoffset="326.73" class="gauge-arc"/>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span id="gauge-v-value" class="text-2xl font-extrabold text-slate-900">--</span>
+                        </div>
+                    </div>
+                    <p class="text-sm font-semibold text-slate-700 mt-3">Vulnerabilidad</p>
                     <p class="text-xs text-slate-400 mt-0.5">Fragilidad econ&oacute;mica del trabajador</p>
                     <p class="text-xs text-red-500 mt-0.5">Mayor = m&aacute;s vulnerable</p>
                 </div>
-                <!-- S-Score Gauge -->
-                <div class="bg-slate-50 rounded-xl p-5 flex flex-col items-center">
-                    <svg id="gauge-s" width="140" height="80" viewBox="0 0 140 80"></svg>
-                    <p id="gauge-s-value" class="text-3xl font-extrabold mt-2 text-slate-900">--</p>
-                    <p class="text-sm font-semibold text-slate-700 mt-1">Susceptibilidad a la IA</p>
+                <!-- S-Score Ring -->
+                <div class="bg-white rounded-xl p-5 flex flex-col items-center border border-slate-100">
+                    <div class="relative w-28 h-28">
+                        <svg class="w-28 h-28 -rotate-90" viewBox="0 0 120 120">
+                            <circle cx="60" cy="60" r="52" fill="none" stroke="#e2e8f0" stroke-width="10"/>
+                            <circle id="ring-s" cx="60" cy="60" r="52" fill="none" stroke="#8B5CF6" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.73" stroke-dashoffset="326.73" class="gauge-arc"/>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span id="gauge-s-value" class="text-2xl font-extrabold text-slate-900">--</span>
+                        </div>
+                    </div>
+                    <p class="text-sm font-semibold text-slate-700 mt-3">Susceptibilidad a la IA</p>
                     <p class="text-xs text-slate-400 mt-0.5">Exposici&oacute;n a automatizaci&oacute;n por IA</p>
                     <p class="text-xs text-purple-500 mt-0.5">Mayor = m&aacute;s expuesto</p>
                 </div>
-                <!-- A-Score Gauge -->
-                <div class="bg-slate-50 rounded-xl p-5 flex flex-col items-center">
-                    <svg id="gauge-a" width="140" height="80" viewBox="0 0 140 80"></svg>
-                    <p id="gauge-a-value" class="text-3xl font-extrabold mt-2 text-slate-900">--</p>
-                    <p class="text-sm font-semibold text-slate-700 mt-1">Adaptabilidad</p>
+                <!-- A-Score Ring -->
+                <div class="bg-white rounded-xl p-5 flex flex-col items-center border border-slate-100">
+                    <div class="relative w-28 h-28">
+                        <svg class="w-28 h-28 -rotate-90" viewBox="0 0 120 120">
+                            <circle cx="60" cy="60" r="52" fill="none" stroke="#e2e8f0" stroke-width="10"/>
+                            <circle id="ring-a" cx="60" cy="60" r="52" fill="none" stroke="#10B981" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.73" stroke-dashoffset="326.73" class="gauge-arc"/>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span id="gauge-a-value" class="text-2xl font-extrabold text-slate-900">--</span>
+                        </div>
+                    </div>
+                    <p class="text-sm font-semibold text-slate-700 mt-3">Adaptabilidad</p>
                     <p class="text-xs text-slate-400 mt-0.5">Capacidad de reconversi&oacute;n laboral</p>
                     <p class="text-xs text-green-500 mt-0.5">Mayor = mejor preparado</p>
                 </div>
@@ -614,51 +635,21 @@
         return 'amber';
     }
 
-    // ---- GAUGES ----
-    function drawGauge(svgId, value, colorStops) {
-        const svg = d3.select(`#${svgId}`);
-        svg.selectAll('*').remove();
-        const w = 140, h = 80;
-        const cx = w / 2, cy = h - 5;
-        const r = 55;
-        const startAngle = -Math.PI;
-        const endAngle = 0;
+    // ---- GAUGES (ring indicators) ----
+    const RING_CIRCUMFERENCE = 2 * Math.PI * 52; // ~326.73
 
-        // Background arc
-        const bgArc = d3.arc().innerRadius(r - 10).outerRadius(r).startAngle(startAngle).endAngle(endAngle);
-        svg.append('path').attr('d', bgArc()).attr('transform', `translate(${cx},${cy})`).attr('fill', '#e2e8f0');
-
-        // Gradient
-        const gradId = `grad-${svgId}`;
-        const defs = svg.append('defs');
-        const grad = defs.append('linearGradient').attr('id', gradId).attr('x1', '0%').attr('x2', '100%');
-        colorStops.forEach((c, i) => grad.append('stop').attr('offset', `${(i / (colorStops.length - 1)) * 100}%`).attr('stop-color', c));
-
-        // Value arc
-        const valAngle = startAngle + (endAngle - startAngle) * (Math.min(value, 100) / 100);
-        const valArc = d3.arc().innerRadius(r - 10).outerRadius(r).startAngle(startAngle).endAngle(startAngle);
-        const path = svg.append('path')
-            .attr('d', valArc())
-            .attr('transform', `translate(${cx},${cy})`)
-            .attr('fill', `url(#${gradId})`)
-            .attr('class', 'gauge-arc');
-
-        // Animate
-        path.transition().duration(800).attrTween('d', function () {
-            const interp = d3.interpolate(startAngle, valAngle);
-            return function (t) {
-                return d3.arc().innerRadius(r - 10).outerRadius(r).startAngle(startAngle).endAngle(interp(t))();
-            };
-        });
+    function updateRing(ringId, valueId, value) {
+        const ring = document.getElementById(ringId);
+        const label = document.getElementById(valueId);
+        const offset = RING_CIRCUMFERENCE * (1 - Math.min(value, 100) / 100);
+        ring.style.strokeDashoffset = offset;
+        label.textContent = value;
     }
 
     function updateGauges(global) {
-        drawGauge('gauge-v', global.avgV, ['#10B981', '#FBBF24', '#F59E0B', '#DC2626']);
-        drawGauge('gauge-s', global.avgS, ['#6366F1', '#8B5CF6', '#A855F7', '#C084FC']);
-        drawGauge('gauge-a', global.avgA, ['#DC2626', '#F59E0B', '#10B981', '#059669']);
-        document.getElementById('gauge-v-value').textContent = global.avgV;
-        document.getElementById('gauge-s-value').textContent = global.avgS;
-        document.getElementById('gauge-a-value').textContent = global.avgA;
+        updateRing('ring-v', 'gauge-v-value', global.avgV);
+        updateRing('ring-s', 'gauge-s-value', global.avgS);
+        updateRing('ring-a', 'gauge-a-value', global.avgA);
     }
 
     // ---- ZONE BAR ----
