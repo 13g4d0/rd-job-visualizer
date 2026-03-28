@@ -318,6 +318,13 @@
             <div id="radar-chips" class="flex flex-wrap gap-2 mb-4"></div>
             <div id="radar-container" class="w-full flex justify-center" style="min-height: 350px;"></div>
             <div id="radar-legend" class="flex flex-wrap justify-center gap-4 mt-3 text-xs text-slate-600"></div>
+            <div class="mt-5 pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2 text-xs text-slate-500">
+                <div><strong class="text-slate-700">Vulnerabilidad:</strong> Fragilidad econ&oacute;mica del trabajador (salario, informalidad, educaci&oacute;n, ahorro). Mayor = m&aacute;s fr&aacute;gil.</div>
+                <div><strong class="text-slate-700">Susceptibilidad a IA:</strong> Grado de exposici&oacute;n de la ocupaci&oacute;n a ser automatizada por inteligencia artificial. Mayor = m&aacute;s expuesto.</div>
+                <div><strong class="text-slate-700">Adaptabilidad:</strong> Capacidad de transici&oacute;n a otras &aacute;reas laborales (transferibilidad de habilidades + nivel educativo). Mayor = m&aacute;s adaptable.</div>
+                <div><strong class="text-slate-700">Nivel Salarial:</strong> Salario promedio del sector como porcentaje del sector mejor pagado. 100 = el salario m&aacute;s alto del mercado.</div>
+                <div><strong class="text-slate-700">Formalidad:</strong> Porcentaje de trabajadores con empleo formal (contrato, seguridad social). Mayor = m&aacute;s formalizado.</div>
+            </div>
         </div>
 
         <!-- ---- SECTOR TABLE ---- -->
@@ -1144,7 +1151,7 @@
         { key: 'v', label: 'Vulnerabilidad', invert: true },
         { key: 's', label: 'Susceptibilidad a IA', invert: true },
         { key: 'a', label: 'Adaptabilidad', invert: false },
-        { key: 'salary', label: 'Salario Rel.', invert: false },
+        { key: 'salary', label: 'Nivel Salarial', invert: false },
         { key: 'formality', label: 'Formalidad', invert: false }
     ];
 
