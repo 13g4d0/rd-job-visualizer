@@ -108,7 +108,7 @@
             <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
                 <div>
                     <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">Impacto de la IA en el Empleo Dominicano</h1>
-                    <p class="text-slate-400 text-sm mt-2 max-w-2xl">Evaluaci&oacute;n de Vulnerabilidad, Susceptibilidad y Adaptabilidad por ocupaci&oacute;n y sector</p>
+                    <p class="text-slate-400 text-sm mt-2 max-w-2xl">Evaluaci&oacute;n de Vulnerabilidad, Susceptibilidad a la IA y Adaptabilidad por ocupaci&oacute;n y sector</p>
                 </div>
                 <a href="#metodologia" class="flex items-center gap-2 text-slate-400 hover:text-blue-400 transition-colors text-sm shrink-0">
                     <i data-lucide="book-open" class="w-4 h-4"></i>
@@ -153,7 +153,7 @@
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col items-center">
                 <svg id="gauge-s" width="140" height="80" viewBox="0 0 140 80"></svg>
                 <p id="gauge-s-value" class="text-3xl font-extrabold mt-2 text-slate-900">--</p>
-                <p class="text-sm text-slate-500 mt-1">S-Score (Susceptibilidad IA)</p>
+                <p class="text-sm text-slate-500 mt-1">S-Score (Susceptibilidad a la IA)</p>
                 <p class="text-xs text-slate-400 mt-0.5">Mayor = m&aacute;s expuesto a IA</p>
             </div>
             <!-- A-Score Gauge -->
@@ -339,7 +339,7 @@
                         <tr class="text-left text-xs text-slate-500 uppercase tracking-wider bg-slate-50/80">
                             <th class="px-5 py-3 font-semibold">Sector</th>
                             <th class="px-4 py-3 font-semibold text-center">Vulnerabilidad</th>
-                            <th class="px-4 py-3 font-semibold text-center">Susceptibilidad</th>
+                            <th class="px-4 py-3 font-semibold text-center">Susceptibilidad a la IA</th>
                             <th class="px-4 py-3 font-semibold text-center">Adaptabilidad</th>
                             <th class="px-4 py-3 font-semibold text-center">Zona</th>
                             <th class="px-4 py-3 font-semibold text-right">Empleos</th>
@@ -373,7 +373,7 @@
                     <h3 class="text-base font-bold text-slate-800 mt-0">Apreciaciones de Vulnerabilidad, Susceptibilidad a la IA y Adaptabilidad</h3>
                     <ul class="text-slate-600 space-y-2">
                         <li><strong>Vulnerabilidad:</strong> Mide qu&eacute; tan vulnerable es una ocupaci&oacute;n ante disrupciones econ&oacute;micas. Combina: vulnerabilidad de ingreso (35%), informalidad sectorial (30%), nivel educativo (20%) y capacidad de ahorro (15%).</li>
-                        <li><strong>Susceptibilidad:</strong> Mide qu&eacute; tan susceptible es la ocupaci&oacute;n a ser automatizada por IA, basado en el &iacute;ndice AI Occupational Exposure (AIOE). Los multiplicadores temporales escalan el score: &times;0.3 (corto plazo), &times;0.6 (mediano) y &times;0.9 (largo plazo).</li>
+                        <li><strong>Susceptibilidad a la IA:</strong> Mide qu&eacute; tan susceptible es la ocupaci&oacute;n a ser automatizada por IA, basado en el &iacute;ndice AI Occupational Exposure (AIOE). Los multiplicadores temporales escalan el score: &times;0.3 (corto plazo), &times;0.6 (mediano) y &times;0.9 (largo plazo).</li>
                         <li><strong>Adaptabilidad:</strong> Mide la capacidad de la fuerza laboral para adaptarse. Combina transferibilidad de habilidades (50%) y nivel educativo (50%).</li>
                     </ul>
 
@@ -921,7 +921,7 @@
                         { label: 'Educación', weight: '20%' },
                         { label: 'Ahorro', weight: '15%' }
                     ])}
-                    ${buildScoreBar('S-Score (Susceptibilidad)', d.sDisplay, ['#6366F1', '#C084FC'], [])}
+                    ${buildScoreBar('S-Score (Susceptibilidad a la IA)', d.sDisplay, ['#6366F1', '#C084FC'], [])}
                     ${buildScoreBar('A-Score (Adaptabilidad)', d.aScore, ['#DC2626', '#10B981'], [
                         { label: 'Habilidades', weight: '50%' },
                         { label: 'Educación', weight: '50%' }
@@ -1093,7 +1093,7 @@
                         <div class="bg-purple-50/60 rounded-xl p-4 border border-purple-100">
                             <div class="flex items-center gap-2 mb-2">
                                 <span class="inline-block w-2.5 h-2.5 rounded-full bg-purple-500"></span>
-                                <h4 class="font-bold text-sm text-purple-800">Susceptibilidad <span class="font-normal text-purple-600">(${sec.sDisplay})</span></h4>
+                                <h4 class="font-bold text-sm text-purple-800">Susceptibilidad a la IA <span class="font-normal text-purple-600">(${sec.sDisplay})</span></h4>
                             </div>
                             <p class="text-sm text-slate-600 leading-relaxed">${exp.s}</p>
                         </div>
@@ -1123,7 +1123,7 @@
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
                         <span class="text-xs px-1.5 py-0.5 rounded bg-red-100 text-red-700" title="Vulnerabilidad">V:${o.vScore}</span>
-                        <span class="text-xs px-1.5 py-0.5 rounded bg-purple-100 text-purple-700" title="Susceptibilidad">S:${o.sDisplay}</span>
+                        <span class="text-xs px-1.5 py-0.5 rounded bg-purple-100 text-purple-700" title="Susceptibilidad a la IA">S:${o.sDisplay}</span>
                         <span class="text-xs px-1.5 py-0.5 rounded bg-green-100 text-green-700" title="Adaptabilidad">A:${o.aScore}</span>
                     </div>
                     <span class="w-3 h-3 rounded-full shrink-0" style="background:${o.zoneColorDisplay}"></span>
