@@ -465,7 +465,7 @@ Este prototipo corresponde a la **Fase 1** de un marco de análisis de 5 fases p
 
 ## Créditos
 
-Análisis desarrollado por **Carlos Miranda Levy** ([thesocialentrepreneur.com](https://thesocialentrepreneur.com)) / **CEMI.ai** (Collectively Enhanced Multiple Intelligence) en colaboración con **Sanba Development**.
+Análisis desarrollado por [**Carlos Miranda Levy**](https://thesocialentrepreneur.com) / [**CEMI.ai**](https://cemi.ai) (Collectively Enhanced Multiple Intelligence) en colaboración con **Sanba Development**.
 
 Datos: Sanba Development RD Job Visualizer (757K+ registros, 12 sectores, 14+ fuentes gubernamentales).
 
