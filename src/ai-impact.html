@@ -402,6 +402,7 @@
                         <li>Los scores AIOE se asignan por coincidencia de palabras clave; no son modelos entrenados.</li>
                         <li>Sectores con menos de 50 registros en la fuente usan valores estimados (indicados con borde punteado).</li>
                         <li>Los datos salariales reflejan promedios sectoriales, no salarios por ocupaci&oacute;n espec&iacute;fica.</li>
+                        <li><strong>Umbral de representatividad salarial:</strong> Sectores con menos de 500 registros usan proxies salariales (estimaciones basadas en ENCFT/TSS) en lugar de su promedio real, ya que muestras peque&ntilde;as no son representativas del sector completo. Ejemplo: Educaci&oacute;n (3,916 registros de INESDYC) usa datos reales; Manufactura (68 registros de CNZFE) usa proxy.</li>
                         <li>Las tasas de informalidad son estimaciones basadas en la ENCFT del Banco Central.</li>
                     </ul>
 
@@ -1196,7 +1197,7 @@
             salud: 35000, educacion: 28000, servicios_financieros: 55000,
             transporte_y_logistica: 20000, otros_servicios: 25000
         };
-        const maxSalary = Math.max(...computed.sectors.map(s => s.salaryAvg || salaryProxyMap[s.key] || 25000));
+        const maxSalary = Math.max(...computed.sectors.map(s => (s.totalRecords >= 500 && s.salaryAvg) ? s.salaryAvg : (salaryProxyMap[s.key] || 25000)));
 
         // Build radar data
         function sectorToRadar(sec) {
@@ -1214,7 +1215,7 @@
                 salud: 35000, educacion: 28000, servicios_financieros: 55000,
                 transporte_y_logistica: 20000, otros_servicios: 25000
             };
-            const salary = sec.salaryAvg || salaryProxy[sec.key] || 25000;
+            const salary = (sec.totalRecords >= 500 && sec.salaryAvg) ? sec.salaryAvg : (salaryProxy[sec.key] || 25000);
             return [
                 sec.vDisplay || 0,
                 sec.sDisplay || 0,

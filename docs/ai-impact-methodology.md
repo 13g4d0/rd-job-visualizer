@@ -54,8 +54,9 @@ Mide la capacidad y viabilidad de transición a otras áreas laborales.
 
 1. **TAF=1.0:** No se ajusta por diferencias en composición de tareas entre RD y EE.UU.
 2. **Datos mixtos:** Algunos scores usan datos a nivel de ocupación; otros usan proxies sectoriales
-3. **A-Score simplificado:** No incorpora infraestructura de reentrenamiento (INFOTEP), movilidad geográfica, ni factor etario
-4. **Informalidad como factor indirecto:** El prototipo captura informalidad como vulnerabilidad pero no modela los efectos indirectos de la IA en mercados informales (compresión de mercado por competidores formales que adoptan IA)
+3. **Umbral de representatividad salarial (≥500 registros):** Sectores con menos de 500 registros utilizan proxies salariales (estimaciones basadas en ENCFT/TSS) en lugar de sus promedios reales, ya que muestras pequeñas no son representativas del sector completo. Esto evita distorsiones como datos de CNZFE (68 registros) o INESDYC que no reflejan el espectro salarial completo del sector.
+4. **A-Score simplificado:** No incorpora infraestructura de reentrenamiento (INFOTEP), movilidad geográfica, ni factor etario
+5. **Informalidad como factor indirecto:** El prototipo captura informalidad como vulnerabilidad pero no modela los efectos indirectos de la IA en mercados informales (compresión de mercado por competidores formales que adoptan IA)
 
 ## Referencias
 
