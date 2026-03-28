@@ -62,8 +62,6 @@
         .search-highlight { stroke: #2563eb !important; stroke-width: 3px !important; filter: drop-shadow(0 0 6px rgba(37,99,235,0.5)); }
         .search-dim { opacity: 0.15 !important; }
 
-        .play-btn { transition: all 0.2s ease; }
-        .play-btn.playing { background: #DC2626 !important; }
 
         .radar-axis line { stroke: #e2e8f0; }
         .radar-axis text { fill: #64748b; font-size: 10px; }
@@ -140,8 +138,19 @@
     <!-- ============ MAIN CONTENT ============ -->
     <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-8 w-full">
 
+        <!-- ---- DASHBOARD COLLAPSIBLE ---- -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-8">
+            <button id="dashboard-toggle" class="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900">Dashboard de Impacto</h2>
+                    <p class="text-sm text-slate-500 mt-0.5">Indicadores, controles, mapa de vulnerabilidad y desglose sectorial</p>
+                </div>
+                <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform" id="dashboard-chevron"></i>
+            </button>
+            <div id="dashboard-content" class="px-5 pb-5">
+
         <!-- ---- GAUGES ---- -->
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-6">
+        <div class="bg-slate-50 rounded-xl p-5 mb-6">
             <h2 class="text-lg font-bold text-slate-900 mb-1">Indicadores Nacionales</h2>
             <p class="text-sm text-slate-500 mb-4">Promedio nacional ponderado por cantidad de trabajadores en cada ocupaci&oacute;n (escala 0-100)</p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -173,7 +182,7 @@
         </div>
 
         <!-- ---- CONTROLS BAR ---- -->
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-6">
+        <div class="bg-slate-50 rounded-xl p-5 mb-6">
             <div class="flex flex-col lg:flex-row gap-5">
                 <!-- Temporal -->
                 <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
@@ -186,10 +195,6 @@
                         <button class="temporal-btn rounded-md px-3 py-1.5 text-sm font-medium text-slate-600" data-period="medium">Medio (2028-32)</button>
                         <button class="temporal-btn rounded-md px-3 py-1.5 text-sm font-medium text-slate-600" data-period="long">Largo (2032+)</button>
                     </div>
-                    <button id="play-btn" class="play-btn flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium bg-blue-600 text-white hover:bg-blue-700" title="Animar transici&oacute;n temporal">
-                        <i data-lucide="play" class="w-3.5 h-3.5" id="play-icon"></i>
-                        <span id="play-label">Animar</span>
-                    </button>
                 </div>
                 <!-- Adoption speed -->
                 <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
@@ -214,14 +219,14 @@
         </div>
 
         <!-- Zone distribution bar -->
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-6">
+        <div class="bg-slate-50 rounded-xl p-5 mb-6">
             <p class="text-sm font-semibold text-slate-700 mb-3">Distribuci&oacute;n de trabajadores por zona de riesgo</p>
             <div id="zone-bar" class="w-full h-8 rounded-lg overflow-hidden flex"></div>
             <div id="zone-legend" class="flex flex-wrap gap-x-5 gap-y-1 mt-3 text-xs text-slate-600"></div>
         </div>
 
         <!-- ---- SCATTER PLOT ---- -->
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 mb-4">
+        <div class="bg-slate-50 rounded-xl p-4 sm:p-6 mb-4">
             <div class="flex items-baseline justify-between flex-wrap gap-2 mb-1">
                 <h2 class="text-lg font-bold text-slate-900">Mapa de Vulnerabilidad vs. Susceptibilidad a IA</h2>
                 <span id="bubble-count" class="text-sm font-medium text-slate-500"></span>
@@ -244,7 +249,7 @@
         </div>
 
         <!-- ---- SECTOR TABLE ---- -->
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-8">
+        <div class="bg-slate-50 rounded-xl overflow-hidden mb-4">
             <div class="px-5 py-4 border-b border-slate-100">
                 <h2 class="text-lg font-bold text-slate-900">Desglose por Sector</h2>
                 <p class="text-sm text-slate-500 mt-0.5">Scores promedio ponderados por sector econ&oacute;mico (clic en un sector para filtrar el gr&aacute;fico)</p>
@@ -275,6 +280,9 @@
                 </div>
             </div>
         </div>
+
+            </div> <!-- end dashboard-content -->
+        </div> <!-- end dashboard collapsible -->
 
         <!-- ---- OCCUPATION DETAIL PANEL ---- -->
         <div id="occupation-detail" class="detail-panel bg-white rounded-2xl border border-slate-200 shadow-sm mb-8 px-6"></div>
@@ -503,7 +511,6 @@
     let activeSectorFilter = null;
     let currentAdoption = 'average';
     let searchQuery = '';
-    let playInterval = null;
     let radarSelections = [];
 
     // Adoption speed multipliers: [short, medium, long]
@@ -1404,36 +1411,6 @@
         });
     }
 
-    // ---- AUTO-PLAY ----
-    function startAutoPlay() {
-        const periods = ['short', 'medium', 'long'];
-        let idx = periods.indexOf(currentPeriod);
-        playInterval = setInterval(() => {
-            idx = (idx + 1) % 3;
-            currentPeriod = periods[idx];
-            document.querySelectorAll('.temporal-btn').forEach(b => {
-                b.classList.toggle('active', b.dataset.period === currentPeriod);
-            });
-            const computed = recomputeForPeriod(allData);
-            updateGauges(computed.global);
-            updateZoneBar(computed.global.zoneDistribution);
-            updateStats(computed);
-            updateScatterPositions(computed);
-            buildSectorTable(computed);
-            renderTop10(computed);
-            if (radarSelections.length > 0) renderRadar(computed);
-        }, 2000);
-        document.getElementById('play-btn').classList.add('playing');
-        document.getElementById('play-label').textContent = 'Detener';
-    }
-
-    function stopAutoPlay() {
-        clearInterval(playInterval);
-        playInterval = null;
-        document.getElementById('play-btn').classList.remove('playing');
-        document.getElementById('play-label').textContent = 'Animar';
-    }
-
     // ---- RENDER ALL ----
     // ---- SCATTER SECTOR FILTER ----
     function buildScatterFilter(computed) {
@@ -1489,7 +1466,6 @@
 
     document.querySelectorAll('.temporal-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            stopAutoPlay();
             document.querySelectorAll('.temporal-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentPeriod = btn.dataset.period;
@@ -1508,9 +1484,6 @@
     });
 
     // ---- PLAY BUTTON ----
-    document.getElementById('play-btn').addEventListener('click', () => {
-        if (playInterval) { stopAutoPlay(); } else { startAutoPlay(); }
-    });
 
     // ---- SEARCH INPUT ----
     document.getElementById('occupation-search').addEventListener('input', (e) => {
@@ -1525,6 +1498,14 @@
     });
 
     // ---- METHODOLOGY TOGGLE ----
+    // ---- DASHBOARD TOGGLE ----
+    document.getElementById('dashboard-toggle').addEventListener('click', () => {
+        const content = document.getElementById('dashboard-content');
+        const chevron = document.getElementById('dashboard-chevron');
+        content.classList.toggle('hidden');
+        chevron.style.transform = content.classList.contains('hidden') ? '' : 'rotate(180deg)';
+    });
+
     document.getElementById('methodology-toggle').addEventListener('click', () => {
         const content = document.getElementById('methodology-content');
         const chevron = document.getElementById('methodology-chevron');
