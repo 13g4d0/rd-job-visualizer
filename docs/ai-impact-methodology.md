@@ -99,7 +99,7 @@ S_mostrado = min(100, AIOE × Velocidad[horizonte] × Intensidad)
 | **Promedio (defecto)** | **×0.35** | **×0.55** | **×0.75** | Adopción se extiende al mercado medio |
 | Rápida | ×0.55 | ×0.75 | ×0.90 | Incentivos fiscales + infraestructura digital aceleran adopción |
 
-Calibrados ~30% por debajo de estimaciones para economías desarrolladas para reflejar la realidad dominicana (ver sección "Factores que Impactan la Adopción de IA en RD").
+Calibrados ~10-17% por debajo de estimaciones para economías desarrolladas para reflejar la realidad dominicana (ver sección "Factores que Impactan la Adopción de IA en RD").
 
 **Intensidad de Adopción** — qué tan profundamente penetra la IA en cada ocupación cuando llega:
 
@@ -334,7 +334,7 @@ A medida que empresas formales grandes adoptan IA y reportan ganancias de produc
 
 ### Calibración del Modelo para RD
 
-Basado en estos factores, los multiplicadores de velocidad están calibrados ~30% por debajo de las estimaciones para economías desarrolladas:
+Basado en estos factores, los multiplicadores de velocidad están calibrados ~10-17% por debajo de las estimaciones para economías desarrolladas:
 
 - **Escenario por defecto** (Promedio + Medio + Moderada): **×0.55** — reconoce que RD adoptará IA más lentamente que EE.UU./Europa, pero que el sector formal y las MNCs aceleran el proceso.
 - **Escenario pesimista máximo** (Rápida + Largo + Fuerte): **×1.125** — representa un futuro donde los factores aceleradores dominan y RD converge con tasas de adopción regionales.
