@@ -259,6 +259,50 @@
                 <div id="top-secure" class="divide-y divide-slate-100"></div>
             </div>
         </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-purple-100 bg-purple-50/50">
+                    <h2 class="text-base font-bold text-purple-800 flex items-center gap-2">
+                        <i data-lucide="brain-circuit" class="w-4 h-4"></i>
+                        Top 10 M&aacute;s Susceptibles a Impacto de la IA
+                    </h2>
+                    <p class="text-xs text-purple-600 mt-0.5">Ocupaciones con mayor exposici&oacute;n a automatizaci&oacute;n por IA</p>
+                </div>
+                <div id="top-susceptible" class="divide-y divide-slate-100"></div>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-blue-100 bg-blue-50/50">
+                    <h2 class="text-base font-bold text-blue-800 flex items-center gap-2">
+                        <i data-lucide="shield" class="w-4 h-4"></i>
+                        Top 10 Menos Susceptibles a Impacto por la IA
+                    </h2>
+                    <p class="text-xs text-blue-600 mt-0.5">Ocupaciones con menor exposici&oacute;n a automatizaci&oacute;n por IA</p>
+                </div>
+                <div id="top-not-susceptible" class="divide-y divide-slate-100"></div>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-emerald-100 bg-emerald-50/50">
+                    <h2 class="text-base font-bold text-emerald-800 flex items-center gap-2">
+                        <i data-lucide="trending-up" class="w-4 h-4"></i>
+                        Top 10 con Mayor Adaptabilidad
+                    </h2>
+                    <p class="text-xs text-emerald-600 mt-0.5">Ocupaciones con mayor capacidad de reconversi&oacute;n</p>
+                </div>
+                <div id="top-adaptable" class="divide-y divide-slate-100"></div>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-amber-100 bg-amber-50/50">
+                    <h2 class="text-base font-bold text-amber-800 flex items-center gap-2">
+                        <i data-lucide="trending-down" class="w-4 h-4"></i>
+                        Top 10 con Menor Adaptabilidad
+                    </h2>
+                    <p class="text-xs text-amber-600 mt-0.5">Ocupaciones con menor capacidad de reconversi&oacute;n</p>
+                </div>
+                <div id="top-not-adaptable" class="divide-y divide-slate-100"></div>
+            </div>
+        </div>
 
         <!-- ---- RADAR CHART ---- -->
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 mb-8">
@@ -1062,12 +1106,6 @@
 
     // ---- TOP 10 RANKINGS ----
     function renderTop10(computed) {
-        const sorted = [...computed.occupations].sort((a, b) => {
-            const riskA = a.vScore + a.sDisplay - a.aScore;
-            const riskB = b.vScore + b.sDisplay - b.aScore;
-            return riskB - riskA;
-        });
-
         function renderList(container, items, colorClass) {
             container.innerHTML = items.map((o, i) => `
                 <div class="flex items-center gap-3 px-5 py-3 rank-enter" style="animation-delay: ${i * 40}ms">
@@ -1085,10 +1123,20 @@
                 </div>`).join('');
         }
 
-        const topVulnerable = sorted.slice(0, 10);
-        const topSecure = sorted.slice(-10).reverse();
-        renderList(document.getElementById('top-vulnerable'), topVulnerable, 'text-red-500');
-        renderList(document.getElementById('top-secure'), topSecure, 'text-green-500');
+        // Compound risk (V + S - A)
+        const byRisk = [...computed.occupations].sort((a, b) => (b.vScore + b.sDisplay - b.aScore) - (a.vScore + a.sDisplay - a.aScore));
+        renderList(document.getElementById('top-vulnerable'), byRisk.slice(0, 10), 'text-red-500');
+        renderList(document.getElementById('top-secure'), byRisk.slice(-10).reverse(), 'text-green-500');
+
+        // By S-Score (susceptibility)
+        const bySusceptibility = [...computed.occupations].sort((a, b) => b.sDisplay - a.sDisplay);
+        renderList(document.getElementById('top-susceptible'), bySusceptibility.slice(0, 10), 'text-purple-500');
+        renderList(document.getElementById('top-not-susceptible'), bySusceptibility.slice(-10).reverse(), 'text-blue-500');
+
+        // By A-Score (adaptability)
+        const byAdaptability = [...computed.occupations].sort((a, b) => b.aScore - a.aScore);
+        renderList(document.getElementById('top-adaptable'), byAdaptability.slice(0, 10), 'text-emerald-500');
+        renderList(document.getElementById('top-not-adaptable'), byAdaptability.slice(-10).reverse(), 'text-amber-500');
     }
 
     // ---- RADAR CHART ----
