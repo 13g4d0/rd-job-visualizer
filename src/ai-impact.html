@@ -52,6 +52,25 @@
         .sector-row { cursor: pointer; transition: background 0.15s ease; }
         .sector-row:hover { background: #f8fafc; }
         .sector-row.active { background: #eff6ff; }
+
+        .adoption-btn { transition: all 0.2s ease; }
+        .adoption-btn.active { box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+        .adoption-btn.active[data-speed="slow"] { background: #059669; color: white; }
+        .adoption-btn.active[data-speed="average"] { background: #D97706; color: white; }
+        .adoption-btn.active[data-speed="fast"] { background: #DC2626; color: white; }
+
+        .search-highlight { stroke: #2563eb !important; stroke-width: 3px !important; filter: drop-shadow(0 0 6px rgba(37,99,235,0.5)); }
+        .search-dim { opacity: 0.15 !important; }
+
+        .play-btn { transition: all 0.2s ease; }
+        .play-btn.playing { background: #DC2626 !important; }
+
+        .radar-axis line { stroke: #e2e8f0; }
+        .radar-axis text { fill: #64748b; font-size: 10px; }
+        .radar-polygon { transition: all 0.5s ease; }
+
+        .rank-enter { animation: rankFade 0.3s ease forwards; }
+        @keyframes rankFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     </style>
     <script>
         tailwind.config = {
@@ -89,7 +108,7 @@
             <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
                 <div>
                     <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">Impacto de la IA en el Empleo Dominicano</h1>
-                    <p class="text-slate-400 text-sm mt-2 max-w-2xl">Evaluaci&oacute;n de Vulnerabilidad, Susceptibilidad y Adaptabilidad por ocupaci&oacute;n y sector</p>
+                    <p class="text-slate-400 text-sm mt-2 max-w-2xl">Evaluaci&oacute;n de Vulnerabilidad, Susceptibilidad a la IA y Adaptabilidad por ocupaci&oacute;n y sector</p>
                 </div>
                 <a href="#metodologia" class="flex items-center gap-2 text-slate-400 hover:text-blue-400 transition-colors text-sm shrink-0">
                     <i data-lucide="book-open" class="w-4 h-4"></i>
@@ -107,7 +126,7 @@
                     <p id="stat-sectors" class="text-xl md:text-2xl font-bold text-white mt-0.5">--</p>
                 </div>
                 <div class="stat-item">
-                    <p class="text-slate-500 text-xs uppercase tracking-wide">Trabajadores representados</p>
+                    <p class="text-slate-500 text-xs uppercase tracking-wide">Registros analizados</p>
                     <p id="stat-workers" class="text-xl md:text-2xl font-bold text-white mt-0.5">--</p>
                 </div>
                 <div class="stat-item">
@@ -134,7 +153,7 @@
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col items-center">
                 <svg id="gauge-s" width="140" height="80" viewBox="0 0 140 80"></svg>
                 <p id="gauge-s-value" class="text-3xl font-extrabold mt-2 text-slate-900">--</p>
-                <p class="text-sm text-slate-500 mt-1">S-Score (Susceptibilidad IA)</p>
+                <p class="text-sm text-slate-500 mt-1">S-Score (Susceptibilidad a la IA)</p>
                 <p class="text-xs text-slate-400 mt-0.5">Mayor = m&aacute;s expuesto a IA</p>
             </div>
             <!-- A-Score Gauge -->
@@ -153,28 +172,53 @@
             <div id="zone-legend" class="flex flex-wrap gap-x-5 gap-y-1 mt-3 text-xs text-slate-600"></div>
         </div>
 
-        <!-- ---- TEMPORAL SLIDER ---- -->
-        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-6">
-            <span class="text-sm font-semibold text-slate-700 flex items-center gap-1.5">
-                <i data-lucide="clock" class="w-4 h-4 text-slate-400"></i>
-                Horizonte temporal:
-            </span>
-            <div class="flex bg-slate-200/70 rounded-lg p-1 gap-1">
-                <button class="temporal-btn active rounded-md px-3 py-1.5 text-sm font-medium" data-period="short">
-                    Corto plazo (2026-2028)
-                </button>
-                <button class="temporal-btn rounded-md px-3 py-1.5 text-sm font-medium text-slate-600" data-period="medium">
-                    Mediano plazo (2028-2032)
-                </button>
-                <button class="temporal-btn rounded-md px-3 py-1.5 text-sm font-medium text-slate-600" data-period="long">
-                    Largo plazo (2032+)
-                </button>
+        <!-- ---- CONTROLS BAR ---- -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-6">
+            <div class="flex flex-col lg:flex-row gap-5">
+                <!-- Temporal -->
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                    <span class="text-sm font-semibold text-slate-700 flex items-center gap-1.5 shrink-0">
+                        <i data-lucide="clock" class="w-4 h-4 text-slate-400"></i>
+                        Horizonte:
+                    </span>
+                    <div class="flex bg-slate-200/70 rounded-lg p-1 gap-1">
+                        <button class="temporal-btn active rounded-md px-3 py-1.5 text-sm font-medium" data-period="short">Corto (2026-28)</button>
+                        <button class="temporal-btn rounded-md px-3 py-1.5 text-sm font-medium text-slate-600" data-period="medium">Medio (2028-32)</button>
+                        <button class="temporal-btn rounded-md px-3 py-1.5 text-sm font-medium text-slate-600" data-period="long">Largo (2032+)</button>
+                    </div>
+                    <button id="play-btn" class="play-btn flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium bg-blue-600 text-white hover:bg-blue-700" title="Animar transici&oacute;n temporal">
+                        <i data-lucide="play" class="w-3.5 h-3.5" id="play-icon"></i>
+                        <span id="play-label">Animar</span>
+                    </button>
+                </div>
+                <!-- Adoption speed -->
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                    <span class="text-sm font-semibold text-slate-700 flex items-center gap-1.5 shrink-0">
+                        <i data-lucide="zap" class="w-4 h-4 text-slate-400"></i>
+                        Adopci&oacute;n IA:
+                    </span>
+                    <div class="flex bg-slate-200/70 rounded-lg p-1 gap-1">
+                        <button class="adoption-btn rounded-md px-3 py-1.5 text-sm font-medium text-slate-600" data-speed="slow">Lenta</button>
+                        <button class="adoption-btn active rounded-md px-3 py-1.5 text-sm font-medium" data-speed="average">Promedio</button>
+                        <button class="adoption-btn rounded-md px-3 py-1.5 text-sm font-medium text-slate-600" data-speed="fast">R&aacute;pida</button>
+                    </div>
+                </div>
+                <!-- Search -->
+                <div class="flex items-center gap-2 ml-auto flex-1 max-w-xs">
+                    <div class="relative flex-1">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                        <input id="occupation-search" type="text" placeholder="Buscar ocupaci&oacute;n..." class="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- ---- SCATTER PLOT ---- -->
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 mb-4">
-            <h2 class="text-lg font-bold text-slate-900 mb-1">Mapa de Vulnerabilidad vs. Susceptibilidad a IA</h2>
+            <div class="flex items-baseline justify-between flex-wrap gap-2 mb-1">
+                <h2 class="text-lg font-bold text-slate-900">Mapa de Vulnerabilidad vs. Susceptibilidad a IA</h2>
+                <span id="bubble-count" class="text-sm font-medium text-slate-500"></span>
+            </div>
             <p class="text-sm text-slate-500 mb-4">Cada burbuja representa una ocupaci&oacute;n. El tama&ntilde;o refleja la cantidad de trabajadores.</p>
             <div id="scatter-container" class="w-full" style="min-height: 420px;"></div>
         </div>
@@ -192,6 +236,97 @@
         <!-- ---- OCCUPATION DETAIL PANEL ---- -->
         <div id="occupation-detail" class="detail-panel bg-white rounded-2xl border border-slate-200 shadow-sm mb-8 px-6"></div>
 
+        <!-- ---- TOP 10 RANKINGS ---- -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-red-100 bg-red-50/50">
+                    <h2 class="text-base font-bold text-red-800 flex items-center gap-2">
+                        <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                        Top 10 M&aacute;s Vulnerables
+                    </h2>
+                    <p class="text-xs text-red-600 mt-0.5">Ocupaciones con mayor riesgo compuesto</p>
+                </div>
+                <div id="top-vulnerable" class="divide-y divide-slate-100"></div>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-green-100 bg-green-50/50">
+                    <h2 class="text-base font-bold text-green-800 flex items-center gap-2">
+                        <i data-lucide="shield-check" class="w-4 h-4"></i>
+                        Top 10 M&aacute;s Seguros
+                    </h2>
+                    <p class="text-xs text-green-600 mt-0.5">Ocupaciones con menor exposici&oacute;n a IA</p>
+                </div>
+                <div id="top-secure" class="divide-y divide-slate-100"></div>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-purple-100 bg-purple-50/50">
+                    <h2 class="text-base font-bold text-purple-800 flex items-center gap-2">
+                        <i data-lucide="brain-circuit" class="w-4 h-4"></i>
+                        Top 10 M&aacute;s Susceptibles a Impacto de la IA
+                    </h2>
+                    <p class="text-xs text-purple-600 mt-0.5">Ocupaciones con mayor exposici&oacute;n a automatizaci&oacute;n por IA</p>
+                </div>
+                <div id="top-susceptible" class="divide-y divide-slate-100"></div>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-blue-100 bg-blue-50/50">
+                    <h2 class="text-base font-bold text-blue-800 flex items-center gap-2">
+                        <i data-lucide="shield" class="w-4 h-4"></i>
+                        Top 10 Menos Susceptibles a Impacto por la IA
+                    </h2>
+                    <p class="text-xs text-blue-600 mt-0.5">Ocupaciones con menor exposici&oacute;n a automatizaci&oacute;n por IA</p>
+                </div>
+                <div id="top-not-susceptible" class="divide-y divide-slate-100"></div>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-emerald-100 bg-emerald-50/50">
+                    <h2 class="text-base font-bold text-emerald-800 flex items-center gap-2">
+                        <i data-lucide="trending-up" class="w-4 h-4"></i>
+                        Top 10 con Mayor Adaptabilidad
+                    </h2>
+                    <p class="text-xs text-emerald-600 mt-0.5">Ocupaciones con mayor capacidad de reconversi&oacute;n</p>
+                </div>
+                <div id="top-adaptable" class="divide-y divide-slate-100"></div>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-amber-100 bg-amber-50/50">
+                    <h2 class="text-base font-bold text-amber-800 flex items-center gap-2">
+                        <i data-lucide="trending-down" class="w-4 h-4"></i>
+                        Top 10 con Menor Adaptabilidad
+                    </h2>
+                    <p class="text-xs text-amber-600 mt-0.5">Ocupaciones con menor capacidad de reconversi&oacute;n</p>
+                </div>
+                <div id="top-not-adaptable" class="divide-y divide-slate-100"></div>
+            </div>
+        </div>
+
+        <!-- ---- RADAR CHART ---- -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 mb-8">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900">Comparaci&oacute;n Radar por Sector</h2>
+                    <p class="text-sm text-slate-500 mt-0.5">Selecciona sectores para comparar en 5 dimensiones</p>
+                </div>
+                <button id="radar-clear" class="text-sm text-slate-500 hover:text-red-600 transition-colors flex items-center gap-1">
+                    <i data-lucide="x" class="w-3.5 h-3.5"></i> Limpiar selecci&oacute;n
+                </button>
+            </div>
+            <div id="radar-chips" class="flex flex-wrap gap-2 mb-4"></div>
+            <div id="radar-container" class="w-full flex justify-center" style="min-height: 350px;"></div>
+            <div id="radar-legend" class="flex flex-wrap justify-center gap-4 mt-3 text-xs text-slate-600"></div>
+            <div class="mt-5 pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2 text-xs text-slate-500">
+                <div><strong class="text-slate-700">Vulnerabilidad:</strong> Fragilidad econ&oacute;mica del trabajador (salario, informalidad, educaci&oacute;n, ahorro). Mayor = m&aacute;s fr&aacute;gil.</div>
+                <div><strong class="text-slate-700">Susceptibilidad a IA:</strong> Grado de exposici&oacute;n de la ocupaci&oacute;n a ser automatizada por inteligencia artificial. Mayor = m&aacute;s expuesto.</div>
+                <div><strong class="text-slate-700">Adaptabilidad:</strong> Capacidad de transici&oacute;n a otras &aacute;reas laborales (transferibilidad de habilidades + nivel educativo). Mayor = m&aacute;s adaptable.</div>
+                <div><strong class="text-slate-700">Nivel Salarial:</strong> Salario promedio del sector como porcentaje del sector mejor pagado. 100 = el salario m&aacute;s alto del mercado.</div>
+                <div><strong class="text-slate-700">Formalidad:</strong> Porcentaje de trabajadores con empleo formal (contrato, seguridad social). Mayor = m&aacute;s formalizado.</div>
+            </div>
+        </div>
+
         <!-- ---- SECTOR TABLE ---- -->
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-8">
             <div class="px-5 py-4 border-b border-slate-100">
@@ -203,9 +338,9 @@
                     <thead>
                         <tr class="text-left text-xs text-slate-500 uppercase tracking-wider bg-slate-50/80">
                             <th class="px-5 py-3 font-semibold">Sector</th>
-                            <th class="px-4 py-3 font-semibold text-center">V-Score</th>
-                            <th class="px-4 py-3 font-semibold text-center">S-Score</th>
-                            <th class="px-4 py-3 font-semibold text-center">A-Score</th>
+                            <th class="px-4 py-3 font-semibold text-center">Vulnerabilidad</th>
+                            <th class="px-4 py-3 font-semibold text-center">Susceptibilidad a la IA</th>
+                            <th class="px-4 py-3 font-semibold text-center">Adaptabilidad</th>
                             <th class="px-4 py-3 font-semibold text-center">Zona</th>
                             <th class="px-4 py-3 font-semibold text-right">Empleos</th>
                         </tr>
@@ -213,6 +348,15 @@
                     <tbody id="sector-table-body"></tbody>
                 </table>
             </div>
+        </div>
+
+        <!-- ---- SECTOR EXPLANATIONS ---- -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-8">
+            <div class="px-5 py-4 border-b border-slate-100">
+                <h2 class="text-lg font-bold text-slate-900">An&aacute;lisis por Sector</h2>
+                <p class="text-sm text-slate-500 mt-0.5">Explicaci&oacute;n de Vulnerabilidad, Susceptibilidad a la IA y Adaptabilidad para cada sector econ&oacute;mico</p>
+            </div>
+            <div id="sector-explanations" class="divide-y divide-slate-100"></div>
         </div>
 
         <!-- ---- METHODOLOGY ---- -->
@@ -226,11 +370,11 @@
             </button>
             <div id="methodology-content" class="hidden px-6 pb-6">
                 <div class="prose prose-sm prose-slate max-w-none">
-                    <h3 class="text-base font-bold text-slate-800 mt-0">Scores V/S/A</h3>
+                    <h3 class="text-base font-bold text-slate-800 mt-0">Apreciaciones de Vulnerabilidad, Susceptibilidad a la IA y Adaptabilidad</h3>
                     <ul class="text-slate-600 space-y-2">
-                        <li><strong>V-Score (Vulnerabilidad):</strong> Mide qu&eacute; tan vulnerable es una ocupaci&oacute;n ante disrupciones econ&oacute;micas. Combina: vulnerabilidad de ingreso (35%), informalidad sectorial (30%), nivel educativo (20%) y capacidad de ahorro (15%).</li>
-                        <li><strong>S-Score (Susceptibilidad):</strong> Mide qu&eacute; tan susceptible es la ocupaci&oacute;n a ser automatizada por IA, basado en el &iacute;ndice AI Occupational Exposure (AIOE). Los multiplicadores temporales escalan el score: &times;0.3 (corto plazo), &times;0.6 (mediano) y &times;0.9 (largo plazo).</li>
-                        <li><strong>A-Score (Adaptabilidad):</strong> Mide la capacidad de la fuerza laboral para adaptarse. Combina transferibilidad de habilidades (50%) y nivel educativo (50%).</li>
+                        <li><strong>Vulnerabilidad:</strong> Mide qu&eacute; tan vulnerable es una ocupaci&oacute;n ante disrupciones econ&oacute;micas. Combina: vulnerabilidad de ingreso (35%), informalidad sectorial (30%), nivel educativo (20%) y capacidad de ahorro (15%).</li>
+                        <li><strong>Susceptibilidad a la IA:</strong> Mide qu&eacute; tan susceptible es la ocupaci&oacute;n a ser automatizada por IA, basado en el &iacute;ndice AI Occupational Exposure (AIOE). Los multiplicadores temporales escalan el score: &times;0.3 (corto plazo), &times;0.6 (mediano) y &times;0.9 (largo plazo).</li>
+                        <li><strong>Adaptabilidad:</strong> Mide la capacidad de la fuerza laboral para adaptarse. Combina transferibilidad de habilidades (50%) y nivel educativo (50%).</li>
                     </ul>
 
                     <h3 class="text-base font-bold text-slate-800 mt-6">Zonas de Riesgo</h3>
@@ -258,8 +402,12 @@
                         <li>Los scores AIOE se asignan por coincidencia de palabras clave; no son modelos entrenados.</li>
                         <li>Sectores con menos de 50 registros en la fuente usan valores estimados (indicados con borde punteado).</li>
                         <li>Los datos salariales reflejan promedios sectoriales, no salarios por ocupaci&oacute;n espec&iacute;fica.</li>
+                        <li><strong>Umbral de representatividad salarial:</strong> Sectores con menos de 500 registros usan proxies salariales (estimaciones basadas en ENCFT/TSS) en lugar de su promedio real, ya que muestras peque&ntilde;as no son representativas del sector completo. Ejemplo: Educaci&oacute;n (3,916 registros de INESDYC) usa datos reales; Manufactura (68 registros de CNZFE) usa proxy.</li>
                         <li>Las tasas de informalidad son estimaciones basadas en la ENCFT del Banco Central.</li>
                     </ul>
+
+                    <h3 class="text-base font-bold text-slate-800 mt-6">Agregaci&oacute;n de Rankings</h3>
+                    <p class="text-slate-600">Los rankings Top 10 agregan ocupaciones con el mismo t&iacute;tulo que aparecen en m&uacute;ltiples sectores. Los scores V/S/A se calculan como promedios ponderados por cantidad de trabajadores. Por ejemplo, &ldquo;conserje&rdquo; aparece en 8+ sectores; el ranking muestra una sola entrada con el promedio ponderado de todos los sectores donde existe esa ocupaci&oacute;n. Adicionalmente, se normalizan variantes de g&eacute;nero en los t&iacute;tulos: ocupaciones como &ldquo;supervisor (a)&rdquo; y &ldquo;supervisor&rdquo;, o &ldquo;encargado(a)&rdquo; y &ldquo;encargado&rdquo;, se consolidan en una sola entrada.</p>
 
                     <h3 class="text-base font-bold text-slate-800 mt-6">Cr&eacute;ditos y Referencias</h3>
                     <p class="text-slate-600">An&aacute;lisis desarrollado por <strong>CEMI.ai</strong> en colaboraci&oacute;n con <strong>Sanba Development</strong>.</p>
@@ -333,6 +481,17 @@
     let allData = null;        // Full computeAll result
     let currentPeriod = 'short';
     let activeSectorFilter = null;
+    let currentAdoption = 'average';
+    let searchQuery = '';
+    let playInterval = null;
+    let radarSelections = [];
+
+    // Adoption speed multipliers: [short, medium, long]
+    const ADOPTION_SPEEDS = {
+        slow:    { short: 0.15, medium: 0.35, long: 0.60, label: 'Lenta', desc: 'Adopción lenta: solo grandes MNCs y gobierno' },
+        average: { short: 0.30, medium: 0.60, long: 0.90, label: 'Promedio', desc: 'Adopción promedio: tendencia actual proyectada' },
+        fast:    { short: 0.50, medium: 0.80, long: 0.95, label: 'Rápida', desc: 'Adopción rápida: incentivos fiscales + infraestructura digital' }
+    };
 
     // ---- REMAP SECTOR COLORS for computeAll ----
     // The scoring engine uses sector-colors IDs as lookup keys, but metrics.json uses underscore keys.
@@ -344,12 +503,12 @@
         });
     }
 
-    // ---- RECOMPUTE with temporal period ----
+    // ---- RECOMPUTE with temporal period + adoption speed ----
     function recomputeForPeriod(data) {
-        // Recalculate S-scores and zones based on temporal period
-        const sField = currentPeriod === 'short' ? 'sScoreShort' : currentPeriod === 'medium' ? 'sScoreMedium' : 'sScoreLong';
+        const speed = ADOPTION_SPEEDS[currentAdoption];
+        const multiplier = speed[currentPeriod];
         const occupations = data.occupations.map(occ => {
-            const sVal = occ[sField];
+            const sVal = Math.round(occ.sScore * multiplier);
             const zone = classifyZone(occ.vScore, sVal, occ.aScore);
             return { ...occ, sDisplay: sVal, zoneDisplay: zone, zoneColorDisplay: ZONE_COLORS[zone], zoneNameDisplay: ZONE_LABELS[zone] };
         });
@@ -594,6 +753,9 @@
             occs = occs.filter(o => o.sector === activeSectorFilter);
         }
 
+        // Update bubble count
+        document.getElementById('bubble-count').textContent = `Total de Perfiles Representados: ${occs.length}`;
+
         // Sort so smaller bubbles render on top
         occs = [...occs].sort((a, b) => b.count - a.count);
 
@@ -647,6 +809,8 @@
                 showOccupationDetail(d);
             }
         });
+
+        setTimeout(applySearch, 50);
     }
 
     function updateScatterPositions(computed) {
@@ -761,7 +925,7 @@
                         { label: 'Educación', weight: '20%' },
                         { label: 'Ahorro', weight: '15%' }
                     ])}
-                    ${buildScoreBar('S-Score (Susceptibilidad)', d.sDisplay, ['#6366F1', '#C084FC'], [])}
+                    ${buildScoreBar('S-Score (Susceptibilidad a la IA)', d.sDisplay, ['#6366F1', '#C084FC'], [])}
                     ${buildScoreBar('A-Score (Adaptabilidad)', d.aScore, ['#DC2626', '#10B981'], [
                         { label: 'Habilidades', weight: '50%' },
                         { label: 'Educación', weight: '50%' }
@@ -822,7 +986,7 @@
                 <td class="px-4 py-3 text-center"><span class="inline-block px-2 py-0.5 rounded text-xs font-semibold ${sec.sDisplay > 55 ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-600'}">${sec.sDisplay}</span></td>
                 <td class="px-4 py-3 text-center"><span class="inline-block px-2 py-0.5 rounded text-xs font-semibold ${sec.aDisplay >= 55 ? 'bg-green-100 text-green-700' : sec.aDisplay >= 40 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}">${sec.aDisplay}</span></td>
                 <td class="px-4 py-3 text-center"><span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold text-white" style="background:${sec.zoneColorDisplay}">${sec.zoneNameDisplay}</span></td>
-                <td class="px-4 py-3 text-right text-slate-600 font-medium">${fmt.format(sec.totalEmpleos)}</td>
+                <td class="px-4 py-3 text-right text-slate-600 font-medium">${fmt.format(sec.totalRecords)}</td>
             </tr>`;
         }).join('');
 
@@ -840,6 +1004,416 @@
         });
     }
 
+    // ---- SECTOR EXPLANATIONS ----
+    const SECTOR_EXPLANATIONS = {
+        administracion_publica_y_defensa: {
+            v: "Vulnerabilidad moderada. Los empleados p\u00fablicos gozan de estabilidad laboral y beneficios formales, pero muchos cargos operativos (conserjes, choferes, coordinadores barriales) tienen salarios cercanos al m\u00ednimo, limitando su capacidad de ahorro. La informalidad es m\u00ednima (5%), lo cual reduce la exposici\u00f3n econ\u00f3mica.",
+            s: "Susceptibilidad media-alta. Las funciones administrativas (digitaci\u00f3n, secretar\u00edas, tr\u00e1mites) son altamente automatizables. Sin embargo, roles de coordinaci\u00f3n comunitaria y presencia f\u00edsica (seguridad, mantenimiento) tienen menor exposici\u00f3n. La adopci\u00f3n de IA en el sector p\u00fablico dominicano tender\u00e1 a ser m\u00e1s lenta que en el privado.",
+            a: "Adaptabilidad moderada. La estructura burocr\u00e1tica dificulta la reconversi\u00f3n r\u00e1pida, pero el volumen de empleados y los programas de capacitaci\u00f3n estatal (INAP, MAP) ofrecen canales de actualizaci\u00f3n. Los trabajadores con funciones cognitivas tienen mayor transferibilidad de habilidades."
+        },
+        agricultura_y_agroindustria: {
+            v: "Vulnerabilidad muy alta. El sector agr\u00edcola dominicano tiene la tasa de informalidad m\u00e1s alta (80%), salarios muy por debajo de la canasta b\u00e1sica, y acceso limitado a protecci\u00f3n social. Los trabajadores rurales enfrentan estacionalidad y falta de diversificaci\u00f3n de ingresos.",
+            s: "Susceptibilidad baja. Las tareas agr\u00edcolas manuales (siembra, cosecha, ganader\u00eda) son dif\u00edciles de automatizar con IA en el corto plazo. La agricultura de precisi\u00f3n y drones podr\u00edan impactar a mediano plazo, pero la estructura minifundista dominicana retarda la adopci\u00f3n tecnol\u00f3gica.",
+            a: "Adaptabilidad baja. Niveles educativos bajos, limitada exposici\u00f3n a tecnolog\u00eda digital, y movilidad geogr\u00e1fica restringida dificultan la transici\u00f3n a otras ocupaciones. Programas como los del IDIAF y el Ministerio de Agricultura son cr\u00edticos para la reconversi\u00f3n."
+        },
+        comercio: {
+            v: "Vulnerabilidad alta. El comercio dominicano es mayoritariamente informal (60%), con colmados, vendedores ambulantes y peque\u00f1os comerciantes que operan sin protecci\u00f3n social. Los salarios tienden a ser bajos y variables, especialmente fuera de las grandes cadenas.",
+            s: "Susceptibilidad moderada. El comercio electr\u00f3nico y sistemas de autoservicio amenazan roles como cajeros y dependientes, pero el comercio informal dominicano (colmados, mercados) depende de relaciones personales dif\u00edcilmente sustituibles por IA.",
+            a: "Adaptabilidad moderada. Las habilidades de atenci\u00f3n al cliente y negociaci\u00f3n son transferibles. Los comerciantes informales muestran alta resiliencia y capacidad de adaptaci\u00f3n a condiciones cambiantes, aunque carecen de formaci\u00f3n t\u00e9cnica formal."
+        },
+        construccion: {
+            v: "Vulnerabilidad muy alta. La construcci\u00f3n tiene la informalidad m\u00e1s alta del pa\u00eds (85.4%), con jornaleros, alba\u00f1iles y obreros sin contratos formales ni seguridad social. Los salarios son bajos y el empleo es altamente estacional e inestable.",
+            s: "Susceptibilidad baja. Los oficios de construcci\u00f3n (alba\u00f1iler\u00eda, plomer\u00eda, electricidad) requieren destreza f\u00edsica y adaptaci\u00f3n a condiciones variables que la IA no puede replicar a corto plazo. La prefabricaci\u00f3n y el BIM impactar\u00e1n m\u00e1s a la ingenier\u00eda y dise\u00f1o que al trabajo manual.",
+            a: "Adaptabilidad baja. La especializaci\u00f3n en oficios manuales limita la transferibilidad. Sin embargo, la demanda constante de construcci\u00f3n en RD y programas como los de INFOTEP ofrecen rutas de formalizaci\u00f3n y actualizaci\u00f3n t\u00e9cnica."
+        },
+        manufactura_y_zonas_francas: {
+            v: "Vulnerabilidad moderada. Las zonas francas ofrecen empleo formal con beneficios b\u00e1sicos, pero los salarios son relativamente bajos. La informalidad es m\u00ednima (5% en ZF) comparada con otros sectores, proporcionando cierta estabilidad.",
+            s: "Susceptibilidad moderada. Las l\u00edneas de ensamblaje y operaciones repetitivas son automatizables, pero RD compite por mano de obra de bajo costo, lo que retarda la inversi\u00f3n en automatizaci\u00f3n. Los sectores de dispositivos m\u00e9dicos y electr\u00f3nica son m\u00e1s vulnerables que textil y tabaco.",
+            a: "Adaptabilidad moderada. Los trabajadores de ZF desarrollan disciplina industrial y h\u00e1bitos laborales formales, pero las habilidades espec\u00edficas de ensamblaje tienen transferibilidad limitada. INFOTEP y los programas de las propias zonas francas son veh\u00edculos de reconversi\u00f3n."
+        },
+        tecnologia_y_telecomunicaciones: {
+            v: "Vulnerabilidad baja. El sector TIC ofrece los salarios m\u00e1s altos, empleo formal, y baja informalidad (15%). Los profesionales tecnol\u00f3gicos tienen alta capacidad de ahorro y acceso a beneficios. Es el sector con menor fragilidad econ\u00f3mica estructural.",
+            s: "Susceptibilidad alta. Parad\u00f3jicamente, los profesionales de TIC son altamente susceptibles: la programaci\u00f3n, an\u00e1lisis de datos y soporte t\u00e9cnico son funciones que la IA generativa ya est\u00e1 transformando. Los desarrolladores que no se adapten a herramientas de IA ser\u00e1n los m\u00e1s impactados.",
+            a: "Adaptabilidad alta. Educaci\u00f3n superior, habilidades cognitivas transferibles, cultura de aprendizaje continuo, y familiaridad con tecnolog\u00eda hacen de este sector el m\u00e1s adaptable. La clave es la transici\u00f3n de \u201cescribir c\u00f3digo\u201d a \u201corquestar sistemas de IA\u201d."
+        },
+        salud: {
+            v: "Vulnerabilidad moderada. El sector salud tiene informalidad de 30%, con disparidades entre m\u00e9dicos especialistas (altos ingresos) y personal de apoyo (enfermeras, t\u00e9cnicos) con salarios m\u00e1s modestos. La demanda constante de servicios de salud proporciona estabilidad laboral.",
+            s: "Susceptibilidad media. La IA impactar\u00e1 el diagn\u00f3stico (radiolog\u00eda, patolog\u00eda) y funciones administrativas, pero la atenci\u00f3n directa al paciente, cirug\u00eda y enfermer\u00eda requieren contacto humano irremplazable. Los farmac\u00e9uticos enfrentan mayor exposici\u00f3n que los cirujanos.",
+            a: "Adaptabilidad alta. Educaci\u00f3n prolongada, habilidades cl\u00ednicas transferibles y la naturaleza regulada de la profesi\u00f3n facilitan la adaptaci\u00f3n. La IA se convertir\u00e1 en herramienta complementaria m\u00e1s que sustitutiva en la mayor\u00eda de las especialidades m\u00e9dicas."
+        },
+        educacion: {
+            v: "Vulnerabilidad moderada. Los educadores tienen empleo relativamente estable (especialmente en el sector p\u00fablico), pero salarios modestos. La informalidad es baja (20%), con protecci\u00f3n social a trav\u00e9s del MINERD y las universidades.",
+            s: "Susceptibilidad moderada. La IA transformar\u00e1 la entrega de contenidos y evaluaci\u00f3n, pero el rol del maestro como mentor, motivador y gu\u00eda socioemocional es dif\u00edcilmente automatizable. T\u00e9cnicos docentes y funciones administrativas educativas son m\u00e1s vulnerables.",
+            a: "Adaptabilidad moderada-alta. Los educadores tienen habilidades de comunicaci\u00f3n y formaci\u00f3n altamente transferibles. La integraci\u00f3n de herramientas de IA en la ense\u00f1anza es una oportunidad natural de evoluci\u00f3n profesional, no una amenaza existencial."
+        },
+        servicios_financieros: {
+            v: "Vulnerabilidad baja. El sector financiero ofrece los salarios m\u00e1s altos del mercado dominicano, con empleo altamente formal (90%) y acceso completo a protecci\u00f3n social. La capacidad de ahorro es la m\u00e1s alta de todos los sectores.",
+            s: "Susceptibilidad alta. An\u00e1lisis financiero, evaluaci\u00f3n de cr\u00e9dito, contabilidad, y operaciones bancarias rutinarias son altamente automatizables. Los chatbots y robo-advisors ya est\u00e1n transformando la banca dominicana. Analistas financieros y contadores enfrentan la mayor exposici\u00f3n.",
+            a: "Adaptabilidad alta. Alto nivel educativo, habilidades anal\u00edticas transferibles y cultura corporativa de capacitaci\u00f3n facilitan la transici\u00f3n. El reto es pasar de ejecutar an\u00e1lisis a supervisar y validar an\u00e1lisis generados por IA."
+        },
+        transporte_y_logistica: {
+            v: "Vulnerabilidad alta. El transporte dominicano tiene alta informalidad (70%), con choferes de concho, motoconchistas y transportistas independientes sin protecci\u00f3n social. Los salarios son bajos y los costos operativos (combustible, mantenimiento) erosionan los ingresos.",
+            s: "Susceptibilidad moderada-baja. Los veh\u00edculos aut\u00f3nomos impactar\u00e1n a largo plazo, pero la infraestructura vial dominicana y el marco regulatorio retardar\u00e1n significativamente la adopci\u00f3n. La log\u00edstica y optimizaci\u00f3n de rutas s\u00ed ser\u00e1n transformadas por IA m\u00e1s r\u00e1pidamente.",
+            a: "Adaptabilidad baja. La especializaci\u00f3n en conducci\u00f3n tiene transferibilidad limitada. La transici\u00f3n requerir\u00e1 programas masivos de reconversi\u00f3n, especialmente para los aproximadamente 200,000 motoconchistas del pa\u00eds."
+        },
+        turismo_y_hosteleria: {
+            v: "Vulnerabilidad alta. A pesar de ser el principal generador de divisas de RD, el sector tur\u00edstico tiene alta informalidad (55%), empleo estacional, y salarios bajos para personal operativo. La dependencia de propinas y la estacionalidad aumentan la fragilidad.",
+            s: "Susceptibilidad moderada-baja. La hospitalidad, atenci\u00f3n personalizada y experiencias culturales son dif\u00edcilmente automatizables. Check-in automatizado y chatbots de reservas impactar\u00e1n funciones administrativas, pero meseros, cocineros y personal de animaci\u00f3n mantienen baja exposici\u00f3n.",
+            a: "Adaptabilidad moderada. Las habilidades interpersonales, idiomas y orientaci\u00f3n al servicio son transferibles a otros sectores de servicios. El turismo dominicano est\u00e1 evolucionando hacia experiencias premium que valoran m\u00e1s el toque humano."
+        },
+        otros_servicios: {
+            v: "Vulnerabilidad alta. Esta categor\u00eda residual agrupa servicios diversos con alta informalidad (54%), incluyendo trabajo dom\u00e9stico, reparaciones, servicios personales y actividades comunitarias. Los salarios son generalmente bajos y la protecci\u00f3n social limitada.",
+            s: "Susceptibilidad variable. Desde servicios altamente automatizables (procesamiento de datos) hasta pr\u00e1cticamente inmunes a la IA (peluquer\u00eda, plomer\u00eda). El promedio sectorial enmascara una gran dispersi\u00f3n interna.",
+            a: "Adaptabilidad variable. Depende fuertemente de la ocupaci\u00f3n espec\u00edfica. Los servicios manuales especializados (electricistas, mec\u00e1nicos) tienen demanda estable, mientras que los servicios gen\u00e9ricos enfrentan mayor presi\u00f3n competitiva."
+        }
+    };
+
+    function renderSectorExplanations(computed) {
+        const container = document.getElementById('sector-explanations');
+        container.innerHTML = computed.sectors.map(sec => {
+            const exp = SECTOR_EXPLANATIONS[sec.key];
+            if (!exp) return '';
+            return `
+            <div class="sector-explanation">
+                <button onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.chevron-icon').classList.toggle('rotate-180')" class="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style="background:${sec.color}20">
+                            <i data-lucide="${sec.icon}" class="w-4 h-4" style="color:${sec.color}"></i>
+                        </div>
+                        <span class="font-semibold text-slate-800">${sec.name}</span>
+                        <span class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold text-white" style="background:${sec.zoneColorDisplay}">${sec.zoneNameDisplay}</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 chevron-icon transition-transform"></i>
+                </button>
+                <div class="hidden px-5 pb-5">
+                    <div class="grid gap-4 sm:grid-cols-3 ml-11">
+                        <div class="bg-red-50/60 rounded-xl p-4 border border-red-100">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="inline-block w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                                <h4 class="font-bold text-sm text-red-800">Vulnerabilidad <span class="font-normal text-red-600">(${sec.vDisplay})</span></h4>
+                            </div>
+                            <p class="text-sm text-slate-600 leading-relaxed">${exp.v}</p>
+                        </div>
+                        <div class="bg-purple-50/60 rounded-xl p-4 border border-purple-100">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="inline-block w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                                <h4 class="font-bold text-sm text-purple-800">Susceptibilidad a la IA <span class="font-normal text-purple-600">(${sec.sDisplay})</span></h4>
+                            </div>
+                            <p class="text-sm text-slate-600 leading-relaxed">${exp.s}</p>
+                        </div>
+                        <div class="bg-green-50/60 rounded-xl p-4 border border-green-100">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="inline-block w-2.5 h-2.5 rounded-full bg-green-500"></span>
+                                <h4 class="font-bold text-sm text-green-800">Adaptabilidad <span class="font-normal text-green-600">(${sec.aDisplay})</span></h4>
+                            </div>
+                            <p class="text-sm text-slate-600 leading-relaxed">${exp.a}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+        lucide.createIcons();
+    }
+
+    // ---- TOP 10 RANKINGS ----
+    function renderTop10(computed) {
+        // Aggregate occupations with same title across sectors (weighted average by count)
+        // Normalizes gender-variant titles: "supervisor (a)" → "supervisor", "encargado(a)" → "encargado"
+        function normalizeGenderVariant(title) {
+            return title.replace(/\s*\(a\)\s*/gi, ' ').replace(/\s+/g, ' ').trim();
+        }
+
+        function aggregateByTitle(occupations) {
+            const map = {};
+            for (const o of occupations) {
+                const key = normalizeGenderVariant(o.title);
+                if (!map[key]) {
+                    map[key] = { title: key, totalCount: 0, wV: 0, wS: 0, wA: 0, sectors: [], zoneColorDisplay: o.zoneColorDisplay };
+                }
+                const m = map[key];
+                m.totalCount += o.count;
+                m.wV += o.vScore * o.count;
+                m.wS += o.sDisplay * o.count;
+                m.wA += o.aScore * o.count;
+                m.sectors.push(o.sectorShortName);
+            }
+            return Object.values(map).map(m => {
+                const c = m.totalCount || 1;
+                const vScore = Math.round(m.wV / c);
+                const sDisplay = Math.round(m.wS / c);
+                const aScore = Math.round(m.wA / c);
+                const zone = classifyZone(vScore, sDisplay, aScore);
+                const uniqueSectors = [...new Set(m.sectors)];
+                return {
+                    title: m.title,
+                    count: m.totalCount,
+                    vScore, sDisplay, aScore,
+                    zoneColorDisplay: ZONE_COLORS[zone],
+                    sectorLabel: uniqueSectors.length > 2
+                        ? uniqueSectors.slice(0, 2).join(', ') + ' +' + (uniqueSectors.length - 2)
+                        : uniqueSectors.join(', ')
+                };
+            });
+        }
+
+        const aggregated = aggregateByTitle(computed.occupations);
+
+        // Track how many items each list is showing
+        const listState = {};
+
+        function renderList(containerId, allItems, colorClass, startIndex) {
+            startIndex = startIndex || 0;
+            const container = document.getElementById(containerId);
+            const showing = startIndex + 10;
+            const items = allItems.slice(startIndex, showing);
+            const hasMore = allItems.length > showing;
+
+            let html = items.map((o, i) => `
+                <div class="flex items-center gap-3 px-5 py-3 rank-enter" style="animation-delay: ${i * 40}ms">
+                    <span class="text-lg font-bold ${colorClass} w-6 text-center">${startIndex + i + 1}</span>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-sm text-slate-800 capitalize truncate">${o.title}</p>
+                        <p class="text-xs text-slate-500 truncate">${o.sectorLabel} &middot; ${fmt.format(o.count)} trab.</p>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span class="text-xs px-1.5 py-0.5 rounded bg-red-100 text-red-700" title="Vulnerabilidad">V:${o.vScore}</span>
+                        <span class="text-xs px-1.5 py-0.5 rounded bg-purple-100 text-purple-700" title="Susceptibilidad a la IA">S:${o.sDisplay}</span>
+                        <span class="text-xs px-1.5 py-0.5 rounded bg-green-100 text-green-700" title="Adaptabilidad">A:${o.aScore}</span>
+                    </div>
+                    <span class="w-3 h-3 rounded-full shrink-0" style="background:${o.zoneColorDisplay}"></span>
+                </div>`).join('');
+
+            if (hasMore || startIndex > 0) {
+                html += `<div class="flex justify-center gap-3 px-5 py-3 border-t border-slate-100">`;
+                if (startIndex > 0) {
+                    html += `<button class="top10-prev text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center gap-1" data-list="${containerId}" data-items='${JSON.stringify(colorClass)}' data-start="${startIndex - 10}"><i data-lucide="chevron-left" class="w-3.5 h-3.5"></i> Anteriores</button>`;
+                }
+                if (hasMore) {
+                    html += `<button class="top10-next text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center gap-1" data-list="${containerId}" data-items='${JSON.stringify(colorClass)}' data-start="${showing}">Siguientes <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i></button>`;
+                }
+                html += `</div>`;
+            }
+
+            container.innerHTML = html;
+
+            // Store state for pagination
+            listState[containerId] = { allItems, colorClass, currentStart: startIndex };
+
+            // Bind pagination buttons
+            container.querySelectorAll('.top10-prev, .top10-next').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const newStart = parseInt(btn.dataset.start);
+                    renderList(containerId, allItems, colorClass, newStart);
+                    lucide.createIcons();
+                });
+            });
+        }
+
+        // Compound risk (V + S - A)
+        const byRisk = [...aggregated].sort((a, b) => (b.vScore + b.sDisplay - b.aScore) - (a.vScore + a.sDisplay - a.aScore));
+        renderList('top-vulnerable', byRisk, 'text-red-500');
+        renderList('top-secure', [...byRisk].reverse(), 'text-green-500');
+
+        // By S-Score (susceptibility)
+        const bySusceptibility = [...aggregated].sort((a, b) => b.sDisplay - a.sDisplay);
+        renderList('top-susceptible', bySusceptibility, 'text-purple-500');
+        renderList('top-not-susceptible', [...bySusceptibility].reverse(), 'text-blue-500');
+
+        // By A-Score (adaptability)
+        const byAdaptability = [...aggregated].sort((a, b) => b.aScore - a.aScore);
+        renderList('top-adaptable', byAdaptability, 'text-emerald-500');
+        renderList('top-not-adaptable', [...byAdaptability].reverse(), 'text-amber-500');
+    }
+
+    // ---- RADAR CHART ----
+    const RADAR_DIMENSIONS = [
+        { key: 'v', label: 'Vulnerabilidad', invert: true },
+        { key: 's', label: 'Susceptibilidad a IA', invert: true },
+        { key: 'a', label: 'Adaptabilidad', invert: false },
+        { key: 'salary', label: 'Nivel Salarial', invert: false },
+        { key: 'formality', label: 'Formalidad', invert: false }
+    ];
+
+    function renderRadar(computed) {
+        const container = document.getElementById('radar-container');
+        const chipsEl = document.getElementById('radar-chips');
+        const legendEl = document.getElementById('radar-legend');
+
+        // Render sector chips for selection
+        chipsEl.innerHTML = computed.sectors.map(sec => {
+            const active = radarSelections.includes(sec.key);
+            return `<button data-sector="${sec.key}" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${active ? 'text-white border-transparent' : 'text-slate-600 border-slate-300 hover:border-slate-400'}" style="${active ? 'background:' + sec.color : ''}">
+                <span class="w-2 h-2 rounded-full shrink-0" style="background:${sec.color}"></span>
+                ${sec.shortName}
+            </button>`;
+        }).join('');
+
+        chipsEl.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.sector;
+                if (radarSelections.includes(key)) {
+                    radarSelections = radarSelections.filter(k => k !== key);
+                } else {
+                    radarSelections.push(key);
+                }
+                renderRadar(recomputeForPeriod(allData));
+            });
+        });
+
+        // If nothing selected, show placeholder
+        if (radarSelections.length === 0) {
+            container.innerHTML = '<div class="flex items-center justify-center h-64 text-slate-400 text-sm">Selecciona sectores arriba para compararlos</div>';
+            legendEl.innerHTML = '';
+            return;
+        }
+
+        const selected = computed.sectors.filter(s => radarSelections.includes(s.key));
+        const salaryProxyMap = {
+            administracion_publica_y_defensa: 32000, agricultura_y_agroindustria: 15000,
+            comercio: 22000, construccion: 18000, manufactura_y_zonas_francas: 22000,
+            turismo_y_hosteleria: 20000, tecnologia_y_telecomunicaciones: 45000,
+            salud: 35000, educacion: 28000, servicios_financieros: 55000,
+            transporte_y_logistica: 20000, otros_servicios: 25000
+        };
+        const maxSalary = Math.max(...computed.sectors.map(s => (s.totalRecords >= 500 && s.salaryAvg) ? s.salaryAvg : (salaryProxyMap[s.key] || 25000)));
+
+        // Build radar data
+        function sectorToRadar(sec) {
+            const informality = {
+                administracion_publica_y_defensa: 0.05, agricultura_y_agroindustria: 0.80,
+                comercio: 0.60, construccion: 0.854, manufactura_y_zonas_francas: 0.35,
+                turismo_y_hosteleria: 0.55, tecnologia_y_telecomunicaciones: 0.15,
+                salud: 0.30, educacion: 0.20, servicios_financieros: 0.10,
+                transporte_y_logistica: 0.70, otros_servicios: 0.54
+            };
+            const salaryProxy = {
+                administracion_publica_y_defensa: 32000, agricultura_y_agroindustria: 15000,
+                comercio: 22000, construccion: 18000, manufactura_y_zonas_francas: 22000,
+                turismo_y_hosteleria: 20000, tecnologia_y_telecomunicaciones: 45000,
+                salud: 35000, educacion: 28000, servicios_financieros: 55000,
+                transporte_y_logistica: 20000, otros_servicios: 25000
+            };
+            const salary = (sec.totalRecords >= 500 && sec.salaryAvg) ? sec.salaryAvg : (salaryProxy[sec.key] || 25000);
+            return [
+                sec.vDisplay || 0,
+                sec.sDisplay || 0,
+                sec.aDisplay || 0,
+                Math.round((salary / maxSalary) * 100),
+                Math.round((1 - (informality[sec.key] || 0.5)) * 100)
+            ];
+        }
+
+        // SVG dimensions
+        const size = Math.min(container.clientWidth, 400);
+        const cx = size / 2, cy = size / 2;
+        const radius = size * 0.35;
+        const levels = 5;
+        const angleSlice = (Math.PI * 2) / RADAR_DIMENSIONS.length;
+
+        container.innerHTML = '';
+        const svg = d3.select(container).append('svg')
+            .attr('width', size).attr('height', size);
+        const g = svg.append('g').attr('transform', `translate(${cx},${cy})`);
+
+        // Draw grid
+        for (let lvl = 1; lvl <= levels; lvl++) {
+            const r = (radius / levels) * lvl;
+            const points = RADAR_DIMENSIONS.map((_, i) => {
+                const a = angleSlice * i - Math.PI / 2;
+                return `${r * Math.cos(a)},${r * Math.sin(a)}`;
+            }).join(' ');
+            g.append('polygon').attr('points', points)
+                .attr('fill', 'none').attr('stroke', '#e2e8f0').attr('stroke-width', 1);
+        }
+
+        // Draw axes
+        RADAR_DIMENSIONS.forEach((dim, i) => {
+            const a = angleSlice * i - Math.PI / 2;
+            const x = radius * Math.cos(a);
+            const y = radius * Math.sin(a);
+            g.append('line').attr('x1', 0).attr('y1', 0).attr('x2', x).attr('y2', y)
+                .attr('stroke', '#cbd5e1').attr('stroke-width', 1);
+            const labelR = radius + 18;
+            g.append('text')
+                .attr('x', labelR * Math.cos(a)).attr('y', labelR * Math.sin(a))
+                .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle')
+                .attr('fill', '#64748b').attr('font-size', '11px').attr('font-weight', '600')
+                .text(dim.label);
+        });
+
+        // Draw polygons for each selected sector
+        selected.forEach((sec, idx) => {
+            const values = sectorToRadar(sec);
+            const points = values.map((val, i) => {
+                const a = angleSlice * i - Math.PI / 2;
+                const r = (val / 100) * radius;
+                return `${r * Math.cos(a)},${r * Math.sin(a)}`;
+            }).join(' ');
+            g.append('polygon').attr('points', points)
+                .attr('fill', sec.color).attr('fill-opacity', 0.15)
+                .attr('stroke', sec.color).attr('stroke-width', 2.5)
+                .attr('class', 'radar-polygon');
+            // Dots
+            values.forEach((val, i) => {
+                const a = angleSlice * i - Math.PI / 2;
+                const r = (val / 100) * radius;
+                g.append('circle').attr('cx', r * Math.cos(a)).attr('cy', r * Math.sin(a))
+                    .attr('r', 4).attr('fill', sec.color).attr('stroke', '#fff').attr('stroke-width', 1.5);
+            });
+        });
+
+        // Legend
+        legendEl.innerHTML = selected.map(sec => `
+            <div class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-full" style="background:${sec.color}"></span>
+                <span class="font-medium">${sec.shortName}</span>
+            </div>`).join('');
+    }
+
+    // ---- SEARCH FUNCTIONALITY ----
+    function applySearch() {
+        if (!searchQuery) {
+            d3.selectAll('.bubble').classed('search-highlight', false).classed('search-dim', false);
+            return;
+        }
+        const q = searchQuery.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        d3.selectAll('.bubble').each(function(d) {
+            const title = (d.title || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            const match = title.includes(q);
+            d3.select(this).classed('search-highlight', match).classed('search-dim', !match);
+        });
+    }
+
+    // ---- AUTO-PLAY ----
+    function startAutoPlay() {
+        const periods = ['short', 'medium', 'long'];
+        let idx = periods.indexOf(currentPeriod);
+        playInterval = setInterval(() => {
+            idx = (idx + 1) % 3;
+            currentPeriod = periods[idx];
+            document.querySelectorAll('.temporal-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.period === currentPeriod);
+            });
+            const computed = recomputeForPeriod(allData);
+            updateGauges(computed.global);
+            updateZoneBar(computed.global.zoneDistribution);
+            updateStats(computed);
+            updateScatterPositions(computed);
+            buildSectorTable(computed);
+            renderTop10(computed);
+            if (radarSelections.length > 0) renderRadar(computed);
+        }, 2000);
+        document.getElementById('play-btn').classList.add('playing');
+        document.getElementById('play-label').textContent = 'Detener';
+    }
+
+    function stopAutoPlay() {
+        clearInterval(playInterval);
+        playInterval = null;
+        document.getElementById('play-btn').classList.remove('playing');
+        document.getElementById('play-label').textContent = 'Animar';
+    }
+
     // ---- RENDER ALL ----
     function renderAll(animate = true) {
         const computed = recomputeForPeriod(allData);
@@ -854,21 +1428,59 @@
         }
 
         buildSectorTable(computed);
+        renderSectorExplanations(computed);
+        renderTop10(computed);
+        renderRadar(computed);
     }
 
     // ---- TEMPORAL BUTTONS ----
+    function refreshAfterControl() {
+        const computed = recomputeForPeriod(allData);
+        updateGauges(computed.global);
+        updateZoneBar(computed.global.zoneDistribution);
+        updateStats(computed);
+        updateScatterPositions(computed);
+        buildSectorTable(computed);
+        renderTop10(computed);
+        if (radarSelections.length > 0) renderRadar(computed);
+        setTimeout(applySearch, 100);
+    }
+
     document.querySelectorAll('.temporal-btn').forEach(btn => {
         btn.addEventListener('click', () => {
+            stopAutoPlay();
             document.querySelectorAll('.temporal-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentPeriod = btn.dataset.period;
-            const computed = recomputeForPeriod(allData);
-            updateGauges(computed.global);
-            updateZoneBar(computed.global.zoneDistribution);
-            updateStats(computed);
-            updateScatterPositions(computed);
-            buildSectorTable(computed);
+            refreshAfterControl();
         });
+    });
+
+    // ---- ADOPTION SPEED BUTTONS ----
+    document.querySelectorAll('.adoption-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.adoption-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentAdoption = btn.dataset.speed;
+            refreshAfterControl();
+        });
+    });
+
+    // ---- PLAY BUTTON ----
+    document.getElementById('play-btn').addEventListener('click', () => {
+        if (playInterval) { stopAutoPlay(); } else { startAutoPlay(); }
+    });
+
+    // ---- SEARCH INPUT ----
+    document.getElementById('occupation-search').addEventListener('input', (e) => {
+        searchQuery = e.target.value.trim();
+        applySearch();
+    });
+
+    // ---- RADAR CLEAR ----
+    document.getElementById('radar-clear').addEventListener('click', () => {
+        radarSelections = [];
+        renderRadar(recomputeForPeriod(allData));
     });
 
     // ---- METHODOLOGY TOGGLE ----

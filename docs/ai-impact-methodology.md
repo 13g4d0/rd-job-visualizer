@@ -50,12 +50,21 @@ Mide la capacidad y viabilidad de transición a otras áreas laborales.
 | Monitoreo Estratégico | Amarillo | V≤35, S>55, A≥55 | Expuestos pero resilientes — el mercado puede autocorregir |
 | Oportunidad IA | Verde | S≤40 | Baja exposición a IA — enfoque en aprovechar beneficios |
 
+## Agregación de Rankings
+
+Los rankings Top 10 agregan ocupaciones con el mismo título que aparecen en múltiples sectores. Los scores V/S/A se calculan como promedios ponderados por cantidad de trabajadores. Por ejemplo, "conserje" aparece en 8+ sectores; el ranking muestra una sola entrada con el promedio ponderado de todos los sectores donde existe esa ocupación.
+
+Adicionalmente, se normalizan variantes de género en los títulos: ocupaciones como "supervisor (a)" y "supervisor", o "encargado(a)" y "encargado", se consolidan en una sola entrada. Esta convención "(a)" es común en la nómina pública dominicana para indicar que el cargo aplica a ambos géneros.
+
+Esto proporciona una visión consolidada del perfil de riesgo de cada ocupación a nivel nacional.
+
 ## Limitaciones del Prototipo
 
 1. **TAF=1.0:** No se ajusta por diferencias en composición de tareas entre RD y EE.UU.
 2. **Datos mixtos:** Algunos scores usan datos a nivel de ocupación; otros usan proxies sectoriales
-3. **A-Score simplificado:** No incorpora infraestructura de reentrenamiento (INFOTEP), movilidad geográfica, ni factor etario
-4. **Informalidad como factor indirecto:** El prototipo captura informalidad como vulnerabilidad pero no modela los efectos indirectos de la IA en mercados informales (compresión de mercado por competidores formales que adoptan IA)
+3. **Umbral de representatividad salarial (≥500 registros):** Sectores con menos de 500 registros utilizan proxies salariales (estimaciones basadas en ENCFT/TSS) en lugar de sus promedios reales, ya que muestras pequeñas no son representativas del sector completo. Esto evita distorsiones como datos de CNZFE (68 registros) o INESDYC que no reflejan el espectro salarial completo del sector.
+4. **A-Score simplificado:** No incorpora infraestructura de reentrenamiento (INFOTEP), movilidad geográfica, ni factor etario
+5. **Informalidad como factor indirecto:** El prototipo captura informalidad como vulnerabilidad pero no modela los efectos indirectos de la IA en mercados informales (compresión de mercado por competidores formales que adoptan IA)
 
 ## Referencias
 

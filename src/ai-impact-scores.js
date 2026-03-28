@@ -247,7 +247,10 @@
       var sectorColor = meta.color || "#6B7280";
       var sectorIcon = meta.icon || "circle";
       var estimated = (sectorData.total_records || 0) < 50;
-      var sectorSalary = sectorData.salary_avg || null;
+      var sectorSalary = (sectorData.total_records || 0) >= 500 ? (sectorData.salary_avg || null) : null;
+      if (sectorSalary == null) {
+        sectorSalary = SECTOR_MIN_WAGE_PROXY[sectorKey] || 25000;
+      }
 
       var topTitles = sectorData.top_titles || [];
       var sectorOccupations = [];
