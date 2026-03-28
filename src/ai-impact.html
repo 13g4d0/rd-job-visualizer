@@ -407,7 +407,7 @@
                     </ul>
 
                     <h3 class="text-base font-bold text-slate-800 mt-6">Agregaci&oacute;n de Rankings</h3>
-                    <p class="text-slate-600">Los rankings Top 10 agregan ocupaciones con el mismo t&iacute;tulo que aparecen en m&uacute;ltiples sectores. Los scores V/S/A se calculan como promedios ponderados por cantidad de trabajadores. Por ejemplo, &ldquo;conserje&rdquo; aparece en 8+ sectores; el ranking muestra una sola entrada con el promedio ponderado de todos los sectores donde existe esa ocupaci&oacute;n.</p>
+                    <p class="text-slate-600">Los rankings Top 10 agregan ocupaciones con el mismo t&iacute;tulo que aparecen en m&uacute;ltiples sectores. Los scores V/S/A se calculan como promedios ponderados por cantidad de trabajadores. Por ejemplo, &ldquo;conserje&rdquo; aparece en 8+ sectores; el ranking muestra una sola entrada con el promedio ponderado de todos los sectores donde existe esa ocupaci&oacute;n. Adicionalmente, se normalizan variantes de g&eacute;nero en los t&iacute;tulos: ocupaciones como &ldquo;supervisor (a)&rdquo; y &ldquo;supervisor&rdquo;, o &ldquo;encargado(a)&rdquo; y &ldquo;encargado&rdquo;, se consolidan en una sola entrada.</p>
 
                     <h3 class="text-base font-bold text-slate-800 mt-6">Cr&eacute;ditos y Referencias</h3>
                     <p class="text-slate-600">An&aacute;lisis desarrollado por <strong>CEMI.ai</strong> en colaboraci&oacute;n con <strong>Sanba Development</strong>.</p>
@@ -1118,13 +1118,19 @@
     // ---- TOP 10 RANKINGS ----
     function renderTop10(computed) {
         // Aggregate occupations with same title across sectors (weighted average by count)
+        // Normalizes gender-variant titles: "supervisor (a)" → "supervisor", "encargado(a)" → "encargado"
+        function normalizeGenderVariant(title) {
+            return title.replace(/\s*\(a\)\s*/gi, ' ').replace(/\s+/g, ' ').trim();
+        }
+
         function aggregateByTitle(occupations) {
             const map = {};
             for (const o of occupations) {
-                if (!map[o.title]) {
-                    map[o.title] = { title: o.title, totalCount: 0, wV: 0, wS: 0, wA: 0, sectors: [], zoneColorDisplay: o.zoneColorDisplay };
+                const key = normalizeGenderVariant(o.title);
+                if (!map[key]) {
+                    map[key] = { title: key, totalCount: 0, wV: 0, wS: 0, wA: 0, sectors: [], zoneColorDisplay: o.zoneColorDisplay };
                 }
-                const m = map[o.title];
+                const m = map[key];
                 m.totalCount += o.count;
                 m.wV += o.vScore * o.count;
                 m.wS += o.sDisplay * o.count;
