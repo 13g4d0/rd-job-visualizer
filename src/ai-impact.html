@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -17,7 +18,21 @@
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
         ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
-        .gauge-arc { transition: stroke-dashoffset 0.8s ease; }
+        .gauge-arc { transition: stroke-dashoffset 0.8s ease, stroke 0.4s ease; }
+        #methodology-modal-body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        #methodology-modal-body h1 { font-size: 1.5rem; font-weight: 800; color: #0f172a; margin: 1.5rem 0 0.5rem; }
+        #methodology-modal-body h2 { font-size: 1.25rem; font-weight: 700; color: #1e293b; margin: 1.5rem 0 0.5rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem; }
+        #methodology-modal-body h3 { font-size: 1.1rem; font-weight: 600; color: #334155; margin: 1.25rem 0 0.4rem; }
+        #methodology-modal-body p { color: #475569; line-height: 1.7; margin: 0.5rem 0; }
+        #methodology-modal-body ul, #methodology-modal-body ol { color: #475569; padding-left: 1.5rem; margin: 0.5rem 0; }
+        #methodology-modal-body li { margin: 0.3rem 0; line-height: 1.6; }
+        #methodology-modal-body strong { color: #1e293b; }
+        #methodology-modal-body em { color: #64748b; }
+        #methodology-modal-body code { background: #f1f5f9; padding: 0.15rem 0.4rem; border-radius: 0.25rem; font-size: 0.85em; }
+        #methodology-modal-body table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; font-size: 0.875rem; }
+        #methodology-modal-body th { background: #f8fafc; padding: 0.5rem 0.75rem; text-align: left; font-weight: 600; color: #334155; border: 1px solid #e2e8f0; }
+        #methodology-modal-body td { padding: 0.5rem 0.75rem; border: 1px solid #e2e8f0; color: #475569; }
+        #methodology-modal-body blockquote { border-left: 3px solid #3b82f6; padding-left: 1rem; margin: 0.75rem 0; color: #64748b; font-style: italic; }
 
         .detail-panel {
             transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease;
@@ -613,7 +628,7 @@
                             </ul>
                         </div>
                     </div>
-                    <p class="text-xs text-slate-500 mt-2">Ver documentaci&oacute;n completa en <code>docs/ai-impact-methodology.md</code></p>
+                    <p class="text-xs text-slate-500 mt-2"><a href="#" onclick="openMethodologyModal(); return false;" class="text-blue-600 hover:text-blue-800 underline">Ver documentaci&oacute;n completa</a></p>
 
                     <h3 class="text-base font-bold text-slate-800 mt-6">Cr&eacute;ditos y Referencias</h3>
                     <p class="text-slate-600">An&aacute;lisis desarrollado por <strong>CEMI.ai</strong> en colaboraci&oacute;n con <strong>Sanba Development</strong>.</p>
@@ -622,11 +637,33 @@
                         <a href="https://ibizai.io/explore/opinions/the-intelligence-transition" target="_blank" rel="noopener" class="text-blue-600 hover:text-blue-700 underline">The Intelligence Transition</a>
                     </p>
                     <p class="text-slate-500 text-xs mt-2">Felten, E., Raj, M. &amp; Seamans, R. (2021). &ldquo;Occupational, industry, and geographic exposure to artificial intelligence: A novel dataset and its potential uses.&rdquo; <em>Strategic Management Journal</em>, 42(12), 2195-2217.</p>
+                    <p class="mt-4">
+                        <a href="#" onclick="openMethodologyModal(); return false;" class="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors">
+                            <i data-lucide="file-text" class="w-4 h-4"></i>
+                            Abrir documento metodol&oacute;gico completo
+                        </a>
+                    </p>
                 </div>
             </div>
         </section>
 
     </main>
+
+    <!-- ============ METHODOLOGY MODAL ============ -->
+    <div id="methodology-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeMethodologyModal()"></div>
+        <div class="absolute inset-4 sm:inset-8 md:inset-12 lg:inset-x-24 lg:inset-y-10 bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 shrink-0">
+                <h2 class="text-lg font-bold text-slate-900">Metodolog&iacute;a Completa</h2>
+                <button onclick="closeMethodologyModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div id="methodology-modal-body" class="flex-1 overflow-y-auto px-6 py-6">
+                <p class="text-slate-400 text-sm">Cargando...</p>
+            </div>
+        </div>
+    </div>
 
     <!-- ============ FOOTER ============ -->
     <footer class="border-t border-slate-200 bg-white mt-auto">
@@ -1718,6 +1755,32 @@
         const chevron = document.getElementById('methodology-chevron');
         content.classList.toggle('hidden');
         chevron.style.transform = content.classList.contains('hidden') ? '' : 'rotate(180deg)';
+    });
+
+    // ---- METHODOLOGY MODAL ----
+    let methodologyLoaded = false;
+    function openMethodologyModal() {
+        const modal = document.getElementById('methodology-modal');
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        if (!methodologyLoaded) {
+            fetch('../docs/ai-impact-methodology.md')
+                .then(r => r.ok ? r.text() : Promise.reject('No se pudo cargar'))
+                .then(md => {
+                    document.getElementById('methodology-modal-body').innerHTML = marked.parse(md);
+                    methodologyLoaded = true;
+                })
+                .catch(err => {
+                    document.getElementById('methodology-modal-body').innerHTML = `<p class="text-red-500">${err}</p>`;
+                });
+        }
+    }
+    function closeMethodologyModal() {
+        document.getElementById('methodology-modal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeMethodologyModal();
     });
 
     // ---- RESIZE ----
