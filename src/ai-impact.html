@@ -52,6 +52,25 @@
         .sector-row { cursor: pointer; transition: background 0.15s ease; }
         .sector-row:hover { background: #f8fafc; }
         .sector-row.active { background: #eff6ff; }
+
+        .adoption-btn { transition: all 0.2s ease; }
+        .adoption-btn.active { box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+        .adoption-btn.active[data-speed="slow"] { background: #059669; color: white; }
+        .adoption-btn.active[data-speed="average"] { background: #D97706; color: white; }
+        .adoption-btn.active[data-speed="fast"] { background: #DC2626; color: white; }
+
+        .search-highlight { stroke: #2563eb !important; stroke-width: 3px !important; filter: drop-shadow(0 0 6px rgba(37,99,235,0.5)); }
+        .search-dim { opacity: 0.15 !important; }
+
+        .play-btn { transition: all 0.2s ease; }
+        .play-btn.playing { background: #DC2626 !important; }
+
+        .radar-axis line { stroke: #e2e8f0; }
+        .radar-axis text { fill: #64748b; font-size: 10px; }
+        .radar-polygon { transition: all 0.5s ease; }
+
+        .rank-enter { animation: rankFade 0.3s ease forwards; }
+        @keyframes rankFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     </style>
     <script>
         tailwind.config = {
@@ -153,22 +172,44 @@
             <div id="zone-legend" class="flex flex-wrap gap-x-5 gap-y-1 mt-3 text-xs text-slate-600"></div>
         </div>
 
-        <!-- ---- TEMPORAL SLIDER ---- -->
-        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-6">
-            <span class="text-sm font-semibold text-slate-700 flex items-center gap-1.5">
-                <i data-lucide="clock" class="w-4 h-4 text-slate-400"></i>
-                Horizonte temporal:
-            </span>
-            <div class="flex bg-slate-200/70 rounded-lg p-1 gap-1">
-                <button class="temporal-btn active rounded-md px-3 py-1.5 text-sm font-medium" data-period="short">
-                    Corto plazo (2026-2028)
-                </button>
-                <button class="temporal-btn rounded-md px-3 py-1.5 text-sm font-medium text-slate-600" data-period="medium">
-                    Mediano plazo (2028-2032)
-                </button>
-                <button class="temporal-btn rounded-md px-3 py-1.5 text-sm font-medium text-slate-600" data-period="long">
-                    Largo plazo (2032+)
-                </button>
+        <!-- ---- CONTROLS BAR ---- -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-6">
+            <div class="flex flex-col lg:flex-row gap-5">
+                <!-- Temporal -->
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                    <span class="text-sm font-semibold text-slate-700 flex items-center gap-1.5 shrink-0">
+                        <i data-lucide="clock" class="w-4 h-4 text-slate-400"></i>
+                        Horizonte:
+                    </span>
+                    <div class="flex bg-slate-200/70 rounded-lg p-1 gap-1">
+                        <button class="temporal-btn active rounded-md px-3 py-1.5 text-sm font-medium" data-period="short">Corto (2026-28)</button>
+                        <button class="temporal-btn rounded-md px-3 py-1.5 text-sm font-medium text-slate-600" data-period="medium">Medio (2028-32)</button>
+                        <button class="temporal-btn rounded-md px-3 py-1.5 text-sm font-medium text-slate-600" data-period="long">Largo (2032+)</button>
+                    </div>
+                    <button id="play-btn" class="play-btn flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium bg-blue-600 text-white hover:bg-blue-700" title="Animar transici&oacute;n temporal">
+                        <i data-lucide="play" class="w-3.5 h-3.5" id="play-icon"></i>
+                        <span id="play-label">Animar</span>
+                    </button>
+                </div>
+                <!-- Adoption speed -->
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                    <span class="text-sm font-semibold text-slate-700 flex items-center gap-1.5 shrink-0">
+                        <i data-lucide="zap" class="w-4 h-4 text-slate-400"></i>
+                        Adopci&oacute;n IA:
+                    </span>
+                    <div class="flex bg-slate-200/70 rounded-lg p-1 gap-1">
+                        <button class="adoption-btn rounded-md px-3 py-1.5 text-sm font-medium text-slate-600" data-speed="slow">Lenta</button>
+                        <button class="adoption-btn active rounded-md px-3 py-1.5 text-sm font-medium" data-speed="average">Promedio</button>
+                        <button class="adoption-btn rounded-md px-3 py-1.5 text-sm font-medium text-slate-600" data-speed="fast">R&aacute;pida</button>
+                    </div>
+                </div>
+                <!-- Search -->
+                <div class="flex items-center gap-2 ml-auto flex-1 max-w-xs">
+                    <div class="relative flex-1">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                        <input id="occupation-search" type="text" placeholder="Buscar ocupaci&oacute;n..." class="w-full pl-9 pr-3 py-1.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -194,6 +235,46 @@
 
         <!-- ---- OCCUPATION DETAIL PANEL ---- -->
         <div id="occupation-detail" class="detail-panel bg-white rounded-2xl border border-slate-200 shadow-sm mb-8 px-6"></div>
+
+        <!-- ---- TOP 10 RANKINGS ---- -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-red-100 bg-red-50/50">
+                    <h2 class="text-base font-bold text-red-800 flex items-center gap-2">
+                        <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                        Top 10 M&aacute;s Vulnerables
+                    </h2>
+                    <p class="text-xs text-red-600 mt-0.5">Ocupaciones con mayor riesgo compuesto</p>
+                </div>
+                <div id="top-vulnerable" class="divide-y divide-slate-100"></div>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-green-100 bg-green-50/50">
+                    <h2 class="text-base font-bold text-green-800 flex items-center gap-2">
+                        <i data-lucide="shield-check" class="w-4 h-4"></i>
+                        Top 10 M&aacute;s Seguros
+                    </h2>
+                    <p class="text-xs text-green-600 mt-0.5">Ocupaciones con menor exposici&oacute;n a IA</p>
+                </div>
+                <div id="top-secure" class="divide-y divide-slate-100"></div>
+            </div>
+        </div>
+
+        <!-- ---- RADAR CHART ---- -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 mb-8">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900">Comparaci&oacute;n Radar por Sector</h2>
+                    <p class="text-sm text-slate-500 mt-0.5">Selecciona hasta 4 sectores para comparar en 5 dimensiones</p>
+                </div>
+                <button id="radar-clear" class="text-sm text-slate-500 hover:text-red-600 transition-colors flex items-center gap-1">
+                    <i data-lucide="x" class="w-3.5 h-3.5"></i> Limpiar selecci&oacute;n
+                </button>
+            </div>
+            <div id="radar-chips" class="flex flex-wrap gap-2 mb-4"></div>
+            <div id="radar-container" class="w-full flex justify-center" style="min-height: 350px;"></div>
+            <div id="radar-legend" class="flex flex-wrap justify-center gap-4 mt-3 text-xs text-slate-600"></div>
+        </div>
 
         <!-- ---- SECTOR TABLE ---- -->
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-8">
@@ -345,6 +426,17 @@
     let allData = null;        // Full computeAll result
     let currentPeriod = 'short';
     let activeSectorFilter = null;
+    let currentAdoption = 'average';
+    let searchQuery = '';
+    let playInterval = null;
+    let radarSelections = [];
+
+    // Adoption speed multipliers: [short, medium, long]
+    const ADOPTION_SPEEDS = {
+        slow:    { short: 0.15, medium: 0.35, long: 0.60, label: 'Lenta', desc: 'Adopción lenta: solo grandes MNCs y gobierno' },
+        average: { short: 0.30, medium: 0.60, long: 0.90, label: 'Promedio', desc: 'Adopción promedio: tendencia actual proyectada' },
+        fast:    { short: 0.50, medium: 0.80, long: 0.95, label: 'Rápida', desc: 'Adopción rápida: incentivos fiscales + infraestructura digital' }
+    };
 
     // ---- REMAP SECTOR COLORS for computeAll ----
     // The scoring engine uses sector-colors IDs as lookup keys, but metrics.json uses underscore keys.
@@ -356,12 +448,12 @@
         });
     }
 
-    // ---- RECOMPUTE with temporal period ----
+    // ---- RECOMPUTE with temporal period + adoption speed ----
     function recomputeForPeriod(data) {
-        // Recalculate S-scores and zones based on temporal period
-        const sField = currentPeriod === 'short' ? 'sScoreShort' : currentPeriod === 'medium' ? 'sScoreMedium' : 'sScoreLong';
+        const speed = ADOPTION_SPEEDS[currentAdoption];
+        const multiplier = speed[currentPeriod];
         const occupations = data.occupations.map(occ => {
-            const sVal = occ[sField];
+            const sVal = Math.round(occ.sScore * multiplier);
             const zone = classifyZone(occ.vScore, sVal, occ.aScore);
             return { ...occ, sDisplay: sVal, zoneDisplay: zone, zoneColorDisplay: ZONE_COLORS[zone], zoneNameDisplay: ZONE_LABELS[zone] };
         });
@@ -662,6 +754,8 @@
                 showOccupationDetail(d);
             }
         });
+
+        setTimeout(applySearch, 50);
     }
 
     function updateScatterPositions(computed) {
@@ -966,6 +1060,211 @@
         lucide.createIcons();
     }
 
+    // ---- TOP 10 RANKINGS ----
+    function renderTop10(computed) {
+        const sorted = [...computed.occupations].sort((a, b) => {
+            const riskA = a.vScore + a.sDisplay - a.aScore;
+            const riskB = b.vScore + b.sDisplay - b.aScore;
+            return riskB - riskA;
+        });
+
+        function renderList(container, items, colorClass) {
+            container.innerHTML = items.map((o, i) => `
+                <div class="flex items-center gap-3 px-5 py-3 rank-enter" style="animation-delay: ${i * 40}ms">
+                    <span class="text-lg font-bold ${colorClass} w-6 text-center">${i + 1}</span>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-sm text-slate-800 capitalize truncate">${o.title}</p>
+                        <p class="text-xs text-slate-500">${o.sectorShortName}</p>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span class="text-xs px-1.5 py-0.5 rounded bg-red-100 text-red-700" title="Vulnerabilidad">V:${o.vScore}</span>
+                        <span class="text-xs px-1.5 py-0.5 rounded bg-purple-100 text-purple-700" title="Susceptibilidad">S:${o.sDisplay}</span>
+                        <span class="text-xs px-1.5 py-0.5 rounded bg-green-100 text-green-700" title="Adaptabilidad">A:${o.aScore}</span>
+                    </div>
+                    <span class="w-3 h-3 rounded-full shrink-0" style="background:${o.zoneColorDisplay}"></span>
+                </div>`).join('');
+        }
+
+        const topVulnerable = sorted.slice(0, 10);
+        const topSecure = sorted.slice(-10).reverse();
+        renderList(document.getElementById('top-vulnerable'), topVulnerable, 'text-red-500');
+        renderList(document.getElementById('top-secure'), topSecure, 'text-green-500');
+    }
+
+    // ---- RADAR CHART ----
+    const RADAR_DIMENSIONS = [
+        { key: 'v', label: 'Vulnerabilidad', invert: true },
+        { key: 's', label: 'Susceptibilidad', invert: true },
+        { key: 'a', label: 'Adaptabilidad', invert: false },
+        { key: 'salary', label: 'Salario Rel.', invert: false },
+        { key: 'formality', label: 'Formalidad', invert: false }
+    ];
+
+    function renderRadar(computed) {
+        const container = document.getElementById('radar-container');
+        const chipsEl = document.getElementById('radar-chips');
+        const legendEl = document.getElementById('radar-legend');
+
+        // Render sector chips for selection
+        chipsEl.innerHTML = computed.sectors.map(sec => {
+            const active = radarSelections.includes(sec.key);
+            return `<button data-sector="${sec.key}" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${active ? 'text-white border-transparent' : 'text-slate-600 border-slate-300 hover:border-slate-400'}" style="${active ? 'background:' + sec.color : ''}">
+                <span class="w-2 h-2 rounded-full shrink-0" style="background:${sec.color}"></span>
+                ${sec.shortName}
+            </button>`;
+        }).join('');
+
+        chipsEl.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.sector;
+                if (radarSelections.includes(key)) {
+                    radarSelections = radarSelections.filter(k => k !== key);
+                } else if (radarSelections.length < 4) {
+                    radarSelections.push(key);
+                }
+                renderRadar(recomputeForPeriod(allData));
+            });
+        });
+
+        // If nothing selected, show placeholder
+        if (radarSelections.length === 0) {
+            container.innerHTML = '<div class="flex items-center justify-center h-64 text-slate-400 text-sm">Selecciona sectores arriba para compararlos</div>';
+            legendEl.innerHTML = '';
+            return;
+        }
+
+        const selected = computed.sectors.filter(s => radarSelections.includes(s.key));
+        const maxSalary = Math.max(...computed.sectors.map(s => s.salaryAvg || 1));
+
+        // Build radar data
+        function sectorToRadar(sec) {
+            const informality = {
+                administracion_publica_y_defensa: 0.05, agricultura_y_agroindustria: 0.80,
+                comercio: 0.60, construccion: 0.854, manufactura_y_zonas_francas: 0.35,
+                turismo_y_hosteleria: 0.55, tecnologia_y_telecomunicaciones: 0.15,
+                salud: 0.30, educacion: 0.20, servicios_financieros: 0.10,
+                transporte_y_logistica: 0.70, otros_servicios: 0.54
+            };
+            return [
+                sec.vDisplay || 0,
+                sec.sDisplay || 0,
+                sec.aDisplay || 0,
+                Math.round(((sec.salaryAvg || 0) / maxSalary) * 100),
+                Math.round((1 - (informality[sec.key] || 0.5)) * 100)
+            ];
+        }
+
+        // SVG dimensions
+        const size = Math.min(container.clientWidth, 400);
+        const cx = size / 2, cy = size / 2;
+        const radius = size * 0.35;
+        const levels = 5;
+        const angleSlice = (Math.PI * 2) / RADAR_DIMENSIONS.length;
+
+        container.innerHTML = '';
+        const svg = d3.select(container).append('svg')
+            .attr('width', size).attr('height', size);
+        const g = svg.append('g').attr('transform', `translate(${cx},${cy})`);
+
+        // Draw grid
+        for (let lvl = 1; lvl <= levels; lvl++) {
+            const r = (radius / levels) * lvl;
+            const points = RADAR_DIMENSIONS.map((_, i) => {
+                const a = angleSlice * i - Math.PI / 2;
+                return `${r * Math.cos(a)},${r * Math.sin(a)}`;
+            }).join(' ');
+            g.append('polygon').attr('points', points)
+                .attr('fill', 'none').attr('stroke', '#e2e8f0').attr('stroke-width', 1);
+        }
+
+        // Draw axes
+        RADAR_DIMENSIONS.forEach((dim, i) => {
+            const a = angleSlice * i - Math.PI / 2;
+            const x = radius * Math.cos(a);
+            const y = radius * Math.sin(a);
+            g.append('line').attr('x1', 0).attr('y1', 0).attr('x2', x).attr('y2', y)
+                .attr('stroke', '#cbd5e1').attr('stroke-width', 1);
+            const labelR = radius + 18;
+            g.append('text')
+                .attr('x', labelR * Math.cos(a)).attr('y', labelR * Math.sin(a))
+                .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle')
+                .attr('fill', '#64748b').attr('font-size', '11px').attr('font-weight', '600')
+                .text(dim.label);
+        });
+
+        // Draw polygons for each selected sector
+        selected.forEach((sec, idx) => {
+            const values = sectorToRadar(sec);
+            const points = values.map((val, i) => {
+                const a = angleSlice * i - Math.PI / 2;
+                const r = (val / 100) * radius;
+                return `${r * Math.cos(a)},${r * Math.sin(a)}`;
+            }).join(' ');
+            g.append('polygon').attr('points', points)
+                .attr('fill', sec.color).attr('fill-opacity', 0.15)
+                .attr('stroke', sec.color).attr('stroke-width', 2.5)
+                .attr('class', 'radar-polygon');
+            // Dots
+            values.forEach((val, i) => {
+                const a = angleSlice * i - Math.PI / 2;
+                const r = (val / 100) * radius;
+                g.append('circle').attr('cx', r * Math.cos(a)).attr('cy', r * Math.sin(a))
+                    .attr('r', 4).attr('fill', sec.color).attr('stroke', '#fff').attr('stroke-width', 1.5);
+            });
+        });
+
+        // Legend
+        legendEl.innerHTML = selected.map(sec => `
+            <div class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-full" style="background:${sec.color}"></span>
+                <span class="font-medium">${sec.shortName}</span>
+            </div>`).join('');
+    }
+
+    // ---- SEARCH FUNCTIONALITY ----
+    function applySearch() {
+        if (!searchQuery) {
+            d3.selectAll('.bubble').classed('search-highlight', false).classed('search-dim', false);
+            return;
+        }
+        const q = searchQuery.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        d3.selectAll('.bubble').each(function(d) {
+            const title = (d.title || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            const match = title.includes(q);
+            d3.select(this).classed('search-highlight', match).classed('search-dim', !match);
+        });
+    }
+
+    // ---- AUTO-PLAY ----
+    function startAutoPlay() {
+        const periods = ['short', 'medium', 'long'];
+        let idx = periods.indexOf(currentPeriod);
+        playInterval = setInterval(() => {
+            idx = (idx + 1) % 3;
+            currentPeriod = periods[idx];
+            document.querySelectorAll('.temporal-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.period === currentPeriod);
+            });
+            const computed = recomputeForPeriod(allData);
+            updateGauges(computed.global);
+            updateZoneBar(computed.global.zoneDistribution);
+            updateStats(computed);
+            updateScatterPositions(computed);
+            buildSectorTable(computed);
+            renderTop10(computed);
+            if (radarSelections.length > 0) renderRadar(computed);
+        }, 2000);
+        document.getElementById('play-btn').classList.add('playing');
+        document.getElementById('play-label').textContent = 'Detener';
+    }
+
+    function stopAutoPlay() {
+        clearInterval(playInterval);
+        playInterval = null;
+        document.getElementById('play-btn').classList.remove('playing');
+        document.getElementById('play-label').textContent = 'Animar';
+    }
+
     // ---- RENDER ALL ----
     function renderAll(animate = true) {
         const computed = recomputeForPeriod(allData);
@@ -981,21 +1280,58 @@
 
         buildSectorTable(computed);
         renderSectorExplanations(computed);
+        renderTop10(computed);
+        renderRadar(computed);
     }
 
     // ---- TEMPORAL BUTTONS ----
+    function refreshAfterControl() {
+        const computed = recomputeForPeriod(allData);
+        updateGauges(computed.global);
+        updateZoneBar(computed.global.zoneDistribution);
+        updateStats(computed);
+        updateScatterPositions(computed);
+        buildSectorTable(computed);
+        renderTop10(computed);
+        if (radarSelections.length > 0) renderRadar(computed);
+        setTimeout(applySearch, 100);
+    }
+
     document.querySelectorAll('.temporal-btn').forEach(btn => {
         btn.addEventListener('click', () => {
+            stopAutoPlay();
             document.querySelectorAll('.temporal-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentPeriod = btn.dataset.period;
-            const computed = recomputeForPeriod(allData);
-            updateGauges(computed.global);
-            updateZoneBar(computed.global.zoneDistribution);
-            updateStats(computed);
-            updateScatterPositions(computed);
-            buildSectorTable(computed);
+            refreshAfterControl();
         });
+    });
+
+    // ---- ADOPTION SPEED BUTTONS ----
+    document.querySelectorAll('.adoption-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.adoption-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentAdoption = btn.dataset.speed;
+            refreshAfterControl();
+        });
+    });
+
+    // ---- PLAY BUTTON ----
+    document.getElementById('play-btn').addEventListener('click', () => {
+        if (playInterval) { stopAutoPlay(); } else { startAutoPlay(); }
+    });
+
+    // ---- SEARCH INPUT ----
+    document.getElementById('occupation-search').addEventListener('input', (e) => {
+        searchQuery = e.target.value.trim();
+        applySearch();
+    });
+
+    // ---- RADAR CLEAR ----
+    document.getElementById('radar-clear').addEventListener('click', () => {
+        radarSelections = [];
+        renderRadar(recomputeForPeriod(allData));
     });
 
     // ---- METHODOLOGY TOGGLE ----
