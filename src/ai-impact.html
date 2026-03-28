@@ -219,7 +219,10 @@
                 <h2 class="text-lg font-bold text-slate-900">Mapa de Vulnerabilidad vs. Susceptibilidad a IA</h2>
                 <span id="bubble-count" class="text-sm font-medium text-slate-500"></span>
             </div>
-            <p class="text-sm text-slate-500 mb-4">Cada burbuja representa una ocupaci&oacute;n. El tama&ntilde;o refleja la cantidad de trabajadores.</p>
+            <p class="text-sm text-slate-500 mb-3">Cada burbuja representa una ocupaci&oacute;n. El tama&ntilde;o refleja la cantidad de trabajadores.</p>
+            <div id="scatter-sector-filter" class="flex flex-wrap gap-2 mb-4">
+                <button class="scatter-filter-btn active rounded-full px-3 py-1 text-xs font-medium border border-slate-300 bg-slate-900 text-white" data-sector="all">Todos</button>
+            </div>
             <div id="scatter-container" class="w-full" style="min-height: 420px;"></div>
         </div>
 
@@ -331,7 +334,7 @@
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-8">
             <div class="px-5 py-4 border-b border-slate-100">
                 <h2 class="text-lg font-bold text-slate-900">Desglose por Sector</h2>
-                <p class="text-sm text-slate-500 mt-0.5">Haz clic en un sector para filtrar las burbujas en el mapa de vulnerabilidad</p>
+                <p class="text-sm text-slate-500 mt-0.5">Scores promedio ponderados por sector econ&oacute;mico</p>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
@@ -1425,6 +1428,26 @@
     }
 
     // ---- RENDER ALL ----
+    // ---- SCATTER SECTOR FILTER ----
+    function buildScatterFilter(computed) {
+        const container = document.getElementById('scatter-sector-filter');
+        let html = `<button class="scatter-filter-btn ${!activeSectorFilter ? 'active bg-slate-900 text-white' : 'text-slate-600'} rounded-full px-3 py-1 text-xs font-medium border border-slate-300 transition-all" data-sector="all">Todos</button>`;
+        for (const sec of computed.sectors) {
+            const active = activeSectorFilter === sec.key;
+            html += `<button class="scatter-filter-btn rounded-full px-3 py-1 text-xs font-medium border transition-all ${active ? 'text-white border-transparent' : 'text-slate-600 border-slate-300 hover:border-slate-400'}" data-sector="${sec.key}" style="${active ? 'background:' + sec.color : ''}">
+                <span class="inline-block w-2 h-2 rounded-full mr-1" style="background:${sec.color}"></span>${sec.shortName}
+            </button>`;
+        }
+        container.innerHTML = html;
+        container.querySelectorAll('.scatter-filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.sector;
+                activeSectorFilter = key === 'all' ? null : key;
+                renderAll(false);
+            });
+        });
+    }
+
     function renderAll(animate = true) {
         const computed = recomputeForPeriod(allData);
         updateStats(computed);
@@ -1437,6 +1460,7 @@
             buildScatter(computed, false);
         }
 
+        buildScatterFilter(computed);
         buildSectorTable(computed);
         renderSectorExplanations(computed);
         renderTop10(computed);
