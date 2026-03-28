@@ -29,10 +29,22 @@ composición de tareas de cada ocupación en RD es similar a la de EE.UU. Esta
 simplificación será refinada en versiones posteriores con un Factor de Ajuste de
 Tareas Dominicano (TAF-RD) validado por expertos locales.
 
-**Horizontes temporales:**
-- Corto plazo (2026-2028): S × 0.3 — Solo adoptadores tempranos (MNCs, grandes empresas formales)
-- Mediano plazo (2028-2032): S × 0.6 — Adopción se extiende al mercado medio
-- Largo plazo (2032+): S × 0.9 — Adopción generalizada incluyendo PYMEs
+**Dos dimensiones de escenario:**
+
+El S-Score se ajusta mediante dos multiplicadores combinados: `S_mostrado = min(100, AIOE × velocidad × intensidad)`
+
+**Velocidad de Adopción** (qué tan rápido se despliega la IA en la economía):
+
+| Velocidad | Corto (2026-28) | Medio (2028-32) | Largo (2032+) |
+|---|---|---|---|
+| Lenta | ×0.15 | ×0.35 | ×0.60 |
+| Promedio | ×0.30 | ×0.60 | ×0.90 |
+| Rápida | ×0.50 | ×0.80 | ×0.95 |
+
+**Intensidad de Adopción** (qué tan profundamente penetra la IA en cada ocupación):
+- Leve (×0.5): IA augmenta pero no reemplaza — humanos permanecen en el loop
+- Moderada (×1.0): Automatización estándar según proyección AIOE
+- Fuerte (×1.25): IA supera expectativas — más tareas automatizadas de lo previsto
 
 ### Adaptabilidad (A-Score)
 Mide la capacidad y viabilidad de transición a otras áreas laborales.

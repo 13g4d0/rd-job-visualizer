@@ -60,6 +60,12 @@
         .adoption-btn.active[data-speed="average"] { background: #D97706; color: white; }
         .adoption-btn.active[data-speed="fast"] { background: #DC2626; color: white; }
 
+        .intensity-btn { transition: all 0.2s ease; }
+        .intensity-btn.active { box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+        .intensity-btn.active[data-intensity="light"] { background: #6366F1; color: white; }
+        .intensity-btn.active[data-intensity="moderate"] { background: #8B5CF6; color: white; }
+        .intensity-btn.active[data-intensity="strong"] { background: #A855F7; color: white; }
+
         .search-highlight { stroke: #2563eb !important; stroke-width: 3px !important; filter: drop-shadow(0 0 6px rgba(37,99,235,0.5)); }
         .search-dim { opacity: 0.15 !important; }
 
@@ -157,11 +163,20 @@
                 </div>
                 <!-- Adoption speed -->
                 <div class="flex items-center gap-1.5">
-                    <span class="text-xs font-medium text-slate-500 shrink-0">Adopci&oacute;n:</span>
+                    <span class="text-xs font-medium text-slate-500 shrink-0">Velocidad:</span>
                     <div class="flex bg-slate-200/70 rounded-md p-0.5 gap-0.5">
-                        <button class="adoption-btn rounded px-2 py-1 text-xs font-medium text-slate-600" data-speed="slow">Lenta</button>
-                        <button class="adoption-btn active rounded px-2 py-1 text-xs font-medium" data-speed="average">Promedio</button>
-                        <button class="adoption-btn rounded px-2 py-1 text-xs font-medium text-slate-600" data-speed="fast">R&aacute;pida</button>
+                        <button class="adoption-btn rounded px-2 py-1 text-xs font-medium text-slate-600" data-speed="slow" title="Solo grandes empresas y MNCs adoptan IA">Lenta</button>
+                        <button class="adoption-btn active rounded px-2 py-1 text-xs font-medium" data-speed="average" title="Adopci&oacute;n se extiende al mercado medio">Promedio</button>
+                        <button class="adoption-btn rounded px-2 py-1 text-xs font-medium text-slate-600" data-speed="fast" title="Incentivos fiscales + infraestructura digital aceleran adopci&oacute;n">R&aacute;pida</button>
+                    </div>
+                </div>
+                <!-- Adoption intensity -->
+                <div class="flex items-center gap-1.5">
+                    <span class="text-xs font-medium text-slate-500 shrink-0">Intensidad:</span>
+                    <div class="flex bg-slate-200/70 rounded-md p-0.5 gap-0.5">
+                        <button class="intensity-btn rounded px-2 py-1 text-xs font-medium text-slate-600" data-intensity="light" title="IA augmenta pero no reemplaza &mdash; humanos en el loop">Leve</button>
+                        <button class="intensity-btn active rounded px-2 py-1 text-xs font-medium" data-intensity="moderate" title="Automatizaci&oacute;n est&aacute;ndar seg&uacute;n proyecci&oacute;n AIOE">Moderada</button>
+                        <button class="intensity-btn rounded px-2 py-1 text-xs font-medium text-slate-600" data-intensity="strong" title="IA supera expectativas &mdash; m&aacute;s tareas automatizadas de lo previsto">Fuerte</button>
                     </div>
                 </div>
                 <!-- Search -->
@@ -551,14 +566,22 @@
     let currentPeriod = 'short';
     let activeSectorFilter = null;
     let currentAdoption = 'average';
+    let currentIntensity = 'moderate';
     let searchQuery = '';
     let radarSelections = [];
 
     // Adoption speed multipliers: [short, medium, long]
     const ADOPTION_SPEEDS = {
-        slow:    { short: 0.15, medium: 0.35, long: 0.60, label: 'Lenta', desc: 'Adopción lenta: solo grandes MNCs y gobierno' },
-        average: { short: 0.30, medium: 0.60, long: 0.90, label: 'Promedio', desc: 'Adopción promedio: tendencia actual proyectada' },
-        fast:    { short: 0.50, medium: 0.80, long: 0.95, label: 'Rápida', desc: 'Adopción rápida: incentivos fiscales + infraestructura digital' }
+        slow:    { short: 0.15, medium: 0.35, long: 0.60 },
+        average: { short: 0.30, medium: 0.60, long: 0.90 },
+        fast:    { short: 0.50, medium: 0.80, long: 0.95 }
+    };
+
+    // Adoption intensity multipliers
+    const ADOPTION_INTENSITY = {
+        light:    0.50,
+        moderate: 1.00,
+        strong:   1.25
     };
 
     // ---- REMAP SECTOR COLORS for computeAll ----
@@ -574,9 +597,10 @@
     // ---- RECOMPUTE with temporal period + adoption speed ----
     function recomputeForPeriod(data) {
         const speed = ADOPTION_SPEEDS[currentAdoption];
-        const multiplier = speed[currentPeriod];
+        const intensity = ADOPTION_INTENSITY[currentIntensity];
+        const multiplier = speed[currentPeriod] * intensity;
         const occupations = data.occupations.map(occ => {
-            const sVal = Math.round(occ.sScore * multiplier);
+            const sVal = Math.min(100, Math.round(occ.sScore * multiplier));
             const zone = classifyZone(occ.vScore, sVal, occ.aScore);
             return { ...occ, sDisplay: sVal, zoneDisplay: zone, zoneColorDisplay: ZONE_COLORS[zone], zoneNameDisplay: ZONE_LABELS[zone] };
         });
@@ -1499,6 +1523,16 @@
             document.querySelectorAll('.adoption-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentAdoption = btn.dataset.speed;
+            refreshAfterControl();
+        });
+    });
+
+    // ---- ADOPTION INTENSITY BUTTONS ----
+    document.querySelectorAll('.intensity-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.intensity-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentIntensity = btn.dataset.intensity;
             refreshAfterControl();
         });
     });
