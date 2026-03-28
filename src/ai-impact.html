@@ -309,7 +309,7 @@
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
                 <div>
                     <h2 class="text-lg font-bold text-slate-900">Comparaci&oacute;n Radar por Sector</h2>
-                    <p class="text-sm text-slate-500 mt-0.5">Selecciona hasta 4 sectores para comparar en 5 dimensiones</p>
+                    <p class="text-sm text-slate-500 mt-0.5">Selecciona sectores para comparar en 5 dimensiones</p>
                 </div>
                 <button id="radar-clear" class="text-sm text-slate-500 hover:text-red-600 transition-colors flex items-center gap-1">
                     <i data-lucide="x" class="w-3.5 h-3.5"></i> Limpiar selecci&oacute;n
@@ -1142,7 +1142,7 @@
     // ---- RADAR CHART ----
     const RADAR_DIMENSIONS = [
         { key: 'v', label: 'Vulnerabilidad', invert: true },
-        { key: 's', label: 'Susceptibilidad', invert: true },
+        { key: 's', label: 'Susceptibilidad a IA', invert: true },
         { key: 'a', label: 'Adaptabilidad', invert: false },
         { key: 'salary', label: 'Salario Rel.', invert: false },
         { key: 'formality', label: 'Formalidad', invert: false }
@@ -1167,7 +1167,7 @@
                 const key = btn.dataset.sector;
                 if (radarSelections.includes(key)) {
                     radarSelections = radarSelections.filter(k => k !== key);
-                } else if (radarSelections.length < 4) {
+                } else {
                     radarSelections.push(key);
                 }
                 renderRadar(recomputeForPeriod(allData));
