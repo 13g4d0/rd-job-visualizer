@@ -450,7 +450,7 @@ Este prototipo corresponde a la **Fase 1** de un marco de análisis de 5 fases p
 
 ## Referencias
 
-- Felten, E. W., Raj, M. & Seamans, R. (2021). "Occupational, industry, and geographic exposure to artificial intelligence: A novel dataset and its potential uses." *Strategic Management Journal*, 42(12), 2195-2217.
+- Felten, E. W., Raj, M. & Seamans, R. (2021). "Occupational, industry, and geographic exposure to artificial intelligence: A novel dataset and its potential uses." *Strategic Management Journal*, 42(12), 2195-2217. [[Wiley](https://sms.onlinelibrary.wiley.com/doi/full/10.1002/smj.3286)] [[ResearchGate](https://www.researchgate.net/publication/351174628_Occupational_industry_and_geographic_exposure_to_artificial_intelligence_A_novel_dataset_and_its_potential_uses)]
 - ENCFT 2025 — Banco Central de la República Dominicana. Encuesta Nacional Continua de Fuerza de Trabajo.
 - MAP (2025) — Ministerio de Administración Pública. Nómina Pública Diciembre 2025.
 - ENIA (2024) — Estrategia Nacional de Inteligencia Artificial de la República Dominicana. Con apoyo de BID y UNESCO.
