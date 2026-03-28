@@ -147,7 +147,7 @@
                 </div>
                 <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform" id="dashboard-chevron"></i>
             </button>
-            <div id="dashboard-content" class="px-5 pb-5">
+            <div id="dashboard-content" class="hidden px-5 pb-5">
 
         <!-- ---- GAUGES ---- -->
         <div class="bg-slate-50 rounded-xl p-5 mb-6">
@@ -367,35 +367,45 @@
         </div>
 
         <!-- ---- RADAR CHART ---- -->
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 mb-8">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-8">
+            <button id="radar-toggle" class="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors">
                 <div>
                     <h2 class="text-lg font-bold text-slate-900">Comparaci&oacute;n Radar por Sector</h2>
                     <p class="text-sm text-slate-500 mt-0.5">Selecciona sectores para comparar en 5 dimensiones</p>
                 </div>
-                <button id="radar-clear" class="text-sm text-slate-500 hover:text-red-600 transition-colors flex items-center gap-1">
-                    <i data-lucide="x" class="w-3.5 h-3.5"></i> Limpiar selecci&oacute;n
-                </button>
-            </div>
-            <div id="radar-chips" class="flex flex-wrap gap-2 mb-4"></div>
-            <div id="radar-container" class="w-full flex justify-center" style="min-height: 350px;"></div>
-            <div id="radar-legend" class="flex flex-wrap justify-center gap-4 mt-3 text-xs text-slate-600"></div>
-            <div class="mt-5 pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2 text-xs text-slate-500">
-                <div><strong class="text-slate-700">Vulnerabilidad:</strong> Fragilidad econ&oacute;mica del trabajador (salario, informalidad, educaci&oacute;n, ahorro). Mayor = m&aacute;s fr&aacute;gil.</div>
-                <div><strong class="text-slate-700">Susceptibilidad a IA:</strong> Grado de exposici&oacute;n de la ocupaci&oacute;n a ser automatizada por inteligencia artificial. Mayor = m&aacute;s expuesto.</div>
-                <div><strong class="text-slate-700">Adaptabilidad:</strong> Capacidad de transici&oacute;n a otras &aacute;reas laborales (transferibilidad de habilidades + nivel educativo). Mayor = m&aacute;s adaptable.</div>
-                <div><strong class="text-slate-700">Nivel Salarial:</strong> Salario promedio del sector como porcentaje del sector mejor pagado. 100 = el salario m&aacute;s alto del mercado.</div>
-                <div><strong class="text-slate-700">Formalidad:</strong> Porcentaje de trabajadores con empleo formal (contrato, seguridad social). Mayor = m&aacute;s formalizado.</div>
+                <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform shrink-0 ml-3" id="radar-toggle-chevron"></i>
+            </button>
+            <div id="radar-collapsible-content" class="hidden px-5 pb-5">
+                <div class="flex justify-end mb-3">
+                    <button id="radar-clear" class="text-sm text-slate-500 hover:text-red-600 transition-colors flex items-center gap-1">
+                        <i data-lucide="x" class="w-3.5 h-3.5"></i> Limpiar selecci&oacute;n
+                    </button>
+                </div>
+                <div id="radar-chips" class="flex flex-wrap gap-2 mb-4"></div>
+                <div id="radar-container" class="w-full flex justify-center" style="min-height: 350px;"></div>
+                <div id="radar-legend" class="flex flex-wrap justify-center gap-4 mt-3 text-xs text-slate-600"></div>
+                <div class="mt-5 pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2 text-xs text-slate-500">
+                    <div><strong class="text-slate-700">Vulnerabilidad:</strong> Fragilidad econ&oacute;mica del trabajador (salario, informalidad, educaci&oacute;n, ahorro). Mayor = m&aacute;s fr&aacute;gil.</div>
+                    <div><strong class="text-slate-700">Susceptibilidad a IA:</strong> Grado de exposici&oacute;n de la ocupaci&oacute;n a ser automatizada por inteligencia artificial. Mayor = m&aacute;s expuesto.</div>
+                    <div><strong class="text-slate-700">Adaptabilidad:</strong> Capacidad de transici&oacute;n a otras &aacute;reas laborales (transferibilidad de habilidades + nivel educativo). Mayor = m&aacute;s adaptable.</div>
+                    <div><strong class="text-slate-700">Nivel Salarial:</strong> Salario promedio del sector como porcentaje del sector mejor pagado. 100 = el salario m&aacute;s alto del mercado.</div>
+                    <div><strong class="text-slate-700">Formalidad:</strong> Porcentaje de trabajadores con empleo formal (contrato, seguridad social). Mayor = m&aacute;s formalizado.</div>
+                </div>
             </div>
         </div>
 
         <!-- ---- SECTOR EXPLANATIONS ---- -->
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-8">
-            <div class="px-5 py-4 border-b border-slate-100">
-                <h2 class="text-lg font-bold text-slate-900">An&aacute;lisis por Sector</h2>
-                <p class="text-sm text-slate-500 mt-0.5">Explicaci&oacute;n de Vulnerabilidad, Susceptibilidad a la IA y Adaptabilidad para cada sector econ&oacute;mico</p>
+            <button id="explanations-toggle" class="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900">An&aacute;lisis por Sector</h2>
+                    <p class="text-sm text-slate-500 mt-0.5">Explicaci&oacute;n de Vulnerabilidad, Susceptibilidad a la IA y Adaptabilidad para cada sector econ&oacute;mico</p>
+                </div>
+                <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 transition-transform shrink-0 ml-3" id="explanations-chevron"></i>
+            </button>
+            <div id="explanations-content" class="hidden">
+                <div id="sector-explanations" class="divide-y divide-slate-100"></div>
             </div>
-            <div id="sector-explanations" class="divide-y divide-slate-100"></div>
         </div>
 
         <!-- ---- METHODOLOGY ---- -->
@@ -1509,6 +1519,22 @@
     });
 
     // ---- METHODOLOGY TOGGLE ----
+    // ---- EXPLANATIONS TOGGLE ----
+    document.getElementById('explanations-toggle').addEventListener('click', () => {
+        const content = document.getElementById('explanations-content');
+        const chevron = document.getElementById('explanations-chevron');
+        content.classList.toggle('hidden');
+        chevron.style.transform = content.classList.contains('hidden') ? '' : 'rotate(180deg)';
+    });
+
+    // ---- RADAR TOGGLE ----
+    document.getElementById('radar-toggle').addEventListener('click', () => {
+        const content = document.getElementById('radar-collapsible-content');
+        const chevron = document.getElementById('radar-toggle-chevron');
+        content.classList.toggle('hidden');
+        chevron.style.transform = content.classList.contains('hidden') ? '' : 'rotate(180deg)';
+    });
+
     // ---- RANKINGS TOGGLE ----
     document.getElementById('rankings-toggle').addEventListener('click', () => {
         const content = document.getElementById('rankings-content');
